@@ -1,37 +1,18 @@
-SGGVISION AI — Live starter project (Cloudflare Pages)
+SGGVISION AI Digital Services — Cloudflare Pages package
 
-या प्रोजेक्टमध्ये:
-- मराठी वेबसाइट
-- YouTube SEO आणि स्क्रिप्टसाठी AI UI
-- Cloudflare Pages Function backend
-- OpenAI API key browser मध्ये न दाखवता server-side secret म्हणून वापरणे
+या ZIP मध्ये:
+- index.html: मराठी वेबसाइट आणि OpenAI API वापरणारी AI साधने
+- payment-qr.jpeg: पेमेंट QR प्रतिमा
+- functions/api/generate.js: Cloudflare Pages Function (OpenAI Responses API)
 
-महत्त्वाचे:
-- हे deploy केलेले नाही; तुमच्या Cloudflare खात्यातून publish करावे लागेल.
-- ChatGPT Go subscription मध्ये API usage समाविष्ट नसते. API usage स्वतंत्रपणे बिल होते.
-- API Key मला किंवा कोणालाही chat मध्ये पाठवू नका.
-- आधी API usage budget/limits सेट करा. सार्वजनिक वेबसाइटवर login/rate-limit/abuse protection जोडण्यापूर्वी जास्त traffic घेऊ नका.
-- या starter मध्ये पेमेंट gateway नाही. ग्राहकांकडून पैसे घेण्यासाठी आधी manually order + UPI तपासणी करा; नंतर Razorpay इ. payment gateway जोडता येईल.
-- वेबसाइटचे AI फीचर API Key सेट केल्यावरच चालेल.
+Cloudflare Pages मध्ये GitHub repo च्या root मध्ये या फाईल्स अपलोड करा. functions फोल्डर index.html च्या शेजारी root level वरच असावा.
 
-Cloudflare Pages deploy:
-1. Cloudflare account तयार करा आणि Pages मध्ये हा प्रोजेक्ट GitHub repository द्वारे जोडून deploy करा.
-2. Project Settings > Variables and Secrets मध्ये OPENAI_API_KEY नावाचा Secret जोडा.
-3. OPENAI_MODEL नावाचा variable (पर्यायी) सेट करा; तुमच्या API project मध्ये उपलब्ध model निवडा.
-4. Redeploy करा. नंतर वेबसाइटवरील AI टूल्स तपासा.
-5. स्वतःचे domain नंतर Cloudflare Pages > Custom domains मधून जोडा.
+Cloudflare Pages > Settings > Variables and Secrets मध्ये Production environment साठी Secret तयार करा:
+Name: OPENAI_API_KEY
+Value: तुमची OpenAI API key
 
-API Key तयार करण्यासाठी:
-https://platform.openai.com/api-keys
-OpenAI API billing स्वतंत्रपणे सेट करावी लागते:
-https://platform.openai.com/settings/organization/billing
+Secret save केल्यानंतर Deployments मधून नवीन deployment/retry करा. API key HTML, GitHub repo, screenshot किंवा chat मध्ये कधीही टाकू नका.
 
-Cloudflare:
-https://dash.cloudflare.com/
-Pages docs:
-https://developers.cloudflare.com/pages/
+AI साधने: YouTube SEO मजकूर आणि मराठी व्हिडिओ स्क्रिप्ट. दोन्ही /api/generate endpoint वापरतात.
 
-पेमेंट QR:
-- payment-qr.jpeg वेबसाइटच्या payment section मध्ये दाखवला जातो.
-- UPI ID: shankar.gaikwad7@axisbank
-- UPI व्यवहार प्रत्यक्ष खात्यात जमा झाला आहे का ते स्वतः बँक/UPI app मध्ये तपासा. वेबसाइट सध्या पेमेंटची स्वयंचलित पडताळणी करत नाही.
+महत्त्वाच्या मर्यादा: ही आवृत्ती AI text generation जोडते. लॉगिन, ग्राहक ऑर्डर साठवणूक, ईमेल पाठवणे आणि पेमेंटची स्वयंचलित पडताळणी यात समाविष्ट नाहीत. QR पेमेंट स्वतंत्रपणे ग्राहकाच्या UPI ॲपमध्ये तपासावे. API वापरासाठी OpenAI API खात्यात बिलिंग/क्रेडिट आणि योग्य model access आवश्यक असू शकतो.
