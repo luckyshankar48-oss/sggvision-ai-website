@@ -86,6 +86,29 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 }
 @media(max-width:600px){.rangoli-wallpaper{opacity:.25;background-size:175px 175px}}
 
+
+/* Festive jewel-colour panels and service boxes */
+.card,.tool,.hero-card,.formbox{
+ background:linear-gradient(145deg,rgba(65,27,83,.96),rgba(25,43,82,.97) 48%,rgba(91,35,65,.95));
+ border:1px solid rgba(255,205,92,.72);
+ box-shadow:0 12px 32px #0005, inset 0 1px 0 #fff2, 0 0 18px #ffb84d18;
+}
+.card:nth-child(6n+1){background:linear-gradient(145deg,#55204f,#242b63)}
+.card:nth-child(6n+2){background:linear-gradient(145deg,#174f55,#252d62)}
+.card:nth-child(6n+3){background:linear-gradient(145deg,#66321e,#40204f)}
+.card:nth-child(6n+4){background:linear-gradient(145deg,#293b75,#4b255f)}
+.card:nth-child(6n+5){background:linear-gradient(145deg,#65421b,#3c285e)}
+.card:nth-child(6n){background:linear-gradient(145deg,#174d43,#382653)}
+.tool:nth-child(odd){background:linear-gradient(145deg,#3b235f,#173e58 60%,#4d2549)}
+.tool:nth-child(even){background:linear-gradient(145deg,#62301e,#3c285d 60%,#183e50)}
+.hero-card{background:linear-gradient(145deg,#55204f,#1c3761 55%,#66321e)}
+.formbox{background:linear-gradient(145deg,#33204f,#173d52 55%,#512744)}
+.card:before{height:5px;background:linear-gradient(90deg,#ff4f87,#ffd84e,#51e6bf,#69d9ff,#b79aff,#ff9b55);background-size:200% 100%;animation:rangoliBar 6s linear infinite}
+@keyframes rangoliBar{to{background-position:200% 0}}
+.card h3,.tool h3,.hero-card h2{color:#ffe4a1;text-shadow:0 1px 10px #ffca5a22}
+.card p,.tool label,.formbox label{color:#fff0d2}
+@media(prefers-reduced-motion:reduce){.card:before{animation:none}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
