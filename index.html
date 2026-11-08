@@ -73,6 +73,19 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 @media(max-width:600px){.rangoli-wallpaper{opacity:.14;background-size:145px 145px;background-position:0 0,72px 72px}.firework:before{inset:-40px}}
 @media(prefers-reduced-motion:reduce){.firework{animation:none;opacity:.12}}
 
+
+/* Bright multicolour rangoli pattern across the full page */
+.rangoli-wallpaper{
+ position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.34;
+ background-image:
+  radial-gradient(circle at 50% 50%,#fff7c8 0 2%,transparent 2.8% 8%,#ff5e8a 8.5% 10%,transparent 10.5% 15%,#ffd84e 15.5% 17%,transparent 17.5% 22%,#53e4c1 22.5% 24%,transparent 24.5% 29%,#9a79ff 29.5% 31%,transparent 31.5% 36%,#ff9a45 36.5% 38%,transparent 38.5%),
+  repeating-conic-gradient(from 0deg,#ff5d8f 0deg 7deg,#ffd84e 7deg 14deg,#58e0bd 14deg 21deg,#6ccfff 21deg 28deg,#a78bfa 28deg 35deg,#ff9b55 35deg 42deg);
+ background-size:230px 230px;background-position:0 0;
+ background-repeat:repeat;
+ filter:saturate(1.18) drop-shadow(0 0 8px #ffbd4a55);
+}
+@media(max-width:600px){.rangoli-wallpaper{opacity:.25;background-size:175px 175px}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
