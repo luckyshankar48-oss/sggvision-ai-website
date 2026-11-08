@@ -154,6 +154,37 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
  .brand{font-size:clamp(31px,8vw,38px);margin-left:10px;letter-spacing:.25px;white-space:normal}
 }
 
+
+/* Rangoli watermark must remain visible on the page AND through every service box */
+.rangoli-wallpaper{
+ position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.24;
+ background-image:
+  radial-gradient(circle at 50% 50%,#fff9d8 0 1.1%,#d52f4f 1.4% 3.1%,#f5c84e 3.4% 4.6%,#246b9b 4.9% 9.2%,transparent 9.5% 11%),
+  repeating-conic-gradient(from 0deg at 50% 50%,#f8d66c 0deg 2deg,#278456 2deg 5deg,#30246d 5deg 8deg,#e98bb4 8deg 10deg,#f8d66c 10deg 12deg,transparent 12deg 15deg),
+  radial-gradient(circle at 50% 50%,transparent 0 17%,#f6d36c 17.3% 18%,#a92d53 18.3% 22%,#f6d36c 22.3% 23%,transparent 23.3% 27%,#f2a84b 27.3% 28%,#f6d36c 28.3% 29%,transparent 29.3% 34%,#216c4d 34.3% 35%,#f6d36c 35.3% 36%,transparent 36.3% 42%),
+  repeating-conic-gradient(from 15deg at 50% 50%,#1d704e 0deg 5deg,#282064 5deg 10deg,#f5c94d 10deg 13deg,#b32c58 13deg 16deg,#f4b0c7 16deg 18deg,transparent 18deg 22deg);
+ background-size:360px 360px;
+ background-position:center center;
+ background-repeat:repeat;
+ filter:saturate(1.25);
+}
+.card,.tool,.hero-card,.formbox{
+ background-color:rgba(31,25,62,.70)!important;
+ background-blend-mode:normal;
+ backdrop-filter:blur(1px);
+}
+.card:nth-child(6n+1){background:linear-gradient(145deg,rgba(85,32,79,.76),rgba(36,43,99,.76))!important}
+.card:nth-child(6n+2){background:linear-gradient(145deg,rgba(23,79,85,.76),rgba(37,45,98,.76))!important}
+.card:nth-child(6n+3){background:linear-gradient(145deg,rgba(102,50,30,.76),rgba(64,32,79,.76))!important}
+.card:nth-child(6n+4){background:linear-gradient(145deg,rgba(41,59,117,.76),rgba(75,37,95,.76))!important}
+.card:nth-child(6n+5){background:linear-gradient(145deg,rgba(101,66,27,.76),rgba(60,40,94,.76))!important}
+.card:nth-child(6n){background:linear-gradient(145deg,rgba(23,77,67,.76),rgba(56,38,83,.76))!important}
+.tool:nth-child(odd){background:linear-gradient(145deg,rgba(59,35,95,.76),rgba(23,62,88,.76) 60%,rgba(77,37,73,.76))!important}
+.tool:nth-child(even){background:linear-gradient(145deg,rgba(98,48,30,.76),rgba(60,40,93,.76) 60%,rgba(24,62,80,.76))!important}
+.hero-card{background:linear-gradient(145deg,rgba(85,32,79,.78),rgba(28,55,97,.78) 55%,rgba(102,50,30,.78))!important}
+.formbox{background:linear-gradient(145deg,rgba(51,32,79,.78),rgba(23,61,82,.78) 55%,rgba(81,39,68,.78))!important}
+@media(max-width:600px){.rangoli-wallpaper{opacity:.19;background-size:285px 285px}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
