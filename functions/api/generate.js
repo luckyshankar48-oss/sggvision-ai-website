@@ -4,6 +4,7 @@ export async function onRequestPost({ request, env }) {
   };
 
   try {
+console.log("OPENAI_API_KEY configured:", Boolean(env && env.OPENAI_API_KEY));
     if (!env.OPENAI_API_KEY) {
       return new Response(
         JSON.stringify({ error: "Cloudflare मध्ये OPENAI_API_KEY उपलब्ध नाही." }),
