@@ -117,6 +117,24 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 #payment .tool{min-width:0}
 @media(max-width:800px){#payment .tools{grid-template-columns:minmax(0,1fr)}#payment .tool:first-child img{max-width:min(78vw,300px)}}
 
+
+/* Soft concentric rangoli watermark inspired by the supplied reference */
+.rangoli-wallpaper{
+ position:fixed;inset:0;z-index:0;pointer-events:none;
+ opacity:.13;
+ background-image:
+  radial-gradient(circle at 50% 50%,#fff5c8 0 1.2%,#d92e4f 1.5% 3.8%,#ffc94d 4% 5.5%,#276c9c 5.8% 10%,transparent 10.4% 12%),
+  repeating-conic-gradient(from -8deg at 50% 50%,#f4c85a 0deg 2deg,#2f8b65 2deg 5deg,#37266f 5deg 8deg,#f5b2ca 8deg 10deg,#f4c85a 10deg 12deg,transparent 12deg 15deg),
+  radial-gradient(circle at 50% 50%,transparent 0 19%,#f5d36b 19.3% 20%,#a92d53 20.3% 24%,#f6d76d 24.3% 25%,transparent 25.3% 29%,#e8a94b 29.3% 30%,#f7d875 30.3% 31%,transparent 31.4% 36%,#1f704f 36.3% 37%,#f6d36a 37.3% 38%,transparent 38.4% 44%);
+ background-size:420px 420px;
+ background-position:center center;
+ background-repeat:repeat;
+ filter:saturate(1.12);
+}
+@media(max-width:600px){
+ .rangoli-wallpaper{opacity:.105;background-size:300px 300px}
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
