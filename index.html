@@ -26,10 +26,33 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 .notice{border-left:3px solid var(--gold);padding:12px 14px;background:#211f1a;color:#f4dfad;border-radius:8px;font-size:13px;margin-top:15px}
 @media(max-width:800px){.hero{grid-template-columns:1fr;padding-top:42px}.grid{grid-template-columns:1fr 1fr}.tools{grid-template-columns:1fr}.nav a{margin-left:8px}}
 @media(max-width:540px){.grid{grid-template-columns:1fr}.nav{align-items:flex-start;gap:12px;flex-direction:column}.nav div:last-child{display:flex;flex-wrap:wrap;gap:10px}.nav a{margin:0}}
+
+/* Diwali festive layer — preserves existing layout and tools */
+@import url('https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&display=swap');
+body{font-family:"Khand","Hind Vadodara","Mukta","Noto Sans Devanagari",system-ui,sans-serif}
+.diwali-top{position:relative;overflow:hidden;text-align:center;padding:10px 14px;background:linear-gradient(90deg,#40104e,#8b2a35,#5a174b);color:#ffe8a3;border-bottom:1px solid #f4bd54;font-weight:700;letter-spacing:.4px}
+.diwali-top:before,.diwali-top:after{content:"✦";position:absolute;color:#ffd66e;top:8px;animation:diwaliTwinkle 2.4s ease-in-out infinite}
+.diwali-top:before{left:8%;}.diwali-top:after{right:8%;animation-delay:1.1s}
+.diwali-welcome{position:relative;overflow:hidden;margin:22px 0 0;padding:18px 20px;border:1px solid #bd8b42;border-radius:16px;text-align:center;background:linear-gradient(110deg,#3a1648,#6c203f 55%,#30204d);box-shadow:0 12px 32px #ffb52a18}
+.diwali-welcome strong{display:block;color:#ffe39a;font-family:"Khand","Mukta",sans-serif;font-size:clamp(23px,4vw,34px);line-height:1.3}
+.diwali-welcome p{margin:5px 0 0;color:#ffeac7}
+.diwali-decor{position:absolute;top:6px;font-size:34px;filter:drop-shadow(0 0 12px #ffc04d);transform-origin:top center;animation:lanternSway 4s ease-in-out infinite}
+.diwali-decor.left{left:14px}.diwali-decor.right{right:14px;animation-delay:1.3s}
+.diwali-offer{margin:18px 0 0;padding:12px 16px;border-radius:12px;text-align:center;background:linear-gradient(90deg,#8e3a20,#b36b21,#7b234c);border:1px solid #ffd06c;color:#fff2c8;font-weight:700}
+.diwali-offer span{color:#ffe18b}
+.hero-card{border-color:#9c7446;box-shadow:0 18px 45px #0005,0 0 22px #eaa63b18}
+@keyframes lanternSway{0%,100%{transform:rotate(-5deg) translateY(0)}50%{transform:rotate(5deg) translateY(4px)}}
+@keyframes diwaliTwinkle{0%,100%{opacity:.35;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+@media(max-width:540px){.diwali-decor{font-size:25px;top:3px}.diwali-welcome{padding:16px 48px}.diwali-top:before{left:3%}.diwali-top:after{right:3%}}
+@media(prefers-reduced-motion:reduce){.diwali-decor,.diwali-top:before,.diwali-top:after{animation:none}}
+
 </style></head>
 <body>
+<div class="diwali-top">🪔 शुभ दीपावली • SGGVISION AI Digital Services • मंगलमय सुरुवात 🪔</div>
 <header class="wrap nav"><div class="brand">SGG<span>VISION</span> AI</div><div><a href="#services">सेवा</a><a href="#tools">AI टूल्स</a><a href="#pricing">दर</a><a href="#payment">पेमेंट</a><a href="#order">ऑर्डर</a></div></header>
 <main class="wrap">
+<div class="diwali-welcome"><span class="diwali-decor left" aria-hidden="true">🏮</span><span class="diwali-decor right" aria-hidden="true">🏮</span><strong>✨ दिवाळीचा आनंद, डिजिटल प्रगतीची नवी सुरुवात! ✨</strong><p>रांगोळीच्या रंगांसारख्या कल्पना, आणि प्रत्येक कल्पनेला AI ची साथ.</p></div>
+<div class="diwali-offer">🎁 <span>दिवाळी विशेष</span> • SGGVISION च्या डिजिटल सेवांसाठी चौकशी करा • 🪔</div>
 <section class="hero"><div><div class="eyebrow">मराठी डिजिटल सेवा • AI सहाय्याने</div><h1>तुमच्या कल्पनांना<br><span style="color:var(--gold)">डिजिटल रूप</span> देऊया.</h1><p>YouTube SEO, मराठी स्क्रिप्ट, सोशल मीडिया मजकूर, पोस्टर संकल्पना आणि डिजिटल कंटेंट सेवा — एका ठिकाणी.</p><a class="btn" href="#order">कामाची चौकशी करा</a><a class="btn secondary" href="#tools">AI टूल्स पाहा</a></div>
 <div class="hero-card"><span class="tag">SGGVISION AI सेवा केंद्र</span><h2>तुमच्या कंटेंटसाठी मदत</h2><div class="stat"><span>YouTube SEO</span><strong>Title • Tags • Description</strong></div><div class="stat"><span>मराठी लेखन</span><strong>स्क्रिप्ट • अर्ज • पोस्ट</strong></div><div class="stat"><span>क्रिएटिव्ह सेवा</span><strong>Thumbnail • Reels</strong></div><div class="stat"><span>भाषा</span><strong>मराठी</strong></div></div></section>
 <section id="services"><div class="section-head"><h2>आमच्या सेवा</h2><p>तुमच्या गरजेनुसार AI सहाय्य आणि मानवी तपासणीसह काम.</p></div><div class="grid">
