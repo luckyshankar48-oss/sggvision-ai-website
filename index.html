@@ -185,6 +185,39 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 .formbox{background:linear-gradient(145deg,rgba(51,32,79,.78),rgba(23,61,82,.78) 55%,rgba(81,39,68,.78))!important}
 @media(max-width:600px){.rangoli-wallpaper{opacity:.19;background-size:285px 285px}}
 
+
+/* Warm Diwali fairy-light finish inspired by the user's reference page */
+.diwali-top{
+ box-shadow:0 0 18px #ffc94d55,0 5px 24px #ffb84d22;
+ position:relative;
+}
+.diwali-welcome,.diwali-offer,.hero-card,.card,.tool,.formbox{
+ border-color:#e8b84f!important;
+ box-shadow:0 0 0 1px #ffd97935,0 0 14px #ffc94d55,0 0 30px #ff9e3d28,inset 0 0 18px #ffcf5b12!important;
+}
+.diwali-welcome:after,.diwali-offer:after,.hero-card:after,.card:after,.tool:after,.formbox:after{
+ content:"";
+ position:absolute;
+ z-index:2;
+ pointer-events:none;
+ left:8px;right:8px;top:3px;height:12px;
+ background-image:radial-gradient(circle,#fffbd8 0 1.5px,#ffe28a 2px,#ffb52d 3px,transparent 6px);
+ background-size:24px 12px;
+ background-repeat:repeat-x;
+ opacity:.82;
+ filter:drop-shadow(0 0 4px #ffce58);
+ animation:diwaliBulbGlow 2.8s ease-in-out infinite alternate;
+}
+.diwali-welcome:after,.diwali-offer:after{left:12px;right:12px;top:2px;height:14px;background-size:28px 14px}
+@keyframes diwaliBulbGlow{
+ 0%{opacity:.48;filter:drop-shadow(0 0 2px #ffbd45)}
+ 100%{opacity:1;filter:drop-shadow(0 0 8px #ffe18a)}
+}
+.nav{box-shadow:0 5px 18px #ffca5a18}
+@media(prefers-reduced-motion:reduce){
+ .diwali-welcome:after,.diwali-offer:after,.hero-card:after,.card:after,.tool:after,.formbox:after{animation:none;opacity:.75}
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
