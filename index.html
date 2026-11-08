@@ -51,8 +51,31 @@ body{font-family:"Khand","Hind Vadodara","Mukta","Noto Sans Devanagari",system-u
 .brand{font-size:30px;line-height:1.25;margin-left:18px;white-space:nowrap}
 @media(max-width:540px){.brand{font-size:29px;margin-left:16px;letter-spacing:.2px}}
 
+
+/* Full-page animated Diwali rangoli and fireworks */
+body{background-color:#100b20;background-image:
+ radial-gradient(ellipse at 50% 0%,#4b2058 0,transparent 42%),
+ radial-gradient(circle at 12% 22%,#5b2b4918 0,transparent 24%),
+ radial-gradient(circle at 88% 62%,#ffb52a12 0,transparent 25%),
+ repeating-linear-gradient(135deg,#ffcc5510 0 1px,transparent 1px 42px)}
+.rangoli-wallpaper{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.22;background-image:
+ repeating-conic-gradient(from 0deg at 50% 50%,#ffcf5b 0deg 3deg,transparent 3deg 15deg),
+ radial-gradient(circle at 50% 50%,transparent 0 18%,#ff8b4b 18.5% 19%,transparent 19.5% 27%,#e8b94f 27.5% 28%,transparent 28.5% 40%);
+ background-size:190px 190px;background-position:0 0,95px 95px;mask-image:linear-gradient(90deg,#000 0%,transparent 38%,transparent 62%,#000 100%)}
+.fireworks-layer{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.firework{position:absolute;width:9px;height:9px;border-radius:50%;opacity:0;animation:fireworkBurst 4.8s ease-out infinite}
+.firework:before{content:"";position:absolute;inset:-58px;border-radius:50%;background:repeating-conic-gradient(from 0deg,#ffd66b 0deg 2deg,transparent 2deg 15deg);mask-image:radial-gradient(circle,transparent 0 8%,#000 10% 75%,transparent 78%);filter:drop-shadow(0 0 5px #ffb84d)}
+.firework:after{content:"";position:absolute;inset:-24px;border-radius:50%;background:radial-gradient(circle,#fff5b8 0 2px,transparent 3px);box-shadow:0 -37px #ffcb58,26px -26px #ff7c64,37px 0 #ffe48a,26px 26px #ff9c55,0 37px #ffda71,-26px 26px #ff7d9c,-37px 0 #ffe48a,-26px -26px #ff9c55}
+.firework.f1{left:16%;top:23%;animation-delay:0s}.firework.f2{left:78%;top:35%;animation-delay:1.6s}.firework.f3{left:53%;top:76%;animation-delay:3.1s}.firework.f4{left:91%;top:84%;animation-delay:2.3s}
+@keyframes fireworkBurst{0%,12%{opacity:0;transform:scale(.12)}18%{opacity:.85;transform:scale(.65)}34%{opacity:.4;transform:scale(1.35)}48%,100%{opacity:0;transform:scale(1.8)}}
+body>.rangoli-wallpaper,body>.fireworks-layer{z-index:0}
+body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1}
+@media(max-width:600px){.rangoli-wallpaper{opacity:.14;background-size:145px 145px;background-position:0 0,72px 72px}.firework:before{inset:-40px}}
+@media(prefers-reduced-motion:reduce){.firework{animation:none;opacity:.12}}
+
 </style></head>
 <body>
+<div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
 <div class="diwali-top">🪔 शुभ दीपावली • SGGVISION AI Digital Services • मंगलमय सुरुवात 🪔</div>
 <header class="wrap nav"><div class="brand">SGG<span>VISION</span> AI</div><div><a href="#services">सेवा</a><a href="#tools">AI टूल्स</a><a href="#pricing">दर</a><a href="#payment">पेमेंट</a><a href="#order">ऑर्डर</a></div></header>
 <main class="wrap">
