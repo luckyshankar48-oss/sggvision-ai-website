@@ -448,6 +448,17 @@ body{
  .firework{animation:none!important;opacity:.08!important}
 }
 
+
+/* SGGVISION brand and background cleanup */
+.brand{font-size:clamp(30px,3.4vw,40px)!important;line-height:1.15!important;margin-left:18px!important;letter-spacing:.3px!important}
+@media(max-width:540px){.brand{font-size:clamp(25px,7vw,31px)!important;margin-left:10px!important}}
+.rangoli-wallpaper{
+ position:fixed!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+ background-repeat:no-repeat!important;background-position:center 48%!important;
+ background-size:min(68vw,560px) auto!important;opacity:.075!important;
+ filter:none!important;mask-image:none!important;
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
@@ -472,7 +483,7 @@ body{
 <div class="tool"><span class="tag">टूल 04</span><h3>Reels / Shorts कॅप्शन</h3><label for="reelTopic">व्हिडिओचा विषय</label><input id="reelTopic" placeholder="उदा. रायगड किल्ल्याची सफर"><label for="reelTone">कॅप्शनचा प्रकार</label><select id="reelTone"><option>आकर्षक आणि माहितीपूर्ण</option><option>भावनिक</option><option>विनोदी</option><option>बातमी / माहिती</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('reelTopic','reelTone','reelResult','तुम्ही मराठी सोशल मीडिया लेखक आहात. विषयासाठी Reels/Shorts साठी 3 छोटे हुक, कॅप्शन, call-to-action आणि संबंधित हॅशटॅग तयार करा. भाषा नैसर्गिक ठेवा; तथ्य बनवू नका.')">Generate करा • Reels कॅप्शन</button><div id="reelResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div></div>
 <div class="tool"><span class="tag">टूल 05</span><h3>सोशल मीडिया पोस्ट</h3><label for="postTopic">पोस्टचा विषय</label><input id="postTopic" placeholder="उदा. कार्यक्रमाची सूचना"><label for="postTone">पोस्टचा प्रकार</label><select id="postTone"><option>माहितीपूर्ण</option><option>जाहिरात</option><option>कार्यक्रम सूचना</option><option>अभिनंदन / शुभेच्छा</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('postTopic','postTone','postResult','तुम्ही मराठी सोशल मीडिया कंटेंट लेखक आहात. विषय आणि प्रकारानुसार पोस्टसाठी तयार मजकूर, योग्य शीर्षक आणि हॅशटॅग द्या. दिलेली माहितीच वापरा; तपशील नसल्यास जागा रिकामी ठेवा.')">Generate करा • पोस्ट तयार करा</button><div id="postResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div></div>
 <div class="tool"><span class="tag">टूल 06</span><h3>अर्ज / पत्रलेखन</h3><label for="letterTopic">अर्जाचा विषय व तपशील</label><textarea id="letterTopic" placeholder="कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा..."></textarea><label for="letterType">पत्राचा प्रकार</label><select id="letterType"><option>विनंती अर्ज</option><option>तक्रार अर्ज</option><option>कार्यालयीन पत्र</option><option>परवानगी अर्ज</option></select><button class="btn" style="margin-top:14px" onclick="letterAI()">Generate करा • अर्ज तयार करा</button><div id="letterResult" class="result">तयार होणारा अर्ज येथे दिसेल.</div></div></div>
-<div class="notice">AI वापर: ही साधने /api/generate या सुरक्षित Cloudflare Pages Function द्वारे OpenAI Responses API ला विनंती पाठवतात. API Key फक्त Cloudflare मधील Secret म्हणून ठेवा; वेबसाइटच्या HTML मध्ये कधीही लिहू नका. AI उत्तर प्रकाशित करण्यापूर्वी तपासा.</div>
+<div class="notice">AI वापर: ही साधने Cloudflare Workers AI द्वारे चालतात. सुरक्षित AI जोडणी Cloudflare Pages Function मधून होते; वेबसाइटमध्ये कोणतीही API Key ठेवलेली नाही. AI उत्तर प्रकाशित करण्यापूर्वी तथ्य आणि भाषा तपासा.</div>
 </section>
 <section id="pricing"><div class="section-head"><h2>प्रारंभिक सेवा दर</h2><p>हे सुचवलेले सुरुवातीचे दर आहेत; कामाच्या स्वरूपानुसार अंतिम किंमत ठरेल.</p></div><div class="grid">
 <div class="card"><h3>YouTube SEO पॅक</h3><div class="price">₹100</div><p>Title, Description, Tags आणि Hashtags.</p></div>
