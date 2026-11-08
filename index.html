@@ -218,9 +218,70 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
  .diwali-welcome:after,.diwali-offer:after,.hero-card:after,.card:after,.tool:after,.formbox:after{animation:none;opacity:.75}
 }
 
+
+/* Traditional hanging akash-kandil with moving paper tassels */
+.diwali-kandil{
+ position:absolute;top:0;z-index:4;width:58px;height:116px;
+ pointer-events:none;transform-origin:50% 0;
+ animation:kandilSway 4.2s ease-in-out infinite;
+ filter:drop-shadow(0 0 9px #ffc94d99);
+}
+.diwali-kandil.left{left:clamp(8px,5vw,70px)}
+.diwali-kandil.right{right:clamp(8px,5vw,70px);animation-delay:-2.1s}
+.diwali-kandil .string{
+ position:absolute;top:0;left:50%;height:13px;width:2px;
+ background:linear-gradient(#ffe9a3,#d99a36);transform:translateX(-50%);
+}
+.diwali-kandil .cap{
+ position:absolute;top:12px;left:50%;width:38px;height:9px;
+ transform:translateX(-50%);border-radius:50% 50% 3px 3px;
+ background:linear-gradient(90deg,#9a252c,#ffdb65,#b52c35);
+ border:1px solid #ffe39a;
+}
+.diwali-kandil .body{
+ position:absolute;top:19px;left:50%;width:48px;height:48px;
+ transform:translateX(-50%);
+ clip-path:polygon(18% 0,82% 0,100% 100%,0 100%);
+ background:linear-gradient(90deg,#a51d3d 0%,#ffcb55 23%,#ed4b35 48%,#ffd36b 72%,#a51d3d 100%);
+ border:1px solid #ffe7a0;
+}
+.diwali-kandil .body:before{
+ content:"";position:absolute;inset:5px 9px 7px;
+ background:repeating-linear-gradient(90deg,#fff2a6 0 2px,transparent 2px 8px),linear-gradient(#ffe58b,#ef7338);
+ opacity:.9;
+}
+.diwali-kandil .base{
+ position:absolute;top:65px;left:50%;width:42px;height:7px;
+ transform:translateX(-50%);border-radius:50%;
+ background:linear-gradient(90deg,#9c2634,#ffe08a,#9c2634);
+}
+.diwali-kandil .tassels{
+ position:absolute;top:70px;left:50%;width:42px;height:36px;
+ transform:translateX(-50%);
+ display:flex;justify-content:space-around;align-items:flex-start;
+}
+.diwali-kandil .tassels i{
+ display:block;width:3px;height:25px;border-radius:0 0 3px 3px;
+ background:linear-gradient(#ffe58a,#f5a52d 65%,#d83b45);
+ transform-origin:top center;
+ animation:tasselSwing 1.5s ease-in-out infinite alternate;
+}
+.diwali-kandil .tassels i:nth-child(2){height:32px;animation-delay:-.45s}
+.diwali-kandil .tassels i:nth-child(3){height:22px;animation-delay:-.8s}
+.diwali-kandil .tassels i:nth-child(4){height:30px;animation-delay:-.2s}
+.diwali-kandil .tassels i:nth-child(5){height:24px;animation-delay:-1s}
+@keyframes kandilSway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+@keyframes tasselSwing{from{transform:rotate(-12deg)}to{transform:rotate(13deg)}}
+@media(max-width:540px){
+ .diwali-kandil{width:42px;height:88px;transform:scale(.78);transform-origin:top center}
+ .diwali-kandil.left{left:4px}.diwali-kandil.right{right:4px}
+}
+@media(prefers-reduced-motion:reduce){.diwali-kandil,.diwali-kandil .tassels i{animation:none}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
+<div class="diwali-kandil left" aria-hidden="true"><span class="string"></span><span class="cap"></span><span class="body"></span><span class="base"></span><span class="tassels"><i></i><i></i><i></i><i></i><i></i></span></div><div class="diwali-kandil right" aria-hidden="true"><span class="string"></span><span class="cap"></span><span class="body"></span><span class="base"></span><span class="tassels"><i></i><i></i><i></i><i></i><i></i></span></div>
 <div class="diwali-top">🪔 शुभ दीपावली • SGGVISION AI Digital Services • मंगलमय सुरुवात 🪔</div>
 <header class="wrap nav"><div class="brand">SGG<span>VISION</span> AI</div><div><a href="#services">सेवा</a><a href="#tools">AI टूल्स</a><a href="#pricing">दर</a><a href="#payment">पेमेंट</a><a href="#order">ऑर्डर</a></div></header>
 <main class="wrap">
