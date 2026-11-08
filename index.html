@@ -109,6 +109,14 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 .card p,.tool label,.formbox label{color:#fff0d2}
 @media(prefers-reduced-motion:reduce){.card:before{animation:none}}
 
+
+/* Keep payment QR fully visible without cropping */
+#payment .tools{align-items:stretch}
+#payment .tool:first-child{display:flex;align-items:center;justify-content:center;min-width:0;overflow:visible;padding:18px}
+#payment .tool:first-child img{display:block;width:100%;max-width:280px;height:auto;max-height:360px;object-fit:contain;object-position:center;background:#fff;border-radius:14px;padding:10px;margin:auto}
+#payment .tool{min-width:0}
+@media(max-width:800px){#payment .tools{grid-template-columns:minmax(0,1fr)}#payment .tool:first-child img{max-width:min(78vw,300px)}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
@@ -136,9 +144,9 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:1
 <div class="notice">AI वापर: ही साधने /api/generate या सुरक्षित Cloudflare Pages Function द्वारे OpenAI Responses API ला विनंती पाठवतात. API Key फक्त Cloudflare मधील Secret म्हणून ठेवा; वेबसाइटच्या HTML मध्ये कधीही लिहू नका. AI उत्तर प्रकाशित करण्यापूर्वी तपासा.</div>
 </section>
 <section id="pricing"><div class="section-head"><h2>प्रारंभिक सेवा दर</h2><p>हे सुचवलेले सुरुवातीचे दर आहेत; कामाच्या स्वरूपानुसार अंतिम किंमत ठरेल.</p></div><div class="grid">
-<div class="card"><h3>YouTube SEO पॅक</h3><div class="price">₹199 पासून</div><p>Title, Description, Tags आणि Hashtags.</p></div>
-<div class="card"><h3>मराठी स्क्रिप्ट</h3><div class="price">₹299 पासून</div><p>विषय व अपेक्षित कालावधीनुसार.</p></div>
-<div class="card"><h3>Thumbnail डिझाइन</h3><div class="price">₹249 पासून</div><p>एक YouTube Thumbnail संकल्पना व डिझाइन.</p></div></div></section>
+<div class="card"><h3>YouTube SEO पॅक</h3><div class="price">₹100</div><p>Title, Description, Tags आणि Hashtags.</p></div>
+<div class="card"><h3>मराठी स्क्रिप्ट</h3><div class="price">₹100</div><p>विषय व अपेक्षित कालावधीनुसार.</p></div>
+<div class="card"><h3>Thumbnail डिझाइन</h3><div class="price">₹100</div><p>एक YouTube Thumbnail संकल्पना व डिझाइन.</p></div></div></section>
 
 <section id="payment"><div class="section-head"><h2>ऑनलाइन पेमेंट</h2><p>सेवेचे शुल्क भरताना खालील QR कोड स्कॅन करा.</p></div>
 <div class="tools"><div class="tool" style="text-align:center">
