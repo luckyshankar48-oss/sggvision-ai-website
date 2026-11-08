@@ -387,6 +387,67 @@ body{
  .firework:before{inset:-38px!important}
 }
 
+
+/* Final cleanup: no tiled rays, no flower-shaped bursts */
+body{
+ background:#160d25!important;
+ background-image:radial-gradient(ellipse at 50% 0%,#45204f 0,transparent 52%)!important;
+}
+.rangoli-wallpaper{
+ position:fixed!important;inset:0!important;z-index:0!important;pointer-events:none!important;
+ opacity:.075!important;
+ background-repeat:no-repeat!important;
+ background-position:center 48%!important;
+ background-size:min(68vw,560px) auto!important;
+ filter:none!important;mask-image:none!important;
+}
+.fireworks-layer{
+ position:fixed!important;inset:0!important;z-index:2!important;
+ overflow:hidden!important;pointer-events:none!important;
+}
+.firework{
+ position:absolute!important;width:2px!important;height:2px!important;
+ border-radius:50%!important;opacity:0!important;
+ animation:sggRealFirework 5.4s ease-out infinite!important;
+}
+.firework:before{
+ content:""!important;position:absolute!important;inset:-54px!important;
+ border-radius:50%!important;
+ background:repeating-conic-gradient(from 0deg,#ffe7a0 0deg 1.2deg,transparent 1.2deg 18deg)!important;
+ -webkit-mask-image:radial-gradient(circle,transparent 0 7%,#000 10% 68%,transparent 72%)!important;
+ mask-image:radial-gradient(circle,transparent 0 7%,#000 10% 68%,transparent 72%)!important;
+ filter:drop-shadow(0 0 5px #ffd15c) drop-shadow(0 0 10px #ff744f)!important;
+}
+.firework:after{
+ content:""!important;position:absolute!important;inset:-3px!important;
+ width:6px!important;height:6px!important;border-radius:50%!important;
+ background:#fff4bf!important;
+ box-shadow:
+  0 -42px 0 1px #ffd36a, 21px -36px 0 0 #ff8b65,
+  36px -21px 0 0 #ffe8a0, 42px 0 0 1px #ffb65b,
+  36px 21px 0 0 #ffe8a0, 21px 36px 0 0 #ff8b65,
+  0 42px 0 1px #ffd36a, -21px 36px 0 0 #ff8b65,
+  -36px 21px 0 0 #ffe8a0, -42px 0 0 1px #ffb65b,
+  -36px -21px 0 0 #ffe8a0, -21px -36px 0 0 #ff8b65!important;
+}
+.firework.f1{left:18%!important;top:27%!important;animation-delay:0s!important}
+.firework.f2{left:77%!important;top:32%!important;animation-delay:1.4s!important}
+.firework.f3{left:48%!important;top:72%!important;animation-delay:2.8s!important}
+.firework.f4{left:88%!important;top:78%!important;animation-delay:4.1s!important}
+@keyframes sggRealFirework{
+ 0%,10%{opacity:0;transform:scale(.08)}
+ 17%{opacity:1;transform:scale(.65)}
+ 36%{opacity:.75;transform:scale(1)}
+ 56%,100%{opacity:0;transform:scale(1.28)}
+}
+@media(max-width:600px){
+ .rangoli-wallpaper{opacity:.055!important;background-size:88vw auto!important}
+ .firework:before{inset:-38px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ .firework{animation:none!important;opacity:.08!important}
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
