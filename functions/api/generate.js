@@ -39,9 +39,20 @@ export async function onRequestPost({ request, env }) {
       temperature: 0.65
     });
 
-    const answer = typeof result === "string"
+    const rawAnswer = typeof result === "string"
       ? result
-      : (result?.response || result?.result?.response || "");
+      : (
+          result?.response ??
+          result?.result?.response ??
+          result?.choices?.[0]?.message?.content ??
+          result?.result?.choices?.[0]?.message?.content ??
+          result?.output_text ??
+          ""
+        );
+
+    const answer = Array.isArray(rawAnswer)
+      ? rawAnswer.map(part => typeof part === "string" ? part : (part?.text || "")).join("\n").trim()
+      : String(rawAnswer || "").trim();
 
     if (!answer || typeof answer !== "string") {
       return new Response(JSON.stringify({ error: "AI कडून रिकामे उत्तर मिळाले. कृपया पुन्हा प्रयत्न करा." }), { status: 502, headers });
