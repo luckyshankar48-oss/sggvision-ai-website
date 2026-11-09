@@ -649,6 +649,8 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   };
   const basePalette=palettes[category]||palettes.general;
   const requestedStyle=String(designDirection||'')+' '+String(brief.text||'');
+  const hideAllText=/(?:मजकूर\s*नको|टेक्स्ट\s*नको|अक्षरे\s*नको|शब्द\s*नको|no\s*text|without\s*text|textless|no\s*typography)/i.test(requestedStyle);
+  const requestedPosition=/उजव्या\s*(?:बाजूला|कोपऱ्यात)|right\s*(?:side|corner)/i.test(requestedStyle)?'right':/डाव्या\s*(?:बाजूला|कोपऱ्यात)|left\s*(?:side|corner)/i.test(requestedStyle)?'left':/मध्यभागी|center(?:ed)?/i.test(requestedStyle)?'center':null;
   const colorRules=[
     {re:/\bblue\b|निळा|निळी|निळ्या/i,ink:'#ffffff',accent:'#38a9ff',deep:'#071d38'},
     {re:/\bgreen\b|हिरवा|हिरवी|हिरव्या/i,ink:'#ffffff',accent:'#43c878',deep:'#092b1b'},
@@ -669,7 +671,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     : /modern|technology|minimal|clean|futuristic|आधुनिक/i.test(direction)
       ? '"Baloo 2","Hind Vadodara","Mukta",sans-serif'
       : (displayFonts[category]||displayFonts.general);
-  const directionAlign=/right|उजवीकडे/i.test(direction)?'right':/center|centred|मध्यभागी/i.test(direction)?'center':'left';
+  const directionAlign=requestedPosition||(/right|उजवीकडे/i.test(direction)?'right':/center|centred|मध्यभागी/i.test(direction)?'center':'left');
   const fontStack=directionFont;
   const maxW=w-pad*2;
   function fitLines(text,maxWidth,maxHeight,initial,min){
@@ -738,6 +740,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     }
     ctx.restore();
   }
+  if(!hideAllText){
   // Global typography-safe zone: hide any pseudo-letters hallucinated by the image model.
   // Keep the upper scene untouched; all real Marathi lettering is drawn afterward by Canvas.
   const safe=ctx.createLinearGradient(0,h*.47,0,h);
@@ -883,6 +886,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     drawSub(tx,bandY+bandH*.57,maxW*.94,directionAlign);
   }
   if(category!=='history')drawSupportingInfo();
+  }
   tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
 function tmReadBrief(raw){
