@@ -811,6 +811,77 @@ header.wrap.nav{background:rgba(255,255,255,.68)!important;border-radius:0 0 14p
 .hero h1 span{color:#176aa8!important;-webkit-text-fill-color:#176aa8!important}
 .hero p,.section-head p,footer{color:#354e65!important}
 .notice{background:rgba(255,255,255,.88)!important;color:#34495e!important}
+
+/* Sky-theme cards: remove plain white panels; use coordinated blue glass gradients */
+.hero-card,.card,.tool,.formbox{
+  background:linear-gradient(135deg,rgba(55,112,164,.78),rgba(115,169,210,.72) 48%,rgba(42,91,143,.82))!important;
+  border:1px solid rgba(225,243,255,.62)!important;
+  box-shadow:0 12px 30px rgba(25,65,105,.22),inset 0 1px 0 rgba(255,255,255,.30)!important;
+  color:#fff!important;
+  backdrop-filter:blur(12px) saturate(125%)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(125%)!important;
+  position:relative!important;
+  overflow:hidden!important;
+  animation:skyCardFloat 8s ease-in-out infinite alternate;
+}
+.hero-card{animation-delay:-2s!important}
+.card:nth-child(3n+2),.tool:nth-child(2n){animation-delay:-4s!important}
+.card:nth-child(3n){animation-delay:-6s!important}
+.hero-card:after,.card:after,.tool:after,.formbox:after{
+  content:""!important;
+  position:absolute!important;
+  inset:-40% auto -40% -55%!important;
+  width:38%!important;
+  transform:skewX(-18deg)!important;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)!important;
+  pointer-events:none!important;
+  animation:skyCardShimmer 9s ease-in-out infinite!important;
+}
+.card:before{
+  background:linear-gradient(90deg,#d9f1ff,#7dc5ef,#e9f7ff)!important;
+  height:4px!important;
+}
+.card h3,.tool h3,.hero-card h2{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  text-shadow:0 2px 8px rgba(15,48,79,.28)!important;
+}
+.card p,.tool label,.formbox label,.hero-card .stat,.hero-card .stat span,
+.hero-card p,.tool p,.formbox p{
+  color:#f5fbff!important;
+  text-shadow:0 1px 3px rgba(15,48,79,.18)!important;
+}
+.hero-card .stat{border-color:rgba(240,249,255,.32)!important}
+.hero-card .stat strong,.hero-card .tag{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  background:rgba(20,67,112,.30)!important;
+  border-color:rgba(255,255,255,.35)!important;
+}
+.hero-card .tag,.tag{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  background:rgba(28,78,125,.55)!important;
+  border:1px solid rgba(230,246,255,.48)!important;
+}
+.tool input,.tool textarea,.tool select,.formbox input,.formbox textarea,.formbox select{
+  background:rgba(16,57,96,.55)!important;
+  color:#fff!important;border:1px solid rgba(232,247,255,.55)!important;
+}
+.tool input::placeholder,.tool textarea::placeholder,.formbox input::placeholder,.formbox textarea::placeholder{color:#e1f1fc!important}
+.result,.notice{
+  background:rgba(19,58,94,.62)!important;
+  color:#fff!important;border-color:rgba(232,247,255,.45)!important;
+}
+@keyframes skyCardFloat{
+  0%{transform:translateY(0);box-shadow:0 12px 28px rgba(25,65,105,.18),inset 0 1px 0 rgba(255,255,255,.25)}
+  100%{transform:translateY(-4px);box-shadow:0 17px 36px rgba(25,65,105,.26),inset 0 1px 0 rgba(255,255,255,.36)}
+}
+@keyframes skyCardShimmer{
+  0%,18%{left:-55%;opacity:0}
+  30%{opacity:1}
+  58%,100%{left:130%;opacity:0}
+}
+@media(prefers-reduced-motion:reduce){
+ .hero-card,.card,.tool,.formbox,.hero-card:after,.card:after,.tool:after,.formbox:after{animation:none!important}
+}
 </style></head>
 <body>
 
