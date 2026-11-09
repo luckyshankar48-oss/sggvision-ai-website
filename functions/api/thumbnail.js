@@ -114,7 +114,10 @@ export async function onRequestPost({ request, env }) {
         placeReference = await findReferenceImage(String(plan.search_query).trim(), "subject");
       }
     } catch { /* A failed reference search must not stop image generation. */ }
-    const references = [placeReference, personReference].filter(Boolean);
+    const references = [
+      ...(placeReference ? [{ ...placeReference, kind: "place" }] : []),
+      ...(personReference ? [{ ...personReference, kind: "person" }] : [])
+    ];
 
     // Stage 3: generate the background, using the reference only when a relevant licensed image was found.
     const ratio = body.ratio === "9:16" ? "9:16" : "16:9";
@@ -123,13 +126,16 @@ export async function onRequestPost({ request, env }) {
     const form = new FormData();
     const imagePrompt = String(plan.image_prompt).slice(0, 3500);
     const referenceInstruction = references.length
-      ? "Use image 0 as the exact real-world place/landmark reference and image 1 as the exact named-person reference when present. Preserve their identities and recognizable features. Do not invent, redesign, or substitute architecture or faces."
-      : "No unrelated stock subject or substitute landmark. For named real places, avoid fabricated signature architecture; depict only features supported by the brief.";
+      ? references.map((ref, index) => ref.kind === "place"
+          ? "Image " + index + " is the exact real-world place/landmark reference. Preserve its authentic recognizable architecture; do not add domes, arches, gates, or features absent from the reference."
+          : "Image " + index + " is the exact named-person reference. Preserve the person's recognizable face and appearance; do not substitute or invent a different face."
+        ).join(" ")
+      : "No unrelated stock subject or substitute landmark. For named real places, avoid fabricated signature architecture; depict only features supported by the brief. Do not invent a recognizable face for any named real person.";
     form.append("prompt", imagePrompt + " " + referenceInstruction + " Create a polished, cinematic YouTube thumbnail background with a clear visual hierarchy and deliberate space for separately typeset title text.");
     form.append("width", String(width));
     form.append("height", String(height));
-    if (references[0]) form.append("input_image_0", references[0].blob, "place-reference");
-    if (references[1]) form.append("input_image_1", references[1].blob, "person-reference");
+    if (references[0]) form.append("input_image_0", references[0].blob, references[0].kind + "-reference");
+    if (references[1]) form.append("input_image_1", references[1].blob, references[1].kind + "-reference");
     const serialized = new Response(form);
     const generated = await env.AI.run("@cf/black-forest-labs/flux-2-klein-4b", {
       multipart: {
