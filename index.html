@@ -589,7 +589,7 @@ function tmWrapText(ctx,text,maxWidth,maxLines){
   }
   return lines;
 }
-function tmCompose(img,headlineOverride,subOverride){
+function tmCompose(img,headlineOverride,subOverride,category='general'){
   const ratio=document.getElementById('tmRatio').value;
   const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
   const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
@@ -600,6 +600,19 @@ function tmCompose(img,headlineOverride,subOverride){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
   const headline=headlineOverride||brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70);
   const sub=subOverride||brief.sub;
+  const themes={
+    history:{banner:'#8f1016',title:'#ffc928',panel:'#e8c17d',subtitle:'#54170d',edge:'#6c3215'},
+    news:{banner:'#9f1722',title:'#ffffff',panel:'#f4c64e',subtitle:'#172033',edge:'#8b1b22'},
+    travel:{banner:'#075b55',title:'#ffe08a',panel:'#e9d9a8',subtitle:'#21453e',edge:'#356f58'},
+    product:{banner:'#17283d',title:'#75e4ff',panel:'#e7edf3',subtitle:'#17283d',edge:'#5c849b'},
+    festival:{banner:'#8b245c',title:'#ffe05a',panel:'#ffd08a',subtitle:'#71244b',edge:'#b44c43'},
+    education:{banner:'#164e82',title:'#ffffff',panel:'#b9e6ef',subtitle:'#123a5b',edge:'#347a9a'},
+    sports:{banner:'#252525',title:'#ffb52e',panel:'#f0e1c5',subtitle:'#2b251d',edge:'#b56a16'},
+    nature:{banner:'#285b36',title:'#fff0a6',panel:'#e3d5a6',subtitle:'#2c4b2b',edge:'#557b43'},
+    culture:{banner:'#542d78',title:'#ffe08a',panel:'#ead7b6',subtitle:'#4b2d61',edge:'#84609b'},
+    general:{banner:'#55336f',title:'#ffe08a',panel:'#e9d9f2',subtitle:'#422650',edge:'#85619b'}
+  };
+  const theme=themes[category]||themes.general;
   const pad=Math.round(w*(vertical?.055:.055));
   const bandH=Math.round(h*(vertical?.43:.42)),bandY=h-bandH;
   const shade=ctx.createLinearGradient(0,bandY,0,h);
@@ -625,17 +638,17 @@ function tmCompose(img,headlineOverride,subOverride){
   const bannerPad=Math.round(w*.025);
   const bannerY=titleY-bannerPad*.45;
   const bannerH=titleH+bannerPad*.9;
-  ctx.save();ctx.fillStyle='#8f1016';ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=18;
+  ctx.save();ctx.fillStyle=theme.banner;ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=18;
   ctx.beginPath();ctx.moveTo(pad*.55,bannerY+bannerH*.18);ctx.lineTo(w*.19,bannerY+bannerH*.08);ctx.lineTo(w*.78,bannerY);ctx.lineTo(w-pad*.45,bannerY+bannerH*.18);ctx.lineTo(w-pad*.65,bannerY+bannerH*.82);ctx.lineTo(w*.22,bannerY+bannerH);ctx.lineTo(pad*.55,bannerY+bannerH*.78);ctx.closePath();ctx.fill();ctx.restore();
   ctx.lineWidth=Math.max(3,Math.round(fs*.055));ctx.strokeStyle='rgba(38,10,0,.9)';
-  ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=10;ctx.fillStyle='#ffc928';
+  ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=10;ctx.fillStyle=theme.title;
   lines.forEach((line,i)=>{const y=titleY+i*lineH+lineH/2;ctx.strokeText(line,w/2,y,maxW*.94);ctx.fillText(line,w/2,y,maxW*.94)});
   // Subtitle sits on a parchment-like panel and always stays inside the canvas.
   if(sub){
     const panelY=bandY+Math.round(bandH*.66),panelH=Math.round(bandH*.28);
-    ctx.shadowBlur=0;ctx.fillStyle='#e8c17d';
+    ctx.shadowBlur=0;ctx.fillStyle=theme.panel;
     ctx.beginPath();ctx.moveTo(pad,panelY+panelH*.08);ctx.lineTo(w-pad*.9,panelY);ctx.lineTo(w-pad,panelY+panelH*.18);ctx.lineTo(w-pad*.92,panelY+panelH*.86);ctx.lineTo(pad*1.08,panelY+panelH);ctx.lineTo(pad*.85,panelY+panelH*.22);ctx.closePath();ctx.fill();
-    ctx.strokeStyle='rgba(93,45,15,.45)';ctx.lineWidth=3;ctx.stroke();
+    ctx.strokeStyle=theme.edge;ctx.lineWidth=3;ctx.stroke();
     let subFs=Math.round(w*(vertical?.052:.052)),subLines=[];
     while(subFs>(vertical?25:28)){
       ctx.font='900 '+subFs+'px '+fontStack;
@@ -643,7 +656,7 @@ function tmCompose(img,headlineOverride,subOverride){
       if(subLines.every(line=>ctx.measureText(line).width<=maxW*.88)&&subLines.length*subFs*1.05<=panelH*.78)break;
       subFs-=2;
     }
-    ctx.font='900 '+subFs+'px '+fontStack;ctx.fillStyle='#54170d';ctx.shadowColor='rgba(255,240,200,.35)';ctx.shadowBlur=2;
+    ctx.font='900 '+subFs+'px '+fontStack;ctx.fillStyle=theme.subtitle;ctx.shadowColor='rgba(255,240,200,.35)';ctx.shadowBlur=2;
     const subLineH=subFs*1.05,subStart=panelY+(panelH-subLines.length*subLineH)/2+subLineH/2;
     subLines.forEach((line,i)=>ctx.fillText(line,w/2,subStart+i*subLineH,maxW*.88));
   }
@@ -686,8 +699,9 @@ async function makeThumbnail(){
       if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
-      tmCompose(img,headline,sub);
-      status.textContent='तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.';
+      tmCompose(img,headline,sub,data.category||'general');
+      const sourceNote=data.imageSource ? ' संदर्भचित्र: '+data.imageSource.title+' ('+data.imageSource.license+').' : ' स्वतंत्र AI चित्र वापरले.';
+      status.textContent='तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.'+sourceNote;
     }
   }catch(e){status.textContent='थंबनेल त्रुटी: '+(e&&e.message?e.message:'अज्ञात त्रुटी')}
   finally{btn.disabled=false;btn.textContent='थंबनेल तयार करा'}
