@@ -1763,6 +1763,17 @@ footer .wrap{overflow-wrap:anywhere!important}
  .section-head p{font-size:15px!important}
  .card h3,.tool h3,.formbox h3{font-size:19px!important}
 }
+
+/* Keep the two hero action buttons visibly separated on narrow screens */
+@media(max-width:700px){
+ .hero>div:first-child>a.btn{
+  display:table!important;
+  margin:0 0 14px 0!important;
+ }
+ .hero>div:first-child>a.btn.secondary{
+  margin:0 0 0 14px!important;
+ }
+}
 </style>
 </head>
 <body>
