@@ -2400,6 +2400,56 @@ html body #order>.formbox{
   outline:0!important;
   box-shadow:inset 0 0 0 1px rgba(255,232,170,.35),0 8px 22px rgba(0,15,35,.34),0 0 16px rgba(255,191,70,.24)!important;
 }
+
+/* FINAL CLEAN FRAME: remove decorative rainbow strips; use one continuous gold frame */
+html body .card::before,
+html body .tool::before,
+html body .formbox::before,
+html body .hero-card::before{
+  content:none!important;
+  display:none!important;
+}
+html body .card,
+html body .tool,
+html body .formbox,
+html body .hero-card,
+html body #thumbnail-maker .tm-grid>div,
+html body #tools .result,
+html body #thumbnail-maker .result,
+html body #feedback .result,
+html body #order .result{
+  border:2.5px solid #ffd477!important;
+  border-radius:18px!important;
+  outline:0!important;
+  box-shadow:0 0 0 1px rgba(255,224,150,.24),0 8px 22px rgba(0,15,35,.32),0 0 14px rgba(255,191,70,.20)!important;
+  box-sizing:border-box!important;
+}
+html body #services .grid>.card{
+  border:2.5px solid #ffd477!important;
+  border-radius:18px!important;
+}
+html body #help .tools>.tool,
+html body #feedback>.formbox,
+html body #order>.formbox{
+  border:2.5px solid #ffd477!important;
+  border-radius:18px!important;
+}
+/* Make the official email address readable against the dark card */
+html body #help .tools>.tool p strong{
+  display:inline-block!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  background:rgba(255,212,119,.14)!important;
+  border:1px solid #ffd477!important;
+  border-radius:8px!important;
+  padding:7px 10px!important;
+  font-size:clamp(14px,1.5vw,18px)!important;
+  font-weight:800!important;
+  letter-spacing:.2px!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.45)!important;
+}
 </style>
 </head>
 <body>
