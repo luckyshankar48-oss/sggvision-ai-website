@@ -1462,6 +1462,54 @@ body .hero-card:after,body .formbox:after{
 @keyframes sggCardToran{0%{filter:brightness(.85) drop-shadow(0 0 3px #ffc94d);opacity:.78}100%{filter:brightness(1.35) drop-shadow(0 0 9px #fff0a3);opacity:1}}
 @keyframes sggCardSweep{0%,15%{left:-55%;opacity:0}35%{opacity:1}70%,100%{left:130%;opacity:0}}
 
+
+/* NO WHITE PANELS — enforce dark festive surfaces throughout the portal */
+html body section,
+html body section#thumbnail-maker,
+html body section#thumbnail-maker .tool,
+html body section#thumbnail-maker .tm-grid,
+html body section#thumbnail-maker .tm-grid>div,
+html body .tool,html body .card,html body .hero-card,html body .formbox,
+html body #tools .tools>.tool,html body #services .grid>.card{
+ background-color:#103b59!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html body section#thumbnail-maker .tool,
+html body .tool,html body .card,html body .hero-card,html body .formbox{
+ background-image:linear-gradient(135deg,#123e63 0%,#075c70 48%,#42265e 100%)!important;
+ border:1px solid #ffd477!important;border-radius:18px!important;
+ box-shadow:0 10px 28px #00182b88,0 0 18px #ffc34d44,inset 0 1px 0 #ffffff22!important;
+}
+html body section#thumbnail-maker label,
+html body section#thumbnail-maker p,
+html body section#thumbnail-maker .tm-small,
+html body section#thumbnail-maker .hint,
+html body section#thumbnail-maker .tool h2,
+html body section#thumbnail-maker .tool h3{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:1px 2px 3px #00182b!important;
+}
+html body input,html body textarea,html body select{
+ background:#123b59!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #ffd477!important;
+}
+html body input::placeholder,html body textarea::placeholder{
+ color:#d8e8f3!important;-webkit-text-fill-color:#d8e8f3!important;opacity:1!important;
+}
+html body .result,html body .notice{
+ background:#092b45!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #ffd477!important;
+}
+/* Keep the actual thumbnail preview canvas dark; it is not a white card */
+html body #tmCanvas{background:#080f20!important;border:1px dashed #ffd477!important}
+/* Visible light border and blinking rainbow toran on every card */
+html body .tool:before,html body .card:before,html body .hero-card:before,html body .formbox:before{
+ content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:10px!important;
+ background:radial-gradient(circle,#fffbdc 0 2px,#ffe16b 3px,#ff9838 5px,transparent 7px) 0 0/28px 10px repeat-x,linear-gradient(90deg,#ff4b88,#ffb347,#fff06a,#51e6bf,#55cfff,#a78bfa,#ff4b88) 0 0/300% 100%!important;
+ animation:sggCardToran 1.15s ease-in-out infinite alternate,sggRainbowRun 5s linear infinite!important;
+ filter:drop-shadow(0 0 6px #ffcf58)!important;z-index:5!important;
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
