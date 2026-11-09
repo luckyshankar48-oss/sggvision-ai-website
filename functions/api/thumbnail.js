@@ -14,31 +14,33 @@ function parsePlannerOutput(value) {
 function relevanceScore(item, query) {
   const haystack = [item.title, ...(item.tags || []).map(tag => tag.name)].join(" ").toLowerCase();
   const words = String(query || "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(word => word.length > 2);
-  return words.reduce((score, word) => score + (haystack.includes(word) ? 1 : 0), 0);
+  const matched = words.filter(word => haystack.includes(word));
+  const title = String(item.title || "").toLowerCase();
+  const titleHits = words.filter(word => title.includes(word)).length;
+  return { score: matched.length + titleHits * 1.5, matched: matched.length };
 }
 
-async function findReferenceImage(query) {
+async function findReferenceImage(query, kind = "subject") {
   if (!query) return null;
   const url = new URL("https://api.openverse.org/v1/images/");
   url.searchParams.set("q", query.slice(0, 200));
-  url.searchParams.set("page_size", "8");
+  url.searchParams.set("page_size", "12");
   url.searchParams.set("license", "cc0,pdm");
   url.searchParams.set("mature", "false");
+  url.searchParams.set("category", "photograph");
+  url.searchParams.set("size", "medium");
   const response = await fetch(url.toString(), {
-    headers: { "Accept": "application/json", "User-Agent": "SGGVISION-AI-Thumbnail/1.0" }
+    headers: { "Accept": "application/json", "User-Agent": "SGGVISION-AI-Thumbnail/1.0" },
+    signal: AbortSignal.timeout(9000)
   });
   if (!response.ok) return null;
   const payload = await response.json();
   const items = Array.isArray(payload.results) ? payload.results : [];
-  if (!items.length) return null;
-  const ranked = items
-    .map(item => ({ item, score: relevanceScore(item, query) }))
-    .sort((a, b) => b.score - a.score);
+  const ranked = items.map(item => ({ item, relevance: relevanceScore(item, query) }))
+    .sort((a, b) => b.relevance.score - a.relevance.score);
   const best = ranked[0];
-  // Avoid feeding a weakly related image into the generator.
-  const wordCount = String(query).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(word => word.length > 2).length;
-  if (!best || best.score < Math.min(2, wordCount) || !best.item.thumbnail) return null;
-  const imageResponse = await fetch(best.item.thumbnail);
+  if (!best || best.relevance.matched < 2 || !best.item.thumbnail) return null;
+  const imageResponse = await fetch(best.item.thumbnail, { signal: AbortSignal.timeout(9000) });
   if (!imageResponse.ok) return null;
   const blob = await imageResponse.blob();
   if (!blob.type.startsWith("image/") || blob.size > 5 * 1024 * 1024) return null;
@@ -50,7 +52,9 @@ async function findReferenceImage(query) {
       license: String(best.item.license || "See source page").slice(0, 40),
       licenseUrl: best.item.license_url || "",
       pageUrl: best.item.foreign_landing_url || "",
-      attribution: best.item.attribution || ""
+      attribution: best.item.attribution || "",
+      matchedTerms: best.relevance.matched,
+      kind
     }
   };
 }
@@ -80,7 +84,7 @@ export async function onRequestPost({ request, env }) {
       messages: [
         {
           role: "system",
-          content: "You are a universal YouTube thumbnail art director and visual researcher. Understand the user's complete prompt in its original language. Do not assume the topic. Identify the exact subject, named people, place, event, product, factual context, emotional tone, and any exact headline/subtitle text. Never invent a person's identity, a real location's architecture, a product model, or a news event. Return ONLY valid JSON with these keys: search_query (short English query for a relevant real reference photo; empty string if no specific real-world visual is needed), image_prompt (detailed English prompt for a cinematic, professional thumbnail background that faithfully depicts the user's topic; no words, letters, captions, logos, watermarks or graphic text), visual_subject (short plain-language subject label), category (one of: history, news, travel, product, festival, education, sports, nature, culture, general), and design_direction (short description of a suitable composition and mood). Make the design specific to this topic, not a reusable generic poster. If the prompt names a real person, do not fabricate their face; use a reference photo if found, otherwise compose without a recognizable portrait. For real places, prioritize recognizable authentic features and avoid substituting unrelated famous landmarks. The user's requested text will be typeset separately by the website. Compose the image so the main subject is visually dominant and leave a clean, low-detail text-safe zone in the lower third without making the whole image a dark generic background."
+          content: "You are a universal YouTube thumbnail art director and visual researcher. Understand the user's complete prompt in its original language. Do not assume the topic. Identify the exact subject, named people, place, event, product, factual context, emotional tone, and any exact headline/subtitle text. Never invent a person's identity, a real location's architecture, a product model, or a news event. Return ONLY valid JSON with these keys: place_search_query (short exact English query for a photograph of the named real place/landmark; empty if none), person_search_query (short exact English query for a public-domain photograph/portrait of a named real person; empty if none), search_query (fallback concise English query for the main real-world subject), image_prompt (detailed English prompt for a cinematic, professional thumbnail background that faithfully depicts the user's topic; no words, letters, captions, logos, watermarks or graphic text), visual_subject (short plain-language subject label), category (one of: history, news, travel, product, festival, education, sports, nature, culture, general), and design_direction (short description of a suitable composition and mood). Make the design specific to this topic, not a reusable generic poster. If the prompt names a real person, do not fabricate their face; search for that exact person and use a reference photo only if a strong exact match is found, otherwise compose without a recognizable portrait. For a named real place, search that exact place separately and use its photo as the primary architectural anchor; do not invent domes, arches, gates, or other architecture. Never substitute an unrelated fort, palace, monument, or landmark. The user's requested text will be typeset separately by the website. Compose the image so the main subject is visually dominant and leave a clean, low-detail text-safe zone in the lower third without making the whole image a dark generic background."
         },
         { role: "user", content: prompt }
       ],
@@ -99,8 +103,18 @@ export async function onRequestPost({ request, env }) {
     }
 
     // Stage 2: find an openly licensed reference image when a relevant real-world subject is named.
-    let reference = null;
-    try { reference = await findReferenceImage(String(plan.search_query || "").trim()); } catch { reference = null; }
+    let placeReference = null;
+    let personReference = null;
+    try {
+      const placeQuery = String(plan.place_search_query || "").trim();
+      const personQuery = String(plan.person_search_query || "").trim();
+      if (placeQuery) placeReference = await findReferenceImage(placeQuery, "place");
+      if (personQuery) personReference = await findReferenceImage(personQuery, "person");
+      if (!placeReference && !personReference && plan.search_query) {
+        placeReference = await findReferenceImage(String(plan.search_query).trim(), "subject");
+      }
+    } catch { /* A failed reference search must not stop image generation. */ }
+    const references = [placeReference, personReference].filter(Boolean);
 
     // Stage 3: generate the background, using the reference only when a relevant licensed image was found.
     const ratio = body.ratio === "9:16" ? "9:16" : "16:9";
@@ -108,12 +122,14 @@ export async function onRequestPost({ request, env }) {
     const height = ratio === "9:16" ? 1365 : 720;
     const form = new FormData();
     const imagePrompt = String(plan.image_prompt).slice(0, 3500);
-    form.append("prompt", reference
-      ? imagePrompt + " Use the supplied reference image as the factual visual anchor for the requested subject. Preserve its recognizable real-world identity and architecture while creating a polished cinematic thumbnail composition. Do not replace it with a different landmark."
-      : imagePrompt + " No unrelated stock subject or substitute landmark. Keep the composition faithful to the user brief.");
+    const referenceInstruction = references.length
+      ? "Use image 0 as the exact real-world place/landmark reference and image 1 as the exact named-person reference when present. Preserve their identities and recognizable features. Do not invent, redesign, or substitute architecture or faces."
+      : "No unrelated stock subject or substitute landmark. For named real places, avoid fabricated signature architecture; depict only features supported by the brief.";
+    form.append("prompt", imagePrompt + " " + referenceInstruction + " Create a polished, cinematic YouTube thumbnail background with a clear visual hierarchy and deliberate space for separately typeset title text.");
     form.append("width", String(width));
     form.append("height", String(height));
-    if (reference) form.append("input_image_0", reference.blob, "reference-image");
+    if (references[0]) form.append("input_image_0", references[0].blob, "place-reference");
+    if (references[1]) form.append("input_image_1", references[1].blob, "person-reference");
     const serialized = new Response(form);
     const generated = await env.AI.run("@cf/black-forest-labs/flux-2-klein-4b", {
       multipart: {
@@ -130,7 +146,8 @@ export async function onRequestPost({ request, env }) {
       subject: String(plan.visual_subject || "").slice(0, 160),
       designDirection: String(plan.design_direction || "").slice(0, 300),
       category: ["history","news","travel","product","festival","education","sports","nature","culture","general"].includes(String(plan.category || "").toLowerCase()) ? String(plan.category).toLowerCase() : "general",
-      imageSource: reference ? reference.source : null
+      imageSource: references.map(item => item.source),
+      referenceStatus: { placeFound: !!placeReference, personFound: !!personReference, count: references.length }
     }, 200, headers);
   } catch (error) {
     return jsonResponse({ error: "थंबनेल तयार करताना सर्व्हर त्रुटी आली. कृपया पुन्हा प्रयत्न करा." }, 502, headers);
