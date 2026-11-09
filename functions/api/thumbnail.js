@@ -14,12 +14,12 @@ function parsePlannerOutput(value) {
 function extractRequestedCopy(prompt) {
   const text = String(prompt || "").replace(/Prompt कॉपी करा/gi, "").trim();
   const labels = {
-    headline: /(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i,
-    subtitle: /(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points)\s*[:：-]|$)/i,
-    points: /(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\s\S]*?)(?=(?:खालील\s*संदेश|closing\s*line)\s*[:：-]|$)/i,
+    headline: /(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions)|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i,
+    subtitle: /(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions)|supporting\s*points)\s*[:：-]|$)/i,
+    points: /(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\s\S]*?)(?=(?:खालील\s*संदेश|closing\s*line|डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions))\s*[:：-]|$)/i,
     closing: /(?:खालील\s*संदेश|closing\s*line)\s*[:：-]\s*([\s\S]*?)(?=(?:डिझाइन\s*सूचना|design\s*(?:notes|instructions)|रचना\s*सूचना)\s*[:：-]|$)/i
   };
-  const clean = value => String(value || "").replace(/Prompt कॉपी करा/gi, "").replace(/^[\s"'“”]+|[\s"'“”]+$/g, "").replace(/\s+/g, " ").trim();
+  const clean = value => String(value || "").replace(/Prompt कॉपी करा/gi, "").replace(/\*\*/g, "").replace(/^[\s"'“”]+|[\s"'“”]+$/g, "").replace(/\s+/g, " ").trim();
   const get = key => clean(text.match(labels[key])?.[1] || "");
   const pointBlock = text.match(labels.points)?.[1] || "";
   const points = pointBlock.split(/\r?\n|[;；]/).map(line => clean(line.replace(/^\s*(?:[-•*▪]+|\d+[.)、])\s*/, ""))).filter(Boolean).slice(0,4);
