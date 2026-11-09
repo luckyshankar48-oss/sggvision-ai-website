@@ -697,7 +697,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(8,12,22,.35)');g.addColorStop(.3,'rgba(8,12,22,.94)');g.addColorStop(1,'rgba(8,12,22,.98)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(0,bandY,w,Math.max(12,h*.018));
-    drawTitle(pad,bandY+bandH*.30,maxW,bandH*.36,'left');drawSub(pad,bandY+bandH*.56,maxW*.94,'left');
+    drawTitle(pad,bandY+bandH*.17,maxW,bandH*.22,'left');drawSub(pad,bandY+bandH*.43,maxW*.94,'left');
   }else if(category==='product'){
     const panelW=vertical?w*.9:w*.48,panelH=vertical?h*.34:h*.72;
     const px=vertical?w*.05:w*.035,py=vertical?h*.62:h*.14;
