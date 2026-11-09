@@ -2534,6 +2534,30 @@ html body main .hero h1 span{
 @media(max-width:800px){
  html body main .hero h1{font-size:clamp(42px,9vw,60px)!important;line-height:1.42!important}
 }
+
+/* Force the complete hero heading to solid white; coral is used only as the outline */
+html body main section.hero h1,
+html body main section.hero h1 span,
+html body main section.hero h1 *{
+  background:none!important;
+  background-image:none!important;
+  background-color:transparent!important;
+  background-clip:border-box!important;
+  -webkit-background-clip:border-box!important;
+  color:#ffffff!important;
+  -webkit-text-fill-color:#ffffff!important;
+  -webkit-text-stroke:1.5px #ff705d!important;
+  paint-order:stroke fill!important;
+  font-weight:1000!important;
+  text-shadow:2px 3px 0 rgba(116,35,28,.75),0 0 12px rgba(255,112,93,.45)!important;
+}
+html body main section.hero h1{
+  font-size:clamp(54px,5.8vw,80px)!important;
+  line-height:1.42!important;
+}
+@media(max-width:800px){
+ html body main section.hero h1{font-size:clamp(42px,9vw,60px)!important}
+}
 </style>
 </head>
 <body>
