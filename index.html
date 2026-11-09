@@ -2558,6 +2558,36 @@ html body main section.hero h1{
 @media(max-width:800px){
  html body main section.hero h1{font-size:clamp(42px,9vw,60px)!important}
 }
+
+/* Service icons: larger, high-contrast and always visible on mobile */
+html body #services .grid>.card .emoji{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  font-size:48px!important;
+  line-height:1.15!important;
+  min-height:56px!important;
+  margin:0 0 12px!important;
+  transform:none!important;
+  filter:drop-shadow(0 3px 3px rgba(0,0,0,.55))!important;
+}
+@media(max-width:700px){
+  html body #services .grid>.card .emoji{
+    font-size:56px!important;
+    line-height:1.15!important;
+    min-height:64px!important;
+    margin-bottom:14px!important;
+  }
+  html body #services .grid>.card{
+    padding:20px!important;
+  }
+}
+@media(max-width:360px){
+  html body #services .grid>.card .emoji{
+    font-size:52px!important;
+    min-height:60px!important;
+  }
+}
 </style>
 </head>
 <body>
