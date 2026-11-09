@@ -506,7 +506,7 @@ async function callAI(prompt,target,button){
   const data=await r.json();
   if(!r.ok) throw new Error(data.error||'AI सेवा सध्या उपलब्ध नाही.');
   out.textContent=data.text||'उत्तर मिळाले नाही.';
- }catch(e){out.textContent='AI जोडणी उपलब्ध नाही: '+e.message+'\\n\\nवेबसाइट स्थानिक फाईल म्हणून उघडली असल्यास API चालणार नाही. Cloudflare Pages वर प्रकाशित करून API Key सेट करा.';}
+ }catch(e){out.textContent='AI सेवा त्रुटी: '+e.message;}
  finally{button.disabled=false;button.textContent=old;}
 }
 function seoDemo(btn){let t=document.getElementById('topic').value.trim(),k=document.getElementById('kw').value.trim();if(!t){alert('कृपया व्हिडिओचा विषय लिहा.');return}callAI('तुम्ही मराठी YouTube SEO तज्ज्ञ आहात. खालील विषयासाठी मराठीत आकर्षक पण तथ्याधारित 3 शीर्षके (प्रत्येक 100 अक्षरांच्या आत), सविस्तर वर्णन, शोधशब्द आणि 10 हॅशटॅग द्या. विषय: '+t+'. अतिरिक्त शब्द: '+k+'. चुकीचे तथ्य बनवू नका; माहिती अपुरी असल्यास तसे सांगा.', 'seoResult',btn)}
