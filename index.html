@@ -812,7 +812,8 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.15,190),Math.max(7,h*.01));
     drawTitle(pad,bandY+bandH*.30,maxW,bandH*.38,'left');drawSub(pad,bandY+bandH*.57,maxW*.94,'left');
   }
-  if(category!=='history')drawSupportingInfo();\n  tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
+  if(category!=='history')drawSupportingInfo();
+  tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
 function tmReadBrief(raw){
   const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
