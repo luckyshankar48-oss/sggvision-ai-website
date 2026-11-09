@@ -11,6 +11,21 @@ function parsePlannerOutput(value) {
   try { return JSON.parse(cleaned.slice(start, end + 1)); } catch { return null; }
 }
 
+function extractRequestedCopy(prompt) {
+  const text = String(prompt || "").replace(/Prompt कॉपी करा/gi, "").trim();
+  const labels = {
+    headline: /(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\\s\\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i,
+    subtitle: /(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\\s\\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points)\s*[:：-]|$)/i,
+    points: /(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\\s\\S]*?)(?=(?:खालील\s*संदेश|closing\s*line)\s*[:：-]|$)/i,
+    closing: /(?:खालील\s*संदेश|closing\s*line)\s*[:：-]\s*([\\s\\S]*?)$/i
+  };
+  const clean = value => String(value || "").replace(/Prompt कॉपी करा/gi, "").replace(/^[\\s"'“”]+|[\\s"'“”]+$/g, "").replace(/\\s+/g, " ").trim();
+  const get = key => clean(text.match(labels[key])?.[1] || "");
+  const pointBlock = text.match(labels.points)?.[1] || "";
+  const points = pointBlock.split(/\\r?\\n|[;；]/).map(line => clean(line.replace(/^\\s*(?:[-•*▪]+|\\d+[.)、])\\s*/, ""))).filter(Boolean).slice(0,4);
+  return { headline: get("headline"), subtitle: get("subtitle"), supporting_points: points, closing_line: get("closing") };
+}
+
 function relevanceScore(item, query) {
   const haystack = [item.title, ...(item.tags || []).map(tag => tag.name)].join(" ").toLowerCase();
   const words = String(query || "").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(word => word.length > 2);
@@ -112,6 +127,15 @@ export async function onRequestPost({ request, env }) {
       planResult?.response ?? ""
     ).trim();
     const plan = parsePlannerOutput(plannerText);
+    if (plan) {
+      // Preserve copy explicitly supplied by the customer; the model may classify/design,
+      // but must not silently rewrite Marathi wording or omit requested bullet points.
+      const requestedCopy = extractRequestedCopy(prompt);
+      if (requestedCopy.headline) plan.headline = requestedCopy.headline;
+      if (requestedCopy.subtitle) plan.subtitle = requestedCopy.subtitle;
+      if (requestedCopy.supporting_points.length) plan.supporting_points = requestedCopy.supporting_points;
+      if (requestedCopy.closing_line) plan.closing_line = requestedCopy.closing_line;
+    }
     if (!plan || !String(plan.image_prompt || "").trim()) {
       return jsonResponse({ error: "AI कडून विषयाचे योग्य डिझाइन नियोजन मिळाले नाही. कृपया पुन्हा प्रयत्न करा." }, 502, headers);
     }
