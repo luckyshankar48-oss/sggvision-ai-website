@@ -1561,6 +1561,44 @@ html body #thumbnail-maker textarea::placeholder{
 }
 html body #thumbnail-maker #tmCanvas{background:#080f20!important}
 
+
+/* Definitive removal of white page surfaces — QR and SGGVISION brand remain untouched */
+html body header.wrap.nav,
+html body .diwali-welcome,html body .diwali-offer,
+html body .hero-card,html body .card,html body .tool,html body .formbox,
+html body .notice,html body .result,
+html body #thumbnail-maker .tm-grid>div,
+html body #tools .tools>.tool,html body #services .grid>.card,
+html body #pricing .grid>.card,html body #payment .tools>.tool,
+html body #feedback .formbox,html body #order .formbox{
+ background-color:#103b59!important;
+ background-image:linear-gradient(135deg,#123e63 0%,#075c70 48%,#42265e 100%)!important;
+ color:#fff!important;
+ border-color:#d9ad57!important;
+ box-shadow:0 10px 28px rgba(0,18,39,.48),0 0 16px rgba(255,193,75,.24),inset 0 1px 0 rgba(255,255,255,.12)!important;
+}
+html body input:not([type="file"]),html body textarea,html body select{
+ background:#123b59!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #d9ad57!important;
+}
+html body input::placeholder,html body textarea::placeholder{
+ color:#d8e8f3!important;-webkit-text-fill-color:#d8e8f3!important;opacity:1!important;
+}
+html body .btn.secondary{
+ background:linear-gradient(115deg,#315f91,#24466d)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;border-color:#d9ad57!important;
+}
+html body .section-head h2,html body .section-head p,
+html body .card h3,html body .tool h3,html body .formbox h3,
+html body .card p,html body .tool p,html body .formbox p,
+html body .tool label,html body .formbox label,html body .notice,html body .result{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html body .card h3,html body .tool h3,html body .formbox h3,
+html body .section-head h2{color:#ffe29a!important;-webkit-text-fill-color:#ffe29a!important}
+html body #payment .tool:first-child img{background:#fff!important}
+html body .brand,html body .brand span{background:transparent!important}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
