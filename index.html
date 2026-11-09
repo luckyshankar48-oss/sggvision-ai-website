@@ -673,8 +673,12 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     drawTitle(pad,bandY+bandH*.54,maxW,bandH*.56,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
   }else if(category==='history'){
     const bandY=vertical?h*.61:h*.57,bandH=h-bandY;
-    const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(20,10,5,0)');g.addColorStop(.28,'rgba(20,10,5,.82)');g.addColorStop(1,'rgba(20,10,5,.96)');
-    ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
+    // Fully mask any accidental AI pseudo-lettering in the lower text-safe zone.
+    const g=ctx.createLinearGradient(0,bandY-h*.025,0,h);
+    g.addColorStop(0,'rgba(18,9,5,.84)');
+    g.addColorStop(.16,'rgba(18,9,5,.94)');
+    g.addColorStop(1,'rgba(12,7,5,.985)');
+    ctx.fillStyle=g;ctx.fillRect(0,bandY-h*.025,w,bandH+h*.025);
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.19,230),Math.max(6,h*.009));
     drawTitle(pad,bandY+bandH*.52,maxW,bandH*.55,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
   }else if(category==='festival'||category==='culture'){
