@@ -2236,6 +2236,35 @@ html body .hero-card:before{
   border-top-left-radius:16px!important;
   border-top-right-radius:16px!important;
 }
+
+/* One consistent card-style frame wherever a visible content border already exists */
+html body section#services,
+html body section#tools,
+html body section#thumbnail-maker,
+html body section#pricing,
+html body section#payment,
+html body section#help,
+html body section#feedback,
+html body section#order,
+html body .card,
+html body .tool,
+html body .formbox,
+html body .hero-card,
+html body .tm-grid>div{
+  border:2px solid #ffd477!important;
+  border-radius:18px!important;
+  box-shadow:0 0 0 1px rgba(255,216,119,.22),0 8px 22px rgba(0,15,35,.34),0 0 14px rgba(255,191,70,.22)!important;
+  box-sizing:border-box!important;
+}
+html body section#thumbnail-maker .tm-grid>div{
+  border-radius:18px!important;
+}
+html body .card:before,
+html body .tool:before,
+html body .formbox:before,
+html body .hero-card:before{
+  border-radius:16px 16px 0 0!important;
+}
 </style>
 </head>
 <body>
