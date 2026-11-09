@@ -1084,6 +1084,83 @@ input,textarea,select{color:#fff!important;-webkit-text-fill-color:#fff!importan
 input::placeholder,textarea::placeholder{color:#d9eaff!important;-webkit-text-fill-color:#d9eaff!important}
 .notice,.result{color:#fff!important;-webkit-text-fill-color:#fff!important;background:rgba(4,26,49,.96)!important;text-shadow:1px 2px 2px #000!important}
 @media(prefers-reduced-motion:reduce){.card:before,.hero-card:before,.tool:before,.formbox:before,.diwali-welcome:after,.diwali-offer:after{animation:none!important}}
+
+/* SGGVISION clean festive rebuild: reset conflicting legacy overrides */
+html,body{background:#073b5b!important;color:#fff!important}
+body{background-image:radial-gradient(ellipse at 50% 0%,#137d91 0%,transparent 48%),linear-gradient(145deg,#052e50,#075c70 52%,#102d58)!important;background-attachment:fixed!important}
+body:before{display:none!important}
+.rangoli-wallpaper{display:none!important}
+body>.fireworks-layer{display:block!important;position:fixed!important;inset:0!important;z-index:0!important;opacity:.8!important;pointer-events:none!important}
+body>*:not(.fireworks-layer){position:relative;z-index:1}
+.wrap{position:relative;z-index:2}
+header.wrap.nav{background:linear-gradient(100deg,#082c4a,#0b6076)!important;border:1px solid #d9ae56!important;border-radius:0 0 16px 16px!important;box-shadow:0 8px 22px #001a2c88!important}
+.brand{font-size:clamp(36px,4.5vw,50px)!important;color:#fff!important;text-shadow:2px 3px 0 #001c30,0 0 12px #ffd36b88!important}
+.brand span{background:linear-gradient(90deg,#fff0a8,#ffbd4d,#fff0a8)!important;background-clip:text!important;-webkit-background-clip:text!important;color:transparent!important}
+.nav a{color:#fff!important;text-shadow:1px 2px 2px #001b2b!important}
+.nav a:nth-child(n){color:#fff!important}
+.diwali-top{
+ padding:17px 14px 22px!important;text-align:center!important;color:#fff!important;
+ background:
+  radial-gradient(circle,#fff7b7 0 3px,transparent 4px) 0 2px/48px 22px repeat-x,
+  linear-gradient(90deg,#3e1559,#075c78,#145b4c,#7b3b16,#3e1559)!important;
+ border-bottom:2px solid #ffcf66!important;
+ box-shadow:0 0 18px #ffcb5c99!important;
+ text-shadow:1px 2px 3px #001b2b!important;overflow:hidden!important;
+}
+.diwali-top:before,.diwali-top:after{content:"✦"!important;display:block!important;color:#fff2a5!important;filter:drop-shadow(0 0 9px #ffdf64)!important;animation:sggSparkle 1.8s ease-in-out infinite!important}
+.diwali-welcome,.diwali-offer{
+ background:linear-gradient(115deg,#123b68,#087080 48%,#40265e)!important;
+ border:1px solid #f4c86c!important;border-radius:17px!important;
+ box-shadow:0 12px 30px #001b2c99,inset 0 0 22px #ffffff16,0 0 16px #ffd36b44!important;
+ color:#fff!important;position:relative!important;overflow:hidden!important;
+}
+.diwali-welcome{padding:25px 100px!important}
+.diwali-welcome strong{color:#fff0b7!important;-webkit-text-fill-color:#fff0b7!important;font-size:clamp(30px,4vw,42px)!important;font-weight:900!important;text-shadow:2px 3px 0 #092b42,0 0 12px #ffd36b!important}
+.diwali-welcome p{color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:18px!important;font-weight:700!important;text-shadow:1px 2px 3px #001b2b!important}
+.diwali-offer{font-size:18px!important;font-weight:800!important;text-shadow:1px 2px 3px #001b2b!important}
+.diwali-offer span{color:#fff0b7!important;-webkit-text-fill-color:#fff0b7!important}
+.diwali-kandil{display:block!important;filter:drop-shadow(0 0 8px #ffd34e) drop-shadow(0 0 18px #ff8c32)!important}
+.diwali-kandil .body{animation:sggLampGlow 1.6s ease-in-out infinite alternate!important}
+.diwali-kandil .tassels i{animation:lanternSway 1.8s ease-in-out infinite alternate!important}
+.diwali-welcome:after,.diwali-offer:after{
+ content:""!important;display:block!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:7px!important;
+ background:linear-gradient(90deg,#ff4b88,#ffb347,#fff06a,#51e6bf,#55cfff,#a78bfa,#ff4b88)!important;
+ background-size:300% 100%!important;animation:sggRainbowRun 4s linear infinite!important;
+}
+.hero h1,.section-head h2{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:3px 4px 0 #00213a,0 0 12px #ffffff33!important}
+.hero h1 span{color:#ffdc79!important;-webkit-text-fill-color:#ffdc79!important}
+.hero p,.section-head p,.eyebrow,footer{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:1px 2px 3px #001a2b!important;font-weight:700!important}
+.hero-card,.card,.tool,.formbox{
+ background:linear-gradient(135deg,#153b6a 0%,#086779 42%,#40265f 100%)!important;
+ border:1px solid rgba(255,216,130,.85)!important;border-radius:18px!important;
+ color:#fff!important;box-shadow:0 13px 30px #00172d99,inset 0 1px 0 #ffffff33,0 0 18px #43d7ff33!important;
+ position:relative!important;overflow:hidden!important;
+}
+#services .grid>.card:nth-child(n){background:linear-gradient(135deg,#153b6a 0%,#086779 42%,#40265f 100%)!important}
+.card h3,.tool h3,.hero-card h2{color:#fff0b7!important;-webkit-text-fill-color:#fff0b7!important;text-shadow:2px 3px 0 #001c32,0 0 8px #ffd36b55!important;font-weight:900!important}
+.card p,.tool p,.formbox p,.tool label,.formbox label,.hero-card .stat,.hero-card .stat span,.hero-card .stat strong{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;text-shadow:1px 2px 3px #001a2b!important;font-weight:700!important;font-size:16px!important;line-height:1.8!important;
+}
+.card:before,.hero-card:before,.tool:before,.formbox:before{
+ content:""!important;display:block!important;position:absolute!important;top:0!important;left:0!important;right:0!important;height:5px!important;
+ background:linear-gradient(90deg,#ff4b88,#ffb347,#fff06a,#51e6bf,#55cfff,#a78bfa,#ff4b88)!important;background-size:300% 100%!important;animation:sggRainbowRun 4s linear infinite!important;
+}
+.card:after,.hero-card:after,.tool:after,.formbox:after{
+ content:""!important;position:absolute!important;top:-30%!important;bottom:-30%!important;left:-45%!important;width:24%!important;
+ background:linear-gradient(90deg,transparent,#ffffff33,transparent)!important;transform:skewX(-20deg)!important;animation:sggShimmer 7s ease-in-out infinite!important;pointer-events:none!important;
+}
+.stat{color:#fff!important;border-color:#ffffff44!important}
+.tag,.price,.hero-card .stat strong{color:#ffdf91!important;-webkit-text-fill-color:#ffdf91!important;text-shadow:1px 2px 2px #001a2b!important}
+input,textarea,select{background:#062c49!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #e7c47d!important}
+input::placeholder,textarea::placeholder{color:#d8e9f5!important;-webkit-text-fill-color:#d8e9f5!important}
+.notice,.result{background:#062c49!important;color:#fff!important;-webkit-text-fill-color:#fff!important;border:1px solid #dcbf80!important;text-shadow:1px 2px 2px #001a2b!important}
+.btn{box-shadow:0 5px 0 #69380f,0 9px 20px #00182b88!important}
+@keyframes sggRainbowRun{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+@keyframes sggShimmer{0%,20%{left:-45%;opacity:0}35%{opacity:1}65%,100%{left:130%;opacity:0}}
+@keyframes sggSparkle{0%,100%{opacity:.45;transform:scale(.8)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes sggLampGlow{from{filter:brightness(.9)}to{filter:brightness(1.35) drop-shadow(0 0 10px #ffb52e)}}
+@media(max-width:540px){.diwali-welcome{padding:20px 55px!important}.diwali-welcome p{font-size:16px!important}.card p,.tool p,.formbox p{font-size:15px!important}}
+@media(prefers-reduced-motion:reduce){.diwali-kandil,.diwali-kandil .body,.diwali-kandil .tassels i,.diwali-top:before,.diwali-top:after,.diwali-welcome:after,.diwali-offer:after,.card:before,.hero-card:before,.tool:before,.formbox:before,.card:after,.hero-card:after,.tool:after,.formbox:after{animation:none!important}}
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
