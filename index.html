@@ -954,6 +954,87 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:3
 @media(prefers-reduced-motion:reduce){
  .firework,.diwali-kandil,.diwali-top:before,.diwali-top:after,.diwali-welcome:after,.diwali-offer:after{animation:none!important}
 }
+
+/* FINAL VISUAL PASS — SGGVISION festive sky portal, readable everywhere */
+html,body{
+ background-color:#0d5270!important;
+ background-image:
+  radial-gradient(ellipse at 50% 0%,rgba(30,177,201,.55),transparent 52%),
+  radial-gradient(ellipse at 12% 28%,rgba(255,190,91,.16),transparent 30%),
+  radial-gradient(ellipse at 88% 70%,rgba(255,157,72,.18),transparent 32%),
+  linear-gradient(145deg,#063c5c 0%,#08718b 48%,#123b67 100%)!important;
+ background-attachment:fixed!important;
+ color:#fff!important;
+}
+body{isolation:isolate}
+body:before{
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.34;
+ background:
+  radial-gradient(circle at 8% 12%,#ffd783 0 2px,transparent 3px),
+  radial-gradient(circle at 18% 7%,#fff1c2 0 2px,transparent 3px),
+  radial-gradient(circle at 32% 13%,#ffc86a 0 2px,transparent 3px),
+  radial-gradient(circle at 68% 9%,#ffe7a5 0 2px,transparent 3px),
+  radial-gradient(circle at 84% 14%,#ffc86a 0 2px,transparent 3px),
+  radial-gradient(circle at 93% 7%,#fff1c2 0 2px,transparent 3px);
+ background-size:100% 220px;
+ animation:sggLightDrift 12s linear infinite;
+}
+@keyframes sggLightDrift{0%{background-position:0 0}100%{background-position:0 220px}}
+/* Header and brand frame */
+header.wrap.nav{background:linear-gradient(110deg,rgba(3,39,65,.92),rgba(9,91,119,.90))!important;border:1px solid rgba(255,218,151,.35)!important;border-radius:0 0 18px 18px;box-shadow:0 8px 28px rgba(0,0,0,.25)!important}
+.brand{color:#fff!important;text-shadow:2px 3px 0 #082b45,0 0 12px rgba(255,208,117,.38)!important}
+.brand span{background:linear-gradient(90deg,#fff1b4,#ffb64d,#fff1b4)!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.nav a{color:#fff4d7!important;text-shadow:1px 2px 2px rgba(0,0,0,.7)!important}
+.nav a:hover{color:#ffd36b!important}
+/* Service and content boxes — no white panels */
+.hero-card,.card,.tool,.formbox,.diwali-welcome,.diwali-offer{
+ background:linear-gradient(135deg,rgba(7,69,105,.97),rgba(14,121,147,.94) 52%,rgba(12,55,96,.97))!important;
+ border:1px solid rgba(255,221,164,.65)!important;
+ color:#fff!important;
+ box-shadow:0 13px 30px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.24)!important;
+ backdrop-filter:blur(12px) saturate(135%)!important;
+ -webkit-backdrop-filter:blur(12px) saturate(135%)!important;
+}
+#services .grid>.card:nth-child(n){background:linear-gradient(135deg,rgba(7,69,105,.97),rgba(14,121,147,.94) 52%,rgba(12,55,96,.97))!important}
+.card h3,.tool h3,.hero-card h2,.diwali-welcome strong,.diwali-offer span{
+ color:#fff0bf!important;-webkit-text-fill-color:#fff0bf!important;
+ text-shadow:2px 3px 0 rgba(0,25,45,.75),0 0 10px rgba(255,201,90,.35)!important;
+}
+.card p,.tool p,.formbox p,.tool label,.formbox label,
+.hero-card .stat,.hero-card .stat span,.diwali-welcome p,.diwali-offer{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:1px 2px 2px rgba(0,20,40,.8)!important;
+ font-weight:700!important;
+}
+.hero-card .stat{border-color:rgba(255,255,255,.28)!important}
+.hero-card .stat strong,.price,.tag{
+ color:#ffe09a!important;-webkit-text-fill-color:#ffe09a!important;
+ text-shadow:1px 2px 2px rgba(0,20,40,.85)!important;
+}
+.hero h1,.section-head h2{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:3px 4px 0 rgba(0,25,45,.75),0 0 14px rgba(255,208,117,.4)!important}
+.hero h1 span{color:#ffd16e!important;-webkit-text-fill-color:#ffd16e!important}
+.hero p,.section-head p,footer,.eyebrow{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:1px 2px 2px rgba(0,20,40,.8)!important}
+.btn{box-shadow:0 5px 0 #713b13,0 9px 18px rgba(0,0,0,.35)!important;text-shadow:1px 2px 1px rgba(0,0,0,.45)!important}
+input,textarea,select{background:rgba(2,35,59,.88)!important;color:#fff!important;border:1px solid rgba(255,221,164,.7)!important;text-shadow:1px 2px 2px #001a2b!important}
+input::placeholder,textarea::placeholder{color:#d9eaf2!important}
+.result,.notice{background:rgba(2,38,62,.88)!important;color:#fff!important;border-color:rgba(255,221,164,.6)!important;text-shadow:1px 2px 2px #001a2b!important}
+.tag{background:rgba(255,196,92,.18)!important;border-color:rgba(255,220,160,.6)!important}
+/* Warm Diwali light strings, glowing lamps and gentle motion */
+.diwali-top{background:linear-gradient(90deg,#7b260c,#d46b16,#7b260c)!important;color:#fff5d8!important;border-bottom:1px solid #ffd16e!important;text-shadow:1px 2px 2px #4b1c08!important;box-shadow:0 4px 18px rgba(255,175,62,.35)!important}
+.diwali-welcome{border-color:#ffd16e!important;box-shadow:0 12px 30px rgba(255,175,62,.24),inset 0 0 22px rgba(255,210,110,.12)!important}
+.diwali-welcome:after,.diwali-offer:after{display:block!important;opacity:1!important}
+.diwali-kandil{display:block!important;filter:drop-shadow(0 0 12px #ffb52e) drop-shadow(0 0 22px #ff8b22)!important}
+.rangoli-wallpaper{display:block!important;opacity:.10!important;z-index:0!important}
+.fireworks-layer{display:block!important;z-index:1!important;opacity:.72!important}
+.firework{display:block!important}
+body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:2}
+@media(max-width:540px){
+ .diwali-welcome{padding-left:54px!important;padding-right:54px!important}
+ .card p,.tool p,.formbox p{font-size:16px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body:before,.diwali-kandil,.diwali-kandil .tassels i,.firework,.diwali-top:before,.diwali-top:after,.diwali-welcome:after,.diwali-offer:after,.hero-card,.card,.tool,.formbox{animation:none!important}
+}
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
