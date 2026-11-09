@@ -647,7 +647,21 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     culture:{ink:'#fff0cf',accent:'#d7a7ff',deep:'#34204e'},
     general:{ink:'#fff',accent:'#e8c66b',deep:'#28203b'}
   };
-  const p=palettes[category]||palettes.general,pad=Math.round(w*.055);
+  const basePalette=palettes[category]||palettes.general;
+  const requestedStyle=String(designDirection||'')+' '+String(brief.text||'');
+  const colorRules=[
+    {re:/\bblue\b|निळा|निळी|निळ्या/i,ink:'#ffffff',accent:'#38a9ff',deep:'#071d38'},
+    {re:/\bgreen\b|हिरवा|हिरवी|हिरव्या/i,ink:'#ffffff',accent:'#43c878',deep:'#092b1b'},
+    {re:/\byellow\b|पिवळा|पिवळी|पिवळ्या/i,ink:'#fffbdc',accent:'#ffe12e',deep:'#342900'},
+    {re:/\bred\b|लाल|तांबडा|तांबडी/i,ink:'#ffffff',accent:'#ed2638',deep:'#350910'},
+    {re:/\bpurple\b|जांभळा|जांभळी|जांभळ्या/i,ink:'#ffffff',accent:'#bd82ff',deep:'#24113e'},
+    {re:/\borange\b|केशरी|नारिंगी/i,ink:'#fff7e8',accent:'#ff8b24',deep:'#3b1b06'},
+    {re:/\bblack\b|काळा|काळी|काळ्या/i,ink:'#ffffff',accent:'#d8d8d8',deep:'#050505'},
+    {re:/\bwhite\b|पांढरा|पांढरी|पांढऱ्या/i,ink:'#ffffff',accent:'#d8d8d8',deep:'#252525'}
+  ];
+  const selectedColor=colorRules.find(rule=>rule.re.test(requestedStyle));
+  const p=selectedColor?{...basePalette,...selectedColor}:basePalette;
+  const pad=Math.round(w*.055);
   const displayFonts={history:'"Khand","Baloo 2","Mukta",sans-serif',news:'"Hind Vadodara","Khand","Mukta",sans-serif',travel:'"Khand","Mukta","Hind Vadodara",sans-serif',product:'"Baloo 2","Mukta","Hind Vadodara",sans-serif',festival:'"Baloo 2","Khand","Mukta",sans-serif',culture:'"Khand","Baloo 2","Mukta",sans-serif',sports:'"Khand","Hind Vadodara","Mukta",sans-serif',nature:'"Khand","Mukta","Hind Vadodara",sans-serif',education:'"Hind Vadodara","Mukta",sans-serif',general:'"Baloo 2","Khand","Mukta",sans-serif'};
   const direction=String(designDirection||'').toLowerCase();
   const directionFont=/paint|brush|hand.?draw|hand.?paint|folk|traditional|artistic|चित्रशैली|हस्तचित्र/i.test(direction)
