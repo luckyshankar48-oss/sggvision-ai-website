@@ -682,15 +682,71 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.13,160),Math.max(7,h*.012));
     drawTitle(pad,bandY+bandH*.54,maxW,bandH*.56,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
   }else if(category==='history'){
-    const bandY=vertical?h*.61:h*.57,bandH=h-bandY;
-    // Fully mask any accidental AI pseudo-lettering in the lower text-safe zone.
-    const g=ctx.createLinearGradient(0,bandY-h*.025,0,h);
-    g.addColorStop(0,'rgba(18,9,5,.84)');
-    g.addColorStop(.16,'rgba(18,9,5,.94)');
-    g.addColorStop(1,'rgba(12,7,5,.985)');
-    ctx.fillStyle=g;ctx.fillRect(0,bandY-h*.025,w,bandH+h*.025);
-    ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.19,230),Math.max(6,h*.009));
-    drawTitle(pad,bandY+bandH*.52,maxW,bandH*.55,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
+    // Cinematic historical title treatment: red brush heading, oversized gold hero word,
+    // and a warm torn-parchment subtitle panel inspired by the supplied reference.
+    const words=(headline||'').trim().split(/\\s+/);
+    const first=(words.length>1?words[0]:'').replace(/[।.!?]/g,'');
+    const hero=(words.length>1?words.slice(1).join(' '):headline).replace(/[।.!?]/g,'');
+    const titleCenter=vertical?w*.5:w*.43;
+    const topY=vertical?h*.22:h*.19;
+    const heroY=vertical?h*.39:h*.405;
+    const brushW=vertical?w*.88:w*.57, brushH=vertical?h*.105:h*.14;
+    // Deep cinematic vignette behind title, without flattening the whole photograph.
+    const shade=ctx.createLinearGradient(0,0,0,h*.62);
+    shade.addColorStop(0,'rgba(8,10,18,.10)');shade.addColorStop(.65,'rgba(8,7,8,.04)');shade.addColorStop(1,'rgba(10,5,3,.32)');
+    ctx.fillStyle=shade;ctx.fillRect(0,0,w,h*.62);
+    // Irregular red paint stroke.
+    ctx.save();ctx.translate(titleCenter,topY);
+    ctx.fillStyle='#8f100b';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=18;
+    ctx.beginPath();ctx.moveTo(-brushW*.52,-brushH*.22);ctx.lineTo(-brushW*.42,-brushH*.43);ctx.lineTo(brushW*.39,-brushH*.48);ctx.lineTo(brushW*.52,-brushH*.23);ctx.lineTo(brushW*.47,brushH*.28);ctx.lineTo(brushW*.22,brushH*.38);ctx.lineTo(-brushW*.44,brushH*.32);ctx.closePath();ctx.fill();
+    ctx.fillStyle='rgba(225,54,25,.55)';ctx.fillRect(-brushW*.43,-brushH*.29,brushW*.83,brushH*.07);
+    ctx.restore();
+    if(first){
+      const fs=Math.round(w*(vertical?.095:.105));ctx.font='900 '+fs+'px "Khand","Mukta",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+      ctx.lineWidth=Math.max(5,fs*.09);ctx.strokeStyle='rgba(0,0,0,.9)';ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=12;
+      ctx.strokeText(first,titleCenter,topY,brushW*.9);
+      const white=ctx.createLinearGradient(0,topY-fs*.55,0,topY+fs*.55);white.addColorStop(0,'#fff');white.addColorStop(1,'#c9c9c9');
+      ctx.fillStyle=white;ctx.fillText(first,titleCenter,topY,brushW*.9);ctx.shadowBlur=0;
+    }
+    // Oversized gold hero lettering with dark extrusion and warm highlights.
+    const heroMax=vertical?w*.92:w*.72;
+    const heroFit=fitLines(hero,heroMax,h*(vertical?.14:.22),Math.round(w*(vertical?.19:.235)),vertical?48:58);
+    ctx.font='900 '+heroFit.size+'px "Khand","Baloo 2","Mukta",sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+    ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=24;ctx.lineWidth=heroFit.size*.16;ctx.strokeStyle='#210d05';
+    heroFit.lines.forEach((line,i)=>{
+      const yy=heroY+(i-(heroFit.lines.length-1)/2)*heroFit.lineH;
+      ctx.strokeText(line,titleCenter,yy,heroMax);
+      const gold=ctx.createLinearGradient(0,yy-heroFit.size*.58,0,yy+heroFit.size*.58);
+      gold.addColorStop(0,'#fff18a');gold.addColorStop(.28,'#ffc52d');gold.addColorStop(.68,'#e98a08');gold.addColorStop(1,'#9e3e04');
+      ctx.fillStyle=gold;ctx.fillText(line,titleCenter,yy,heroMax);
+      ctx.lineWidth=Math.max(2,heroFit.size*.018);ctx.strokeStyle='rgba(255,230,142,.8)';ctx.shadowBlur=0;ctx.strokeText(line,titleCenter,yy,heroMax);
+    });
+    // Torn parchment panel for the subtitle.
+    const paperX=vertical?w*.045:w*.045,paperY=vertical?h*.59:h*.625;
+    const paperW=vertical?w*.91:w*.66,paperH=vertical?h*.34:h*.31;
+    ctx.save();ctx.shadowColor='rgba(0,0,0,.78)';ctx.shadowBlur=22;ctx.shadowOffsetY=8;
+    ctx.beginPath();
+    const pts=[[.02,.08],[.13,.02],[.29,.05],[.44,.01],[.61,.06],[.78,.02],[.97,.09],[.94,.24],[.99,.42],[.95,.61],[.98,.83],[.84,.94],[.65,.91],[.48,.98],[.29,.93],[.12,.97],[.03,.84],[.06,.66],[.01,.47],[.05,.28]];
+    pts.forEach((pt,i)=>{const x=paperX+pt[0]*paperW,y=paperY+pt[1]*paperH;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.closePath();
+    const paper=ctx.createLinearGradient(0,paperY,0,paperY+paperH);paper.addColorStop(0,'#ffe6a4');paper.addColorStop(.48,'#f7cf7f');paper.addColorStop(1,'#d99b48');
+    ctx.fillStyle=paper;ctx.fill();ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+    ctx.strokeStyle='rgba(105,48,12,.75)';ctx.lineWidth=Math.max(3,w*.003);ctx.stroke();
+    // Warm aged-paper edge.
+    ctx.strokeStyle='rgba(255,246,202,.65)';ctx.lineWidth=Math.max(2,w*.002);
+    ctx.beginPath();ctx.moveTo(paperX+paperW*.07,paperY+paperH*.14);ctx.lineTo(paperX+paperW*.92,paperY+paperH*.12);ctx.stroke();
+    ctx.restore();
+    if(sub){
+      const subLines=tmWrapText(ctx,sub,paperW*.84,2);
+      const subSize=Math.round(w*(vertical?.064:.071));ctx.font='900 '+subSize+'px "Khand","Mukta","Hind Vadodara",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
+      const lineH=subSize*1.08,startY=paperY+paperH*.51-(subLines.length-1)*lineH*.5;
+      subLines.forEach((line,i)=>{
+        const yy=startY+i*lineH;ctx.lineWidth=Math.max(3,subSize*.055);ctx.strokeStyle='rgba(255,225,165,.65)';
+        ctx.fillStyle=i===0?'#7b1d0b':'#17110b';ctx.shadowColor='rgba(80,35,8,.35)';ctx.shadowBlur=3;
+        ctx.strokeText(line,paperX+paperW*.5,yy,paperW*.84);ctx.fillText(line,paperX+paperW*.5,yy,paperW*.84);
+      });ctx.shadowBlur=0;
+    }
   }else if(category==='festival'||category==='culture'){
     const cx=vertical?w/2:w*.52,cy=vertical?h*.72:h*.78,r=vertical?w*.46:w*.39;
     const glow=ctx.createRadialGradient(cx,cy,10,cx,cy,r*1.4);glow.addColorStop(0,'rgba(0,0,0,.86)');glow.addColorStop(1,'rgba(0,0,0,0)');
