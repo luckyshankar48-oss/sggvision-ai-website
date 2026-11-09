@@ -696,7 +696,7 @@ function tmReadBrief(raw){
 }
 async function makeThumbnail(){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
-  const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70),sub=brief.sub;
+  const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\n]/)[0].slice(0,70),sub=brief.sub;
   const mode=tmModeEl.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
   if(!topic){alert('कृपया थंबनेलसाठी तुमचा Prompt लिहा.');return}
   btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='AI तुमचा विषय समजून घेऊन थंबनेल तयार करत आहे...';
