@@ -2265,6 +2265,58 @@ html body .formbox:before,
 html body .hero-card:before{
   border-radius:16px 16px 0 0!important;
 }
+
+/* FINAL BORDER STANDARD: same gold line, thickness and rounded corners everywhere */
+html body main>section,
+html body section#services,
+html body section#tools,
+html body section#thumbnail-maker,
+html body section#pricing,
+html body section#payment,
+html body section#help,
+html body section#feedback,
+html body section#order,
+html body .card,
+html body .tool,
+html body .formbox,
+html body .hero-card,
+html body .tm-grid>div{
+  box-sizing:border-box!important;
+  border:2px solid #ffd477!important;
+  border-radius:18px!important;
+  outline:0!important;
+  box-shadow:0 0 0 1px rgba(255,216,119,.20),0 8px 22px rgba(0,15,35,.32),0 0 14px rgba(255,191,70,.20)!important;
+}
+html body .card:before,
+html body .tool:before,
+html body .formbox:before,
+html body .hero-card:before{
+  border-radius:16px 16px 0 0!important;
+  max-width:calc(100% - 4px)!important;
+  left:2px!important;
+  right:2px!important;
+}
+html body #thumbnail-maker .tm-grid>div{
+  border-radius:18px!important;
+}
+@media(max-width:700px){
+  html body main>section,
+  html body section#services,
+  html body section#tools,
+  html body section#thumbnail-maker,
+  html body section#pricing,
+  html body section#payment,
+  html body section#help,
+  html body section#feedback,
+  html body section#order,
+  html body .card,
+  html body .tool,
+  html body .formbox,
+  html body .hero-card,
+  html body .tm-grid>div{
+    border-radius:18px!important;
+  }
+}
 </style>
 </head>
 <body>
