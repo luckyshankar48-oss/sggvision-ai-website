@@ -1035,6 +1035,55 @@ body>*:not(.rangoli-wallpaper):not(.fireworks-layer){position:relative;z-index:2
 @media(prefers-reduced-motion:reduce){
  body:before,.diwali-kandil,.diwali-kandil .tassels i,.firework,.diwali-top:before,.diwali-top:after,.diwali-welcome:after,.diwali-offer:after,.hero-card,.card,.tool,.formbox{animation:none!important}
 }
+
+/* Readability + rainbow festive lighting correction */
+:root{color-scheme:dark}
+body,main,section,header,footer{color:#fff!important}
+.hero h1,.hero h1 span,.section-head h2,.eyebrow,
+.diwali-welcome strong,.diwali-welcome p,.diwali-offer,
+.nav a,.brand,.brand span{
+  opacity:1!important;
+  text-shadow:2px 3px 3px rgba(0,0,0,.82),0 0 9px rgba(255,255,255,.22)!important;
+}
+.hero p,.section-head p,footer{color:#fff!important;-webkit-text-fill-color:#fff!important;text-shadow:1px 2px 3px rgba(0,0,0,.9)!important;font-weight:700!important}
+.hero-card,.card,.tool,.formbox{
+  color:#fff!important;
+  background:linear-gradient(135deg,#173c70 0%,#075c70 34%,#46255f 68%,#652c48 100%)!important;
+  border:1px solid rgba(255,224,160,.9)!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.25),0 0 18px rgba(86,207,255,.18)!important;
+}
+#services .grid>.card:nth-child(n){background:linear-gradient(135deg,#173c70 0%,#075c70 34%,#46255f 68%,#652c48 100%)!important}
+.card h3,.tool h3,.hero-card h2,.card p,.tool p,.formbox p,
+.tool label,.formbox label,.hero-card .stat,.hero-card .stat span,
+.hero-card .stat strong,.card li,.tool li,.formbox li{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;opacity:1!important;
+  text-shadow:1px 2px 3px rgba(0,0,0,.9),0 0 5px rgba(255,255,255,.16)!important;
+}
+.card h3,.tool h3,.hero-card h2{color:#fff0b7!important;-webkit-text-fill-color:#fff0b7!important;font-weight:900!important}
+.card p,.tool p,.formbox p{font-size:16px!important;font-weight:700!important;line-height:1.8!important}
+.hero-card .stat strong,.price,.tag{color:#ffe08a!important;-webkit-text-fill-color:#ffe08a!important}
+.card:before,.hero-card:before,.tool:before,.formbox:before{
+ content:""!important;display:block!important;height:5px!important;
+ background:linear-gradient(90deg,#ff3d7f,#ff9d35,#ffe34d,#4ce3a4,#36c9ff,#8b72ff,#ff3d7f)!important;
+ background-size:300% 100%!important;animation:sggRainbowSweep 5s linear infinite!important;
+}
+@keyframes sggRainbowSweep{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+/* A multicolour string of festive lights across the top of the portal */
+.diwali-top{
+ background:linear-gradient(90deg,#4a164e,#075b75,#14634b,#8a3c18,#4a164e)!important;
+ border-bottom:2px solid #ffd36e!important;
+ box-shadow:0 0 14px rgba(255,211,110,.45),0 5px 22px rgba(0,0,0,.35)!important;
+}
+.diwali-top:before,.diwali-top:after{color:#fff2a6!important;text-shadow:0 0 8px #ffe66d,0 0 18px #ffae35!important}
+.diwali-welcome:after,.diwali-offer:after{
+ background:radial-gradient(circle,#fff 0 2px,#ffeb80 3px,#ff9b38 5px,transparent 8px) 0 0/34px 14px repeat-x!important;
+ filter:drop-shadow(0 0 6px #ffe45d) drop-shadow(0 0 12px #ff7b40)!important;
+ animation:diwaliTwinkle 1.4s ease-in-out infinite alternate!important;
+}
+input,textarea,select{color:#fff!important;-webkit-text-fill-color:#fff!important;background:rgba(4,26,49,.96)!important;border:1px solid rgba(255,222,157,.85)!important}
+input::placeholder,textarea::placeholder{color:#d9eaff!important;-webkit-text-fill-color:#d9eaff!important}
+.notice,.result{color:#fff!important;-webkit-text-fill-color:#fff!important;background:rgba(4,26,49,.96)!important;text-shadow:1px 2px 2px #000!important}
+@media(prefers-reduced-motion:reduce){.card:before,.hero-card:before,.tool:before,.formbox:before,.diwali-welcome:after,.diwali-offer:after{animation:none!important}}
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
