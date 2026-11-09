@@ -704,11 +704,11 @@ header.wrap.nav>div:last-child a{
 }
 @media(max-width:390px){
  header.wrap.nav>div:last-child{
-  grid-template-columns:repeat(2,max-content)!important;
-  column-gap:clamp(18px,7vw,28px)!important;
-  row-gap:8px!important;
+  grid-template-columns:repeat(3,minmax(0,max-content))!important;
+  column-gap:clamp(10px,3.5vw,15px)!important;
+  row-gap:5px!important;
  }
- header.wrap.nav>div:last-child a{font-size:17px!important}
+ header.wrap.nav>div:last-child a{font-size:16px!important;padding:3px 0!important}
 }
 
 /* Desktop: one-line navigation; mobile: readable wrapping without clipping */
