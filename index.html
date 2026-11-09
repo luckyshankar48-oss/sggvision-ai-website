@@ -2209,6 +2209,33 @@ html body #thumbnail-maker .tm-grid>div{
     margin:18px 0!important;
   }
 }
+
+/* Match the visible gold rounded border used on the existing service cards */
+html body .card,
+html body .tool,
+html body .formbox,
+html body .hero-card,
+html body .grid > .card,
+html body .tools > .tool,
+html body #thumbnail-maker > .tool,
+html body #thumbnail-maker .tm-grid > div,
+html body #feedback .formbox,
+html body #order .formbox{
+  border:2px solid #ffd477!important;
+  border-radius:18px!important;
+  box-shadow:0 0 0 1px rgba(255,216,119,.24),0 8px 22px rgba(0,15,35,.38),0 0 16px rgba(255,191,70,.26)!important;
+  box-sizing:border-box!important;
+}
+html body #thumbnail-maker .tm-grid > div{
+  border-radius:16px!important;
+}
+html body .card:before,
+html body .tool:before,
+html body .formbox:before,
+html body .hero-card:before{
+  border-top-left-radius:16px!important;
+  border-top-right-radius:16px!important;
+}
 </style>
 </head>
 <body>
