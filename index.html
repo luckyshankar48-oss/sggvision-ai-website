@@ -578,7 +578,7 @@ function tmDrawCover(ctx,img,w,h){
   ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,0,0,w,h);
 }
 function tmWrapText(ctx,text,maxWidth,maxLines){
-  const words=String(text||'').trim().split(/\\s+/).filter(Boolean),lines=[];
+  const words=String(text||'').trim().split(/\s+/).filter(Boolean),lines=[];
   let line='';
   for(const word of words){
     const test=line?line+' '+word:word;
@@ -587,7 +587,7 @@ function tmWrapText(ctx,text,maxWidth,maxLines){
   }
   if(line&&lines.length<maxLines)lines.push(line);
   if(words.length&&lines.length===maxLines){
-    const used=lines.join(' ').split(/\\s+/).length;
+    const used=lines.join(' ').split(/\s+/).length;
     if(used<words.length){let last=lines.length-1;while(ctx.measureText(lines[last]+'…').width>maxWidth&&lines[last].length>2)lines[last]=lines[last].slice(0,-1);lines[last]+='…'}
   }
   return lines;
