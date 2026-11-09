@@ -653,12 +653,14 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
   }
   // Global typography-safe zone: hide any pseudo-letters hallucinated by the image model.
   // Keep the upper scene untouched; all real Marathi lettering is drawn afterward by Canvas.
-  const safeTop=Math.round(h*.61);
-  const safe=ctx.createLinearGradient(0,safeTop,0,h);
-  safe.addColorStop(0,'rgba(12,8,7,.68)');
-  safe.addColorStop(.22,'rgba(12,8,7,.92)');
-  safe.addColorStop(1,'rgba(8,6,8,.985)');
-  ctx.fillStyle=safe;ctx.fillRect(0,safeTop,w,h-safeTop);
+  const safeTop=Math.round(h*.60);
+  const safe=ctx.createLinearGradient(0,h*.55,0,safeTop);
+  safe.addColorStop(0,'rgba(8,6,8,0)');
+  safe.addColorStop(1,'rgba(12,8,7,1)');
+  ctx.fillStyle=safe;ctx.fillRect(0,h*.55,w,h*.45);
+  // Opaque base prevents any image-model pseudo-text from showing through later category overlays.
+  ctx.fillStyle='rgba(10,7,8,1)';
+  ctx.fillRect(0,safeTop,w,h-safeTop);
   // Every subject family gets a different title treatment and placement.
   if(category==='news'){
     const bandH=vertical?h*.34:h*.31,bandY=h-bandH;
@@ -728,6 +730,7 @@ async function makeThumbnail(){
       try{
         const img=new Image();
         await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
+        if(document.fonts&&document.fonts.ready) await document.fonts.ready;
         tmCompose(img,headline,sub);
       }finally{URL.revokeObjectURL(url)}
       status.textContent='तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.';
@@ -741,6 +744,7 @@ async function makeThumbnail(){
       if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
+      if(document.fonts&&document.fonts.ready) await document.fonts.ready;
       tmCompose(img,headline,sub,data.category||'general');
       const sources=Array.isArray(data.imageSource)?data.imageSource:[];
       const sourceNote=sources.length
