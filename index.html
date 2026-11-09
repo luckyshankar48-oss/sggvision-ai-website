@@ -839,6 +839,19 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
       ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#5e160a';
       ctx.fillText(line,paperX+paperW*.5,cy,paperW*.88);
     }
+  }else if(category==='birthday'){
+    const panelW=vertical?w*.90:w*.72,panelH=vertical?h*.30:h*.34;
+    const px=(w-panelW)/2,py=vertical?h*.60:h*.60;
+    const glow=ctx.createRadialGradient(w*.5,py+panelH*.5,10,w*.5,py+panelH*.5,panelW*.72);
+    glow.addColorStop(0,'rgba(42,8,30,.88)');glow.addColorStop(1,'rgba(42,8,30,0)');
+    ctx.fillStyle=glow;ctx.fillRect(px,py-panelH*.25,panelW,panelH*1.5);
+    ctx.strokeStyle=p.accent;ctx.lineWidth=Math.max(3,w*.003);
+    ctx.beginPath();ctx.roundRect(px,py,panelW,panelH,Math.max(12,w*.02));ctx.stroke();
+    ctx.textAlign='center';ctx.fillStyle=p.accent;
+    ctx.font='900 '+Math.round(w*(vertical?.045:.035))+'px "Khand","Mukta",sans-serif';
+    ctx.fillText('शुभेच्छा',w/2,py+panelH*.17,panelW*.86);
+    drawTitle(w/2,py+panelH*.48,panelW*.86,panelH*.34,'center');
+    drawSub(w/2,py+panelH*.79,panelW*.84,'center');
   }else if(category==='festival'||category==='culture'){
     const cx=vertical?w/2:w*.52,cy=vertical?h*.72:h*.78,r=vertical?w*.46:w*.39;
     const glow=ctx.createRadialGradient(cx,cy,10,cx,cy,r*1.4);glow.addColorStop(0,'rgba(0,0,0,.86)');glow.addColorStop(1,'rgba(0,0,0,0)');
@@ -883,6 +896,7 @@ async function makeThumbnail(){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
   const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\n]/)[0].slice(0,70),sub=brief.sub;
   const mode=tmModeEl.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
+  tmLastImageReady=false;document.getElementById('tmDownload').disabled=true;
   if(!topic){alert('कृपया थंबनेलसाठी तुमचा Prompt लिहा.');return}
   btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='AI तुमचा विषय समजून घेऊन थंबनेल तयार करत आहे...';
   try{
