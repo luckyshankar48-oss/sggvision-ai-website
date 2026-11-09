@@ -600,46 +600,62 @@ function tmCompose(img,headlineOverride,subOverride){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
   const headline=headlineOverride||brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70);
   const sub=subOverride||brief.sub;
-  const pad=Math.round(w*(vertical?.065:.055));
-  const bandH=Math.round(h*(vertical?.34:.40)),bandY=h-bandH;
+  const pad=Math.round(w*(vertical?.055:.055));
+  const bandH=Math.round(h*(vertical?.43:.42)),bandY=h-bandH;
   const shade=ctx.createLinearGradient(0,bandY,0,h);
-  shade.addColorStop(0,'rgba(5,8,22,.62)');shade.addColorStop(.18,'rgba(5,8,22,.88)');shade.addColorStop(1,'rgba(5,8,22,.98)');
+  shade.addColorStop(0,'rgba(7,7,20,.15)');shade.addColorStop(.12,'rgba(7,7,20,.88)');shade.addColorStop(1,'rgba(7,7,20,.97)');
   ctx.fillStyle=shade;ctx.fillRect(0,bandY,w,bandH);
-  ctx.fillStyle='#ffbd36';ctx.fillRect(0,bandY,w,Math.max(8,Math.round(h*.012)));
-  ctx.fillStyle='#fff0bd';ctx.fillRect(pad,bandY+Math.round(bandH*.13),Math.round(w*.13),Math.max(5,Math.round(h*.008)));
-  const fontStack='"Mukta","Hind Vadodara","Noto Sans Devanagari",sans-serif';
-  ctx.textAlign='left';ctx.textBaseline='top';
-  // Channel branding is not inserted automatically; show only user-entered headline and subline.
-  let fs=Math.round(w*(vertical?.092:.095));
   const maxW=w-pad*2;
-  let lines=[];
-  while(fs>(vertical?40:48)){
+  const fontStack='"Mukta","Hind Vadodara","Noto Sans Devanagari",sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  // Main headline on a dramatic red brush-style banner.
+  const titleTop=bandY+Math.round(bandH*.10);
+  const titleMaxH=Math.round(bandH*(sub?.48:.78));
+  let fs=Math.round(w*(vertical?.105:.112)),lines=[];
+  while(fs>(vertical?38:46)){
     ctx.font='900 '+fs+'px '+fontStack;
-    lines=tmWrapText(ctx,headline,maxW,2);
-    if(lines.every(line=>ctx.measureText(line).width<=maxW))break;
-    fs-=3;
+    lines=tmWrapText(ctx,headline,maxW*.94,2);
+    const widthOK=lines.every(line=>ctx.measureText(line).width<=maxW*.94);
+    if(widthOK && lines.length*fs*1.08<=titleMaxH)break;
+    fs-=2;
   }
   ctx.font='900 '+fs+'px '+fontStack;
-  const lineH=Math.round(fs*1.12);
-  const titleY=bandY+Math.round(bandH*.34);
-  ctx.lineWidth=Math.max(3,Math.round(fs*.075));ctx.strokeStyle='rgba(25,10,25,.92)';
-  ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=12;ctx.fillStyle='#fff7dc';
-  lines.forEach((line,i)=>{const y=titleY+i*lineH;ctx.strokeText(line,pad,y,maxW);ctx.fillText(line,pad,y,maxW)});
+  const lineH=Math.round(fs*1.08),titleH=lines.length*lineH;
+  const titleY=titleTop+Math.max(0,(titleMaxH-titleH)/2);
+  const bannerPad=Math.round(w*.025);
+  const bannerY=titleY-bannerPad*.45;
+  const bannerH=titleH+bannerPad*.9;
+  ctx.save();ctx.fillStyle='#8f1016';ctx.shadowColor='rgba(0,0,0,.55)';ctx.shadowBlur=18;
+  ctx.beginPath();ctx.moveTo(pad*.55,bannerY+bannerH*.18);ctx.lineTo(w*.19,bannerY+bannerH*.08);ctx.lineTo(w*.78,bannerY);ctx.lineTo(w-pad*.45,bannerY+bannerH*.18);ctx.lineTo(w-pad*.65,bannerY+bannerH*.82);ctx.lineTo(w*.22,bannerY+bannerH);ctx.lineTo(pad*.55,bannerY+bannerH*.78);ctx.closePath();ctx.fill();ctx.restore();
+  ctx.lineWidth=Math.max(3,Math.round(fs*.055));ctx.strokeStyle='rgba(38,10,0,.9)';
+  ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=10;ctx.fillStyle='#ffc928';
+  lines.forEach((line,i)=>{const y=titleY+i*lineH+lineH/2;ctx.strokeText(line,w/2,y,maxW*.94);ctx.fillText(line,w/2,y,maxW*.94)});
+  // Subtitle sits on a parchment-like panel and always stays inside the canvas.
   if(sub){
-    const subFs=Math.round(fs*(vertical?.39:.34));
-    ctx.font='800 '+subFs+'px '+fontStack;ctx.fillStyle='#ffd04f';ctx.shadowBlur=5;
-    const subLines=tmWrapText(ctx,sub,maxW,1);
-    ctx.fillText(subLines[0]||'',pad,Math.min(h-subFs*1.45,titleY+lines.length*lineH+Math.round(fs*.16)),maxW);
+    const panelY=bandY+Math.round(bandH*.66),panelH=Math.round(bandH*.28);
+    ctx.shadowBlur=0;ctx.fillStyle='#e8c17d';
+    ctx.beginPath();ctx.moveTo(pad,panelY+panelH*.08);ctx.lineTo(w-pad*.9,panelY);ctx.lineTo(w-pad,panelY+panelH*.18);ctx.lineTo(w-pad*.92,panelY+panelH*.86);ctx.lineTo(pad*1.08,panelY+panelH);ctx.lineTo(pad*.85,panelY+panelH*.22);ctx.closePath();ctx.fill();
+    ctx.strokeStyle='rgba(93,45,15,.45)';ctx.lineWidth=3;ctx.stroke();
+    let subFs=Math.round(w*(vertical?.052:.052)),subLines=[];
+    while(subFs>(vertical?25:28)){
+      ctx.font='900 '+subFs+'px '+fontStack;
+      subLines=tmWrapText(ctx,sub,maxW*.88,2);
+      if(subLines.every(line=>ctx.measureText(line).width<=maxW*.88)&&subLines.length*subFs*1.05<=panelH*.78)break;
+      subFs-=2;
+    }
+    ctx.font='900 '+subFs+'px '+fontStack;ctx.fillStyle='#54170d';ctx.shadowColor='rgba(255,240,200,.35)';ctx.shadowBlur=2;
+    const subLineH=subFs*1.05,subStart=panelY+(panelH-subLines.length*subLineH)/2+subLineH/2;
+    subLines.forEach((line,i)=>ctx.fillText(line,w/2,subStart+i*subLineH,maxW*.88));
   }
   ctx.shadowBlur=0;ctx.shadowColor='transparent';
   tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
 function tmReadBrief(raw){
-  const text=String(raw||'').trim();
-  const get=(labels)=>{const re=new RegExp('(?:'+labels+')[\\s:：-]*([^\\n。]+)','i');const m=text.match(re);return m?m[1].trim():''};
-  const headline=get('मुख्य ?मजकूर|थंबनेलवरील मजकूर|शीर्षक|headline|title');
-  const sub=get('उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle');
-  return {text,headline,sub};
+  const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
+  const headlineMatch=text.match(/(?:मुख्य ?मजकूर|थंबनेलवरील मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle)\s*[:：-]|$)/i);
+  const subMatch=text.match(/(?:उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)\s*$/i);
+  const clean=v=>String(v||'').replace(/Prompt कॉपी करा/gi,'').replace(/\s+/g,' ').trim();
+  return {text,headline:clean(headlineMatch?.[1]),sub:clean(subMatch?.[1])};
 }
 async function makeThumbnail(){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
