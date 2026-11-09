@@ -916,6 +916,22 @@ input::placeholder,textarea::placeholder{
 button,.btn,.nav a,.brand{
   text-shadow:0 1px 2px rgba(20,45,70,.24),0 2px 5px rgba(20,45,70,.16)!important;
 }
+
+/* Strong visible typography shadow: explicit selectors override all earlier theme rules */
+body,body p,body li,body label,body span,body strong,body a,body button,
+body h1,body h2,body h3,body h4,body small,body summary,body td,body th,
+body .brand,body .nav a,body .eyebrow,body .stat,body .tag,body .price,
+body .btn,body .notice,body .result,body input,body textarea,body select{
+  text-shadow:2px 3px 3px rgba(0,25,52,.58),0 0 1px rgba(0,20,45,.38)!important;
+}
+#services .grid>.card h3,#services .grid>.card p,
+#services .grid>.card .emoji,
+.hero-card h2,.hero-card .stat,.hero-card .stat strong{
+  text-shadow:2px 3px 4px rgba(0,25,52,.72),0 0 2px rgba(0,20,45,.5)!important;
+}
+.hero h1,.hero h1 span,.section-head h2,.diwali-welcome strong{
+  text-shadow:3px 4px 5px rgba(0,25,52,.42),0 1px 1px rgba(0,20,45,.5)!important;
+}
 </style></head>
 <body>
 
