@@ -873,7 +873,6 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
 }
 function tmReadBrief(raw){
   const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
-  const designBoundary=String.raw`(?:डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions))\s*[:：-]`;
   const headlineMatch=text.match(/(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points|डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions))\s*[:：-]|$)/i);
   const subMatch=text.match(/(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points|डिझाइन\s*सूचना|रचना\s*सूचना|design\s*(?:notes|instructions))\s*[:：-]|$)/i);
   const pointsMatch=text.match(/(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\s\S]*?)(?=(?:खालील\s*संदेश|closing\s*line|डिझाइन\s*सूचना|design\s*(?:notes|instructions)|रचना\s*सूचना)\s*[:：-]|$)/i);
