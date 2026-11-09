@@ -589,7 +589,7 @@ function tmWrapText(ctx,text,maxWidth,maxLines){
   }
   return lines;
 }
-function tmCompose(img,headlineOverride,subOverride,category='general',supportingPoints=[],closingLine=''){
+function tmCompose(img,headlineOverride,subOverride,category='general',supportingPoints=[],closingLine='',designDirection=''){
   const ratio=document.getElementById('tmRatio').value;
   const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
   const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
@@ -613,7 +613,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   };
   const p=palettes[category]||palettes.general,pad=Math.round(w*.055);
   const displayFonts={history:'"Khand","Baloo 2","Mukta",sans-serif',news:'"Hind Vadodara","Khand","Mukta",sans-serif',travel:'"Khand","Mukta","Hind Vadodara",sans-serif',product:'"Baloo 2","Mukta","Hind Vadodara",sans-serif',festival:'"Baloo 2","Khand","Mukta",sans-serif',culture:'"Khand","Baloo 2","Mukta",sans-serif',sports:'"Khand","Hind Vadodara","Mukta",sans-serif',nature:'"Khand","Mukta","Hind Vadodara",sans-serif',education:'"Hind Vadodara","Mukta",sans-serif',general:'"Baloo 2","Khand","Mukta",sans-serif'};
-  const fontStack=displayFonts[category]||displayFonts.general;
+  const direction=String(designDirection||'').toLowerCase();\n  const fontStack=displayFonts[category]||displayFonts.general;
   const maxW=w-pad*2;
   function fitLines(text,maxWidth,maxHeight,initial,min){
     let size=initial,lines=[];
@@ -851,7 +851,7 @@ async function makeThumbnail(){
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
       if(document.fonts&&document.fonts.ready) await document.fonts.ready;
-      tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general',data.supportingPoints||[],data.closingLine||'');
+      tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general',data.supportingPoints||[],data.closingLine||'',data.designDirection||'');
       const sources=Array.isArray(data.imageSource)?data.imageSource:[];
       const sourceNote=sources.length
         ? ' वापरलेले संदर्भ: '+sources.map(item=>item.title+' ('+item.license+')').join(', ')+'.'
