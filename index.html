@@ -2120,6 +2120,26 @@ html body section#thumbnail-maker .tm-grid>div{
   overflow:hidden!important;
   clip-path:inset(0 round 22px)!important;
 }
+
+/* Keep one clean rounded frame; remove the extra inner bottom corner outlines */
+html body section#thumbnail-maker>.tool{
+  border:3px solid #ffd477!important;
+  border-radius:26px!important;
+  overflow:hidden!important;
+  clip-path:none!important;
+}
+html body section#thumbnail-maker .tm-grid>div{
+  border:0!important;
+  border-radius:0!important;
+  clip-path:none!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+html body section#thumbnail-maker .tm-grid{
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
 </style>
 </head>
 <body>
