@@ -1642,6 +1642,60 @@ html body .brand,html body .brand span{background:transparent!important}
  .hero h1{font-size:clamp(34px,9vw,44px)!important}
 }
 
+
+/* Thumbnail Maker: one complete outer frame around heading + both working panels */
+html body #thumbnail-maker{
+  box-sizing:border-box!important;
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  padding:28px!important;
+  margin:34px 0!important;
+  border:1.5px solid #d9ad57!important;
+  border-radius:22px!important;
+  background:linear-gradient(135deg,#103b59 0%,#075568 52%,#382653 100%)!important;
+  box-shadow:0 14px 34px rgba(0,12,28,.48),0 0 22px rgba(255,195,77,.22),inset 0 1px 0 rgba(255,255,255,.12)!important;
+  overflow:visible!important;
+}
+html body #thumbnail-maker>.section-head{
+  box-sizing:border-box!important;
+  margin:0 0 20px!important;
+  padding:0 2px!important;
+  background:transparent!important;
+}
+html body #thumbnail-maker>.tool{
+  box-sizing:border-box!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+  padding:18px!important;
+  border:1.5px solid #ffd477!important;
+  border-radius:18px!important;
+  background:linear-gradient(135deg,#123e63 0%,#075c70 48%,#42265e 100%)!important;
+  box-shadow:0 10px 28px rgba(0,18,39,.48),0 0 20px rgba(255,195,77,.30),inset 0 1px 0 rgba(255,255,255,.13)!important;
+}
+html body #thumbnail-maker .tm-grid{
+  box-sizing:border-box!important;
+  width:100%!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:18px!important;
+}
+html body #thumbnail-maker .tm-grid>div{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  padding:14px!important;
+  border:1px solid rgba(255,212,119,.72)!important;
+  border-radius:14px!important;
+  background:linear-gradient(145deg,rgba(9,65,83,.78),rgba(30,48,83,.78))!important;
+}
+html body #thumbnail-maker .tm-preview{width:100%!important;max-width:100%!important}
+@media(max-width:800px){
+  html body #thumbnail-maker{padding:16px!important;margin:22px 0!important}
+  html body #thumbnail-maker>.tool{padding:12px!important}
+  html body #thumbnail-maker .tm-grid{grid-template-columns:minmax(0,1fr)!important}
+  html body #thumbnail-maker .tm-grid>div{padding:11px!important}
+}
+
 </style>
 </head>
 <body>
