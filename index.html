@@ -1341,6 +1341,65 @@ input::placeholder,textarea::placeholder{color:#dcecf4!important;-webkit-text-fi
  opacity:1!important;
 }
 
+
+/* Restore festive matching card colours and visible blinking toran lights */
+.tools .tool,#services .card,.formbox,.hero-card{
+ background:linear-gradient(135deg,rgba(17,57,91,.97) 0%,rgba(8,91,112,.96) 48%,rgba(65,39,91,.97) 100%)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid rgba(255,211,110,.92)!important;
+ border-radius:18px!important;
+ box-shadow:0 12px 30px rgba(0,15,35,.42),inset 0 1px 0 rgba(255,255,255,.16),0 0 18px rgba(255,190,75,.18)!important;
+}
+.tools .tool h2,.tools .tool h3,.tools .tool h4,
+#services .card h2,#services .card h3,#services .card h4,
+.formbox h2,.formbox h3,.formbox h4,.hero-card h2{
+ color:#ffe7a0!important;-webkit-text-fill-color:#ffe7a0!important;
+ text-shadow:1px 2px 4px #00182b!important;
+}
+.tools .tool p,.tools .tool label,.tools .tool .hint,
+#services .card p,#services .card label,
+.formbox p,.formbox label,.formbox .hint,
+.hero-card .stat,.hero-card .stat span{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:1px 2px 3px #00182b!important;opacity:1!important;
+}
+.tools .tool .tag,#services .card .tag,.formbox .tag,
+.tools .tool .step,#services .card .step{
+ color:#ffe08a!important;-webkit-text-fill-color:#ffe08a!important;
+}
+.tools .tool input,.tools .tool textarea,.tools .tool select,
+.formbox input,.formbox textarea,.formbox select{
+ background:rgba(3,35,57,.96)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+.tools .tool input::placeholder,.tools .tool textarea::placeholder,
+.formbox input::placeholder,.formbox textarea::placeholder{
+ color:#dcecf4!important;-webkit-text-fill-color:#dcecf4!important;
+}
+/* Actual blinking toran bulbs across the top banner */
+.diwali-top{
+ position:relative!important;overflow:hidden!important;
+ background-image:
+  radial-gradient(circle,#fffbd5 0 2px,#ffe16b 3px,#ff9c36 5px,transparent 7px),
+  linear-gradient(90deg,#40104e,#8b2a35,#5a174b)!important;
+ background-size:32px 13px,100% 100%!important;
+ background-position:16px 2px,0 0!important;
+ background-repeat:repeat-x,no-repeat!important;
+ animation:sggToranBlink 1.25s ease-in-out infinite alternate!important;
+ box-shadow:0 0 18px #ffc94d66,0 0 32px #ff9b3850!important;
+ border-bottom:2px solid #ffd36e!important;
+}
+.diwali-top:before,.diwali-top:after{
+ content:"✦"!important;display:block!important;position:absolute!important;
+ top:4px!important;color:#fff7bb!important;
+ text-shadow:0 0 7px #fff4a3,0 0 15px #ff9c36,0 0 22px #ffcc4d!important;
+ animation:diwaliTwinkle .9s ease-in-out infinite alternate!important;
+}
+.diwali-top:before{left:8%!important}.diwali-top:after{right:8%!important;animation-delay:.45s!important}
+@keyframes sggToranBlink{
+ 0%{filter:brightness(.88);box-shadow:0 0 10px #ffc94d44}
+ 100%{filter:brightness(1.18);box-shadow:0 0 22px #ffc94daa,0 0 38px #ff9b3866}
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
