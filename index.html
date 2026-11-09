@@ -861,8 +861,21 @@ function tmReadBrief(raw){
   const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
   const headlineMatch=text.match(/(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i);
   const subMatch=text.match(/(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points)\s*[:：-]|$)/i);
-  const clean=v=>String(v||'').replace(/Prompt कॉपी करा/gi,'').replace(/\s+/g,' ').trim();
-  return {text,headline:clean(headlineMatch?.[1]),sub:clean(subMatch?.[1])};
+  const pointsMatch=text.match(/(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\s\S]*?)(?=(?:खालील\s*संदेश|closing\s*line|डिझाइन\s*सूचना|design\s*(?:notes|instructions))\s*[:：-]|$)/i);
+  const closingMatch=text.match(/(?:खालील\s*संदेश|closing\s*line)\s*[:：-]\s*([\s\S]*?)(?=(?:डिझाइन\s*सूचना|design\s*(?:notes|instructions)|रचना\s*सूचना)\s*[:：-]|$)/i);
+  const clean=v=>String(v||'').replace(/Prompt कॉपी करा/gi,'').replace(/^[\s"'“”]+|[\s"'“”]+$/g,'').replace(/\s+/g,' ').trim();
+  const points=(pointsMatch?.[1]||'').split(/\r?\n|[;；]/).map(line=>clean(line.replace(/^\s*(?:[-•*▪]+|\d+[.)、])\s*/,''))).filter(Boolean).slice(0,4);
+  const lower=text.toLowerCase();
+  let category='general';
+  if(/आग|अपघात|बातमी|न्यूज|news|breaking|महापालिका|निवडणूक|राजकारण/.test(lower))category='news';
+  else if(/जयंती|पुण्यतिथी|जयंती|birthday|वाढदिवस|शुभेच्छा|स्मृतिदिन/.test(lower))category='festival';
+  else if(/किल्ला|लेणी|इतिहास|छत्रपती|शिवाजी|दुर्ग|गड|fort|heritage/.test(lower))category='history';
+  else if(/प्रवास|पर्यटन|ट्रॅव्हल|travel|भ्रमंती/.test(lower))category='travel';
+  else if(/मोबाईल|मोबाइल|अनबॉक्सिंग|गॅजेट|लॅपटॉप|technology|review/.test(lower))category='product';
+  else if(/झाडे|जंगल|पर्यावरण|निसर्ग|वृक्षतोड|nature/.test(lower))category='nature';
+  else if(/गणेश|दिवाळी|उत्सव|सण|festival/.test(lower))category='festival';
+  else if(/बुद्ध|धम्म|संस्कृती|महापुरुष|समाज/.test(lower))category='culture';
+  return {text,headline:clean(headlineMatch?.[1]),sub:clean(subMatch?.[1]),supportingPoints:points,closingLine:clean(closingMatch?.[1]),category};
 }
 async function makeThumbnail(){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
@@ -881,7 +894,7 @@ async function makeThumbnail(){
         const img=new Image();
         await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
         if(document.fonts&&document.fonts.ready) await document.fonts.ready;
-        tmCompose(img,headline,sub);
+        tmCompose(img,headline,sub,brief.category,brief.supportingPoints,brief.closingLine);
       }finally{URL.revokeObjectURL(url)}
       status.textContent='तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.';
     }else{
