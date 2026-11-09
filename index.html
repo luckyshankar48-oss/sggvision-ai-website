@@ -774,6 +774,43 @@ header.wrap.nav>.brand{
   -webkit-text-fill-color:#813b08!important;
 }
 .stat strong,.hero-card strong{ text-shadow:none!important }
+
+/* Preview theme: soft blue sky and blurred-cloud atmosphere across the full page */
+html,body{
+  background-color:#b9d9f1!important;
+  background-image:
+    radial-gradient(ellipse at 18% 18%,rgba(255,255,255,.96) 0%,rgba(255,255,255,.56) 16%,transparent 38%),
+    radial-gradient(ellipse at 78% 14%,rgba(255,255,255,.88) 0%,rgba(255,255,255,.48) 18%,transparent 40%),
+    radial-gradient(ellipse at 48% 48%,rgba(230,245,255,.9) 0%,rgba(230,245,255,.35) 20%,transparent 46%),
+    radial-gradient(ellipse at 12% 78%,rgba(255,255,255,.82) 0%,rgba(255,255,255,.38) 17%,transparent 39%),
+    radial-gradient(ellipse at 88% 82%,rgba(255,255,255,.78) 0%,rgba(255,255,255,.34) 18%,transparent 42%),
+    linear-gradient(135deg,#7eb8e4 0%,#d9edfb 48%,#78b2df 100%)!important;
+  background-attachment:fixed!important;
+  background-size:cover!important;
+}
+/* Keep the cloud effect soft, behind content, and cards readable */
+body{color:#292f3a!important}
+header.wrap.nav{background:rgba(255,255,255,.68)!important;border-radius:0 0 14px 14px}
+.diwali-top{background:#315f91!important;color:#fff!important}
+.diwali-welcome,.diwali-offer{
+  background:rgba(255,255,255,.88)!important;
+  border:1px solid rgba(255,255,255,.9)!important;
+  box-shadow:0 8px 28px rgba(35,78,120,.10)!important;
+}
+.hero-card,.card,.tool,.formbox{
+  background:rgba(255,255,255,.93)!important;
+  border:1px solid rgba(255,255,255,.95)!important;
+  box-shadow:0 10px 28px rgba(31,72,112,.14)!important;
+  backdrop-filter:blur(8px);
+}
+.card h3,.tool h3,.hero-card h2{color:#244b73!important;-webkit-text-fill-color:#244b73!important}
+.card p,.tool label,.formbox label,.hero-card .stat,.hero-card .stat span{color:#394b5d!important}
+.hero-card .stat strong,.hero-card .tag{color:#1f5d91!important;-webkit-text-fill-color:#1f5d91!important}
+.section-head h2{color:#214e79!important;-webkit-text-fill-color:#214e79!important}
+.hero h1{color:#263b50!important}
+.hero h1 span{color:#176aa8!important;-webkit-text-fill-color:#176aa8!important}
+.hero p,.section-head p,footer{color:#354e65!important}
+.notice{background:rgba(255,255,255,.88)!important;color:#34495e!important}
 </style></head>
 <body>
 
