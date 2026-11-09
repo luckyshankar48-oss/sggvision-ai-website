@@ -20,6 +20,19 @@ function relevanceScore(item, query) {
   return { score: matched.length + titleHits * 1.5, matched: matched.length };
 }
 
+async function prepareReferenceBlob(blob) {
+  // FLUX.2 Klein accepts reference images smaller than 512x512.
+  const bitmap = await createImageBitmap(blob);
+  const scale = Math.min(1, 510 / Math.max(bitmap.width, bitmap.height));
+  const width = Math.max(1, Math.round(bitmap.width * scale));
+  const height = Math.max(1, Math.round(bitmap.height * scale));
+  const canvas = new OffscreenCanvas(width, height);
+  const context = canvas.getContext("2d");
+  context.drawImage(bitmap, 0, 0, width, height);
+  bitmap.close();
+  return canvas.convertToBlob({ type: "image/jpeg", quality: 0.88 });
+}
+
 async function findReferenceImage(query, kind = "subject") {
   if (!query) return null;
   const url = new URL("https://api.openverse.org/v1/images/");
@@ -42,8 +55,9 @@ async function findReferenceImage(query, kind = "subject") {
   if (!best || best.relevance.matched < 2 || !best.item.thumbnail) return null;
   const imageResponse = await fetch(best.item.thumbnail, { signal: AbortSignal.timeout(9000) });
   if (!imageResponse.ok) return null;
-  const blob = await imageResponse.blob();
-  if (!blob.type.startsWith("image/") || blob.size > 5 * 1024 * 1024) return null;
+  const originalBlob = await imageResponse.blob();
+  if (!originalBlob.type.startsWith("image/") || originalBlob.size > 5 * 1024 * 1024) return null;
+  const blob = await prepareReferenceBlob(originalBlob);
   return {
     blob,
     source: {
@@ -106,12 +120,16 @@ export async function onRequestPost({ request, env }) {
     let placeReference = null;
     let personReference = null;
     try {
-      const placeQuery = String(plan.place_search_query || "").trim();
-      const personQuery = String(plan.person_search_query || "").trim();
-      if (placeQuery) placeReference = await findReferenceImage(placeQuery, "place");
-      if (personQuery) personReference = await findReferenceImage(personQuery, "person");
-      if (!placeReference && !personReference && plan.search_query) {
-        placeReference = await findReferenceImage(String(plan.search_query).trim(), "subject");
+      const placeQueries = [
+        String(plan.place_search_query || "").trim(),
+        String(plan.search_query || "").trim()
+      ].filter(Boolean);
+      const personQueries = [String(plan.person_search_query || "").trim()].filter(Boolean);
+      for (const query of [...new Set(placeQueries)]) {
+        if (!placeReference) placeReference = await findReferenceImage(query, "place");
+      }
+      for (const query of [...new Set(personQueries)]) {
+        if (!personReference) personReference = await findReferenceImage(query, "person");
       }
     } catch { /* A failed reference search must not stop image generation. */ }
     const references = [
