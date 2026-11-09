@@ -654,7 +654,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   function drawSupportingInfo(){
     const points=Array.isArray(supportingPoints)?supportingPoints.filter(Boolean).slice(0,4):[];
     if(!points.length&&!closingLine)return;
-    const panelY=h*.765,panelH=h*.205,panelX=pad,panelW=w-pad*2;
+    const panelY=h*.79,panelH=h*.18,panelX=pad,panelW=w-pad*2;
     ctx.save();ctx.fillStyle='rgba(5,9,16,.88)';ctx.strokeStyle=p.accent;ctx.lineWidth=Math.max(2,w*.0025);
     ctx.beginPath();ctx.roundRect(panelX,panelY,panelW,panelH,Math.max(10,w*.012));ctx.fill();ctx.stroke();
     const closeSpace=closingLine?panelH*.22:0;
@@ -693,7 +693,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   ctx.fillRect(0,safeTop,w,h-safeTop);
   // Every subject family gets a different title treatment and placement.
   if(category==='news'){
-    const bandH=vertical?h*.34:h*.31,bandY=h-bandH;
+    const bandH=vertical?h*.34:h*.45,bandY=h-bandH;
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(8,12,22,.35)');g.addColorStop(.3,'rgba(8,12,22,.94)');g.addColorStop(1,'rgba(8,12,22,.98)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(0,bandY,w,Math.max(12,h*.018));
