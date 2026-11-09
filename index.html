@@ -1822,11 +1822,12 @@ header.wrap.nav>div:last-child a:hover{
  header.wrap.nav>div:last-child a{font-size:14px!important;padding:7px 3px!important}
 }
 
-/* Clear, larger hero headline with safe Devanagari line spacing */
+/* Extra-bold Marathi hero headline using a loaded heavy Devanagari font */
 html body .hero h1{
-  font-family:"Mukta","Noto Sans Devanagari","Hind Vadodara",sans-serif!important;
+  font-family:"Anek Devanagari","Mukta","Noto Sans Devanagari",sans-serif!important;
   font-size:clamp(48px,5vw,72px)!important;
   font-weight:900!important;
+  -webkit-text-stroke:.45px currentColor!important;
   line-height:1.58!important;
   letter-spacing:0!important;
   word-spacing:2px!important;
@@ -1838,6 +1839,8 @@ html body .hero h1{
 html body .hero h1 span{
   display:inline!important;
   line-height:inherit!important;
+  font-weight:900!important;
+  -webkit-text-stroke:.55px currentColor!important;
 }
 html body .hero p{
   margin-top:0!important;
