@@ -1696,6 +1696,73 @@ html body #thumbnail-maker .tm-preview{width:100%!important;max-width:100%!impor
   html body #thumbnail-maker .tm-grid>div{padding:11px!important}
 }
 
+
+
+/* Mobile Marathi text wrapping + consistent visible borders for every content box */
+html{overflow-x:hidden!important}
+body{width:100%!important;max-width:100%!important;overflow-x:hidden!important}
+main,.wrap,section,.section-head,.grid,.tools,.formbox,.card,.tool,.hero-card,footer{
+ min-width:0!important;max-width:100%!important;
+}
+section{width:100%!important}
+.section-head h2,
+.section-head p,
+.card h3,.card p,
+.tool h3,.tool p,
+.formbox h3,.formbox p,
+.notice,.result,footer,.diwali-welcome strong,.diwali-welcome p,.diwali-offer{
+ max-width:100%!important;
+ overflow-wrap:anywhere!important;
+ word-break:normal!important;
+ white-space:normal!important;
+}
+.section-head h2{
+ font-size:clamp(25px,6.4vw,40px)!important;
+ line-height:1.28!important;
+}
+.section-head p{
+ font-size:clamp(15px,4vw,18px)!important;
+ line-height:1.65!important;
+}
+.card h3,.tool h3,.formbox h3{
+ font-size:clamp(19px,5vw,24px)!important;
+ line-height:1.35!important;
+}
+.card p,.tool p,.formbox p{
+ font-size:clamp(14px,3.8vw,17px)!important;
+ line-height:1.65!important;
+}
+.grid>.card,.tools>.tool,.formbox,.hero-card,
+#thumbnail-maker .tm-grid>div{
+ border:1.5px solid #ffd477!important;
+ border-radius:15px!important;
+}
+.grid>.card,.tools>.tool,.formbox{
+ padding:clamp(14px,3.5vw,24px)!important;
+}
+.card:before,.tool:before,.formbox:before,.hero-card:before{
+ left:0!important;right:0!important;max-width:100%!important;
+}
+input,textarea,select,.btn{
+ max-width:100%!important;min-width:0!important;
+}
+.result{white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+footer .wrap{overflow-wrap:anywhere!important}
+@media(max-width:700px){
+ .grid,.tools{grid-template-columns:minmax(0,1fr)!important}
+ .section-head{padding-left:2px!important;padding-right:2px!important}
+ .section-head h2{font-size:clamp(24px,7vw,34px)!important}
+ .section-head p{font-size:16px!important}
+ .card h3,.tool h3,.formbox h3{font-size:21px!important}
+ .card p,.tool p,.formbox p{font-size:15px!important}
+ .grid>.card,.tools>.tool,.formbox{padding:16px!important}
+ footer{font-size:14px!important;line-height:1.65!important}
+}
+@media(max-width:360px){
+ .section-head h2{font-size:24px!important}
+ .section-head p{font-size:15px!important}
+ .card h3,.tool h3,.formbox h3{font-size:19px!important}
+}
 </style>
 </head>
 <body>
