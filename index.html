@@ -2327,6 +2327,22 @@ html body main>section#services{
   box-shadow:0 0 0 1px rgba(255,216,119,.20),0 8px 22px rgba(0,15,35,.32),0 0 14px rgba(255,191,70,.20)!important;
   box-sizing:border-box!important;
 }
+
+/* Services cards: use the same clearly visible gold frame as the section */
+html body #services .grid>.card{
+  border:3px solid #ffd477!important;
+  border-radius:18px!important;
+  outline:0!important;
+  box-shadow:0 0 0 1px rgba(255,212,119,.28),0 8px 22px rgba(0,15,35,.34),0 0 16px rgba(255,191,70,.28)!important;
+  box-sizing:border-box!important;
+}
+html body #services .grid>.card:before{
+  border-top-left-radius:14px!important;
+  border-top-right-radius:14px!important;
+  left:0!important;
+  right:0!important;
+  width:100%!important;
+}
 </style>
 </head>
 <body>
