@@ -2588,6 +2588,19 @@ html body #services .grid>.card .emoji{
     min-height:60px!important;
   }
 }
+
+/* One balanced, consistent shadow for all readable page text */
+html body :is(h1,h2,h3,h4,h5,h6,p,a,span,strong,b,em,label,small,li,button,
+  .brand,.nav,.eyebrow,.stat,.tag,.price,.notice,.result,.section-head,
+  .card,.tool,.formbox,.hero-card,footer,summary,td,th){
+  text-shadow:0 1px 2px rgba(0,0,0,.42)!important;
+}
+html body input,
+html body textarea,
+html body select,
+html body option{
+  text-shadow:0 1px 2px rgba(0,0,0,.28)!important;
+}
 </style>
 </head>
 <body>
