@@ -613,7 +613,14 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   };
   const p=palettes[category]||palettes.general,pad=Math.round(w*.055);
   const displayFonts={history:'"Khand","Baloo 2","Mukta",sans-serif',news:'"Hind Vadodara","Khand","Mukta",sans-serif',travel:'"Khand","Mukta","Hind Vadodara",sans-serif',product:'"Baloo 2","Mukta","Hind Vadodara",sans-serif',festival:'"Baloo 2","Khand","Mukta",sans-serif',culture:'"Khand","Baloo 2","Mukta",sans-serif',sports:'"Khand","Hind Vadodara","Mukta",sans-serif',nature:'"Khand","Mukta","Hind Vadodara",sans-serif',education:'"Hind Vadodara","Mukta",sans-serif',general:'"Baloo 2","Khand","Mukta",sans-serif'};
-  const direction=String(designDirection||'').toLowerCase();\n  const fontStack=displayFonts[category]||displayFonts.general;
+  const direction=String(designDirection||'').toLowerCase();
+  const directionFont=/paint|brush|hand.?draw|hand.?paint|folk|traditional|artistic|चित्रशैली|हस्तचित्र/i.test(direction)
+    ? '"Khand","Baloo 2","Mukta",sans-serif'
+    : /modern|technology|minimal|clean|futuristic|आधुनिक/i.test(direction)
+      ? '"Baloo 2","Hind Vadodara","Mukta",sans-serif'
+      : (displayFonts[category]||displayFonts.general);
+  const directionAlign=/right|उजवीकडे/i.test(direction)?'right':/center|centred|मध्यभागी/i.test(direction)?'center':'left';
+  const fontStack=directionFont;
   const maxW=w-pad*2;
   function fitLines(text,maxWidth,maxHeight,initial,min){
     let size=initial,lines=[];
@@ -808,7 +815,9 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(10,10,24,.12)');g.addColorStop(.3,'rgba(10,10,24,.88)');g.addColorStop(1,'rgba(10,10,24,.96)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.15,190),Math.max(7,h*.01));
-    drawTitle(pad,bandY+bandH*.30,maxW,bandH*.38,'left');drawSub(pad,bandY+bandH*.57,maxW*.94,'left');
+    const tx=directionAlign==='right'?w-pad:directionAlign==='center'?w/2:pad;
+    drawTitle(tx,bandY+bandH*.30,maxW,bandH*.38,directionAlign);
+    drawSub(tx,bandY+bandH*.57,maxW*.94,directionAlign);
   }
   if(category!=='history')drawSupportingInfo();
   tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
