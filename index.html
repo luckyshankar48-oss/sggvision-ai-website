@@ -724,7 +724,10 @@ async function makeThumbnail(){
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
       tmCompose(img,headline,sub,data.category||'general');
-      const sourceNote=data.imageSource ? ' संदर्भचित्र: '+data.imageSource.title+' ('+data.imageSource.license+').' : ' स्वतंत्र AI चित्र वापरले.';
+      const sources=Array.isArray(data.imageSource)?data.imageSource:[];
+      const sourceNote=sources.length
+        ? ' वापरलेले संदर्भ: '+sources.map(item=>item.title+' ('+item.license+')').join(', ')+'.'
+        : ' योग्य परवान्याचा संदर्भफोटो मिळाला नाही; स्वतंत्र AI चित्र वापरले.';
       status.textContent='तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.'+sourceNote;
     }
   }catch(e){status.textContent='थंबनेल त्रुटी: '+(e&&e.message?e.message:'अज्ञात त्रुटी')}
