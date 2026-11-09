@@ -35,24 +35,31 @@ export async function onRequestPost({ request, env }) {
         },
         { role: "user", content: prompt }
       ],
-      max_tokens: 1800,
-      temperature: 0.65
+      max_completion_tokens: 1800,
+      temperature: 0.65,
+      chat_template_kwargs: { enable_thinking: false }
     });
 
-    const rawAnswer = typeof result === "string"
-      ? result
-      : (
-          result?.response ??
-          result?.result?.response ??
-          result?.choices?.[0]?.message?.content ??
-          result?.result?.choices?.[0]?.message?.content ??
-          result?.output_text ??
-          ""
-        );
+    const message = result?.choices?.[0]?.message
+      || result?.result?.choices?.[0]?.message
+      || {};
+    let rawAnswer = message.content
+      ?? result?.response
+      ?? result?.result?.response
+      ?? result?.choices?.[0]?.text
+      ?? result?.result?.choices?.[0]?.text
+      ?? result?.output_text
+      ?? "";
 
-    const answer = Array.isArray(rawAnswer)
-      ? rawAnswer.map(part => typeof part === "string" ? part : (part?.text || "")).join("\n").trim()
-      : String(rawAnswer || "").trim();
+    if (Array.isArray(rawAnswer)) {
+      rawAnswer = rawAnswer.map(part =>
+        typeof part === "string" ? part : (part?.text || part?.content || "")
+      ).join("\\n");
+    } else if (rawAnswer && typeof rawAnswer === "object") {
+      rawAnswer = rawAnswer.text || rawAnswer.content || "";
+    }
+
+    const answer = String(rawAnswer || "").trim();
 
     if (!answer || typeof answer !== "string") {
       return new Response(JSON.stringify({ error: "AI कडून रिकामे उत्तर मिळाले. कृपया पुन्हा प्रयत्न करा." }), { status: 502, headers });
