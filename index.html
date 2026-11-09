@@ -28,7 +28,7 @@ footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-s
 @media(max-width:540px){.grid{grid-template-columns:1fr}.nav{align-items:flex-start;gap:12px;flex-direction:column}.nav div:last-child{display:flex;flex-wrap:wrap;gap:10px}.nav a{margin:0}}
 
 /* Diwali festive layer — preserves existing layout and tools */
-@import url('https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Khand:wght@500;600;700&family=Baloo+2:wght@600;700;800&family=Hind+Vadodara:wght@600;700;800&display=swap');
 body{font-family:"Khand","Hind Vadodara","Mukta","Noto Sans Devanagari",system-ui,sans-serif}
 .diwali-top{position:relative;overflow:hidden;text-align:center;padding:10px 14px;background:linear-gradient(90deg,#40104e,#8b2a35,#5a174b);color:#ffe8a3;border-bottom:1px solid #f4bd54;font-weight:700;letter-spacing:.4px}
 .diwali-top:before,.diwali-top:after{content:"✦";position:absolute;color:#ffd66e;top:8px;animation:diwaliTwinkle 2.4s ease-in-out infinite}
@@ -612,7 +612,8 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     general:{ink:'#fff',accent:'#e8c66b',deep:'#28203b'}
   };
   const p=palettes[category]||palettes.general,pad=Math.round(w*.055);
-  const fontStack='"Mukta","Hind Vadodara","Noto Sans Devanagari",sans-serif';
+  const displayFonts={history:'"Khand","Baloo 2","Mukta",sans-serif',news:'"Hind Vadodara","Khand","Mukta",sans-serif',travel:'"Khand","Mukta","Hind Vadodara",sans-serif',product:'"Baloo 2","Mukta","Hind Vadodara",sans-serif',festival:'"Baloo 2","Khand","Mukta",sans-serif',culture:'"Khand","Baloo 2","Mukta",sans-serif',sports:'"Khand","Hind Vadodara","Mukta",sans-serif',nature:'"Khand","Mukta","Hind Vadodara",sans-serif',education:'"Hind Vadodara","Mukta",sans-serif',general:'"Baloo 2","Khand","Mukta",sans-serif'};
+  const fontStack=displayFonts[category]||displayFonts.general;
   const maxW=w-pad*2;
   function fitLines(text,maxWidth,maxHeight,initial,min){
     let size=initial,lines=[];
@@ -626,23 +627,28 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     return {size,lines,lineH:size*1.08};
   }
   function drawTitle(x,y,maxWidth,maxHeight,align='left'){
-    const initial=Math.round(w*(vertical?.088:.09));
+    const initial=Math.round(w*(vertical?.102:.108));
     const t=fitLines(headline,maxWidth,maxHeight,initial,vertical?30:36);
     ctx.textAlign=align;ctx.textBaseline='middle';ctx.lineJoin='round';
     t.lines.forEach((line,i)=>{
       const yy=y+(i-(t.lines.length-1)/2)*t.lineH;
-      ctx.lineWidth=Math.max(4,t.size*.09);ctx.strokeStyle='rgba(0,0,0,.78)';
-      ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=14;ctx.strokeText(line,x,yy,maxWidth);
-      ctx.fillStyle=p.ink;ctx.fillText(line,x,yy,maxWidth);
+      ctx.lineWidth=Math.max(5,t.size*.105);ctx.strokeStyle='rgba(10,7,4,.94)';
+      ctx.shadowColor='rgba(0,0,0,.82)';ctx.shadowBlur=17;ctx.strokeText(line,x,yy,maxWidth);
+      const grad=ctx.createLinearGradient(0,yy-t.size*.55,0,yy+t.size*.55);
+      grad.addColorStop(0,category==='news'?'#ffffff':'#fff9df');grad.addColorStop(.48,p.ink);
+      grad.addColorStop(1,category==='history'||category==='festival'?'#f4bd42':'#d8efff');
+      ctx.fillStyle=grad;ctx.fillText(line,x,yy,maxWidth);
+      ctx.lineWidth=Math.max(1.5,t.size*.018);ctx.strokeStyle='rgba(255,255,255,.58)';ctx.shadowBlur=0;ctx.strokeText(line,x,yy,maxWidth);
     });
     ctx.shadowBlur=0;return t;
   }
   function drawSub(x,y,maxWidth,align='left'){
     if(!sub)return;
-    const t=fitLines(sub,maxWidth,Math.round(h*.14),Math.round(w*(vertical?.045:.038)),vertical?22:25);
-    ctx.textAlign=align;ctx.textBaseline='middle';ctx.font='800 '+t.size+'px '+fontStack;
-    ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=9;
-    t.lines.forEach((line,i)=>ctx.fillText(line,x,y+(i-(t.lines.length-1)/2)*t.lineH,maxWidth));
+    const t=fitLines(sub,maxWidth,Math.round(h*.14),Math.round(w*(vertical?.052:.047)),vertical?24:28);
+    ctx.textAlign=align;ctx.textBaseline='middle';ctx.font='900 '+t.size+'px "Hind Vadodara","Mukta",sans-serif';
+    ctx.textAlign=align;ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,t.size*.07);ctx.strokeStyle='rgba(0,0,0,.8)';
+    ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=11;
+    t.lines.forEach((line,i)=>{const yy=y+(i-(t.lines.length-1)/2)*t.lineH;ctx.strokeText(line,x,yy,maxWidth);ctx.fillText(line,x,yy,maxWidth)});
     ctx.shadowBlur=0;
   }
   // Every subject family gets a different title treatment and placement.
