@@ -59,7 +59,7 @@ async function findReferenceImage(query, kind = "subject") {
   url.searchParams.set("size", "medium");
   const response = await fetch(url.toString(), {
     headers: { "Accept": "application/json", "User-Agent": "SGGVISION-AI-Thumbnail/1.0" },
-    signal: AbortSignal.timeout(9000)
+    signal: AbortSignal.timeout(6500)
   });
   if (!response.ok) return null;
   const payload = await response.json();
@@ -140,22 +140,21 @@ export async function onRequestPost({ request, env }) {
       return jsonResponse({ error: "AI कडून विषयाचे योग्य डिझाइन नियोजन मिळाले नाही. कृपया पुन्हा प्रयत्न करा." }, 502, headers);
     }
 
-    // Stage 2: find an openly licensed reference image when a relevant real-world subject is named.
+    // Stage 2: search exact place/person references concurrently to reduce waiting time.
     let placeReference = null;
     let personReference = null;
-    try {
-      const placeQueries = [
-        String(plan.place_search_query || "").trim(),
-        String(plan.search_query || "").trim()
-      ].filter(Boolean);
-      const personQueries = [String(plan.person_search_query || "").trim()].filter(Boolean);
-      for (const query of [...new Set(placeQueries)]) {
-        if (!placeReference) placeReference = await findReferenceImage(query, "place");
-      }
-      for (const query of [...new Set(personQueries)]) {
-        if (!personReference) personReference = await findReferenceImage(query, "person");
-      }
-    } catch { /* A failed reference search must not stop image generation. */ }
+    const placeQueries = [...new Set([
+      String(plan.place_search_query || "").trim(),
+      String(plan.search_query || "").trim()
+    ].filter(Boolean))].slice(0, 2);
+    const personQueries = [...new Set([String(plan.person_search_query || "").trim()].filter(Boolean))];
+    const referenceJobs = [
+      ...placeQueries.map(query => findReferenceImage(query, "place").catch(() => null)),
+      ...personQueries.map(query => findReferenceImage(query, "person").catch(() => null))
+    ];
+    const referenceResults = await Promise.all(referenceJobs);
+    placeReference = referenceResults.slice(0, placeQueries.length).find(Boolean) || null;
+    personReference = referenceResults.slice(placeQueries.length).find(Boolean) || null;
     const references = [
       ...(placeReference ? [{ ...placeReference, kind: "place" }] : []),
       ...(personReference ? [{ ...personReference, kind: "person" }] : [])
