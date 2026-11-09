@@ -765,8 +765,8 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
 }
 function tmReadBrief(raw){
   const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
-  const headlineMatch=text.match(/(?:मुख्य ?मजकूर|थंबनेलवरील मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle)\s*[:：-]|$)/i);
-  const subMatch=text.match(/(?:उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)\s*$/i);
+  const headlineMatch=text.match(/(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i);
+  const subMatch=text.match(/(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points)\s*[:：-]|$)/i);
   const clean=v=>String(v||'').replace(/Prompt कॉपी करा/gi,'').replace(/\s+/g,' ').trim();
   return {text,headline:clean(headlineMatch?.[1]),sub:clean(subMatch?.[1])};
 }
@@ -801,7 +801,7 @@ async function makeThumbnail(){
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
       if(document.fonts&&document.fonts.ready) await document.fonts.ready;
-      tmCompose(img,headline,sub,data.category||'general');
+      tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general');
       const sources=Array.isArray(data.imageSource)?data.imageSource:[];
       const sourceNote=sources.length
         ? ' वापरलेले संदर्भ: '+sources.map(item=>item.title+' ('+item.license+')').join(', ')+'.'
