@@ -2601,6 +2601,14 @@ html body select,
 html body option{
   text-shadow:0 1px 2px rgba(0,0,0,.28)!important;
 }
+
+/* Readable formatting for AI-generated Markdown output */
+html body .result h2,html body .result h3,html body .result h4{
+ color:#ffe0a0!important;margin:12px 0 7px!important;font-weight:900!important;
+}
+html body .result strong{color:#fff!important;font-weight:900!important}
+html body .result hr{border:0;border-top:1px solid rgba(255,212,119,.55);margin:12px 0}
+html body .result .ai-list-item{margin:5px 0;padding-left:8px}
 </style>
 </head>
 <body>
@@ -2675,6 +2683,17 @@ html body option{
 <section id="order"><div class="section-head"><h2>कामाची चौकशी / ऑर्डर</h2><p>तुमची गरज लिहा. खालील बटण चौकशीचा मजकूर तयार करेल.</p></div><div class="formbox"><label for="customer">तुमचे नाव</label><input id="customer" placeholder="नाव"><label for="service">कोणती सेवा हवी?</label><select id="service"><option>YouTube SEO</option><option>मराठी स्क्रिप्ट लेखन</option><option>Thumbnail / पोस्टर</option><option>Reels / Shorts एडिटिंग</option><option>अर्ज / पत्रलेखन</option><option>इतर</option></select><label for="details">कामाची माहिती</label><textarea id="details" placeholder="तुमच्या कामाबद्दल थोडक्यात लिहा..."></textarea><button class="btn" style="margin-top:14px" onclick="makeInquiry()">चौकशीचा संदेश तयार करा</button><div id="inquiry" class="result">संदेश येथे तयार होईल. तो कॉपी करून WhatsApp किंवा ईमेलने पाठवू शकता.</div><button class="btn secondary" onclick="copyInquiry()" style="margin-top:10px">संदेश कॉपी करा</button></div></section>
 </main><footer><div class="wrap">© 2026 SGGVISION AI Digital Services • मराठी डिजिटल सेवा<br>AI तयार केलेला मजकूर प्रकाशित करण्यापूर्वी तथ्य, भाषा आणि हक्क तपासा.</div></footer>
 <script>
+function formatAIText(value){
+ const esc=String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+ return esc
+  .replace(/^###\\s+(.+)$/gm,'<h4>$1</h4>')
+  .replace(/^##\\s+(.+)$/gm,'<h3>$1</h3>')
+  .replace(/^#\\s+(.+)$/gm,'<h2>$1</h2>')
+  .replace(/\\*\\*(.+?)\\*\\*/g,'<strong>$1</strong>')
+  .replace(/^\\s*---+\\s*$/gm,'<hr>')
+  .replace(/^\\s*[-*]\\s+(.+)$/gm,'<div class="ai-list-item">• $1</div>')
+  .replace(/\\n/g,'<br>');
+}
 async function callAI(prompt,target,button){
  const out=document.getElementById(target), old=button.textContent;
  button.disabled=true;button.textContent='तयार होत आहे...';out.textContent='कृपया थोडा वेळ थांबा...';
@@ -2682,7 +2701,7 @@ async function callAI(prompt,target,button){
   const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
   const data=await r.json();
   if(!r.ok) throw new Error(data.error||'AI सेवा सध्या उपलब्ध नाही.');
-  out.textContent=data.text||'उत्तर मिळाले नाही.';
+  out.innerHTML=formatAIText(data.text||'उत्तर मिळाले नाही.');
  }catch(e){out.textContent='AI सेवा त्रुटी: '+e.message;}
  finally{button.disabled=false;button.textContent=old;}
 }
@@ -2698,7 +2717,7 @@ async function askPortalHelp(){
   const prompt='तुम्ही SGGVISION AI Digital Services या पोर्टलचे नम्र ग्राहक मदत सहाय्यक आहात. विषय: '+topic+'. ग्राहकाचा प्रश्न: '+question+'. मराठीत सोप्या, टप्प्याटप्प्याने सूचना द्या. पोर्टलमध्ये नसलेली सुविधा आहे असे सांगू नका. पेमेंट, पासवर्ड, OTP किंवा खात्याची गोपनीय माहिती मागू नका. खात्री नसल्यास अधिकृत मदत ईमेल sggvisiondigitalservices@gmail.com वर संपर्क करण्यास सांगा.';
   const response=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
   const data=await response.json();if(!response.ok)throw new Error(data.error||'मदत सेवा सध्या उपलब्ध नाही.');
-  out.textContent=data.text||'उत्तर मिळाले नाही.';
+  out.innerHTML=formatAIText(data.text||'उत्तर मिळाले नाही.');
  }catch(error){out.textContent='माफ करा, मदत मिळवताना अडचण आली: '+error.message+' अधिकृत ईमेल: sggvisiondigitalservices@gmail.com'}
  finally{btn.disabled=false;btn.textContent=old}
 }
