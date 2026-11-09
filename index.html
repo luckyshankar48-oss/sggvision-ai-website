@@ -1300,6 +1300,47 @@ a:not(.btn){color:#ffe18b!important;-webkit-text-fill-color:#ffe18b!important}
 input,textarea,select{color:#fff!important;-webkit-text-fill-color:#fff!important}
 input::placeholder,textarea::placeholder{color:#dcecf4!important;-webkit-text-fill-color:#dcecf4!important}
 
+
+/* Readability fix for light service cards: dark text on white panels */
+.tools .tool,
+#services .card,
+.formbox{
+ color:#173b52!important;
+ -webkit-text-fill-color:#173b52!important;
+}
+.tools .tool h2,.tools .tool h3,.tools .tool h4,
+#services .card h2,#services .card h3,#services .card h4,
+.formbox h2,.formbox h3,.formbox h4{
+ color:#123e5a!important;
+ -webkit-text-fill-color:#123e5a!important;
+ text-shadow:none!important;
+}
+.tools .tool p,.tools .tool label,.tools .tool .hint,
+#services .card p,#services .card label,
+.formbox p,.formbox label,.formbox .hint{
+ color:#294b61!important;
+ -webkit-text-fill-color:#294b61!important;
+ text-shadow:none!important;
+ opacity:1!important;
+}
+.tools .tool .tag,#services .card .tag,.formbox .tag,
+.tools .tool .step,#services .card .step{
+ color:#813b08!important;
+ -webkit-text-fill-color:#813b08!important;
+ text-shadow:none!important;
+}
+.tools .tool input,.tools .tool textarea,.tools .tool select,
+.formbox input,.formbox textarea,.formbox select{
+ color:#173b52!important;
+ -webkit-text-fill-color:#173b52!important;
+}
+.tools .tool input::placeholder,.tools .tool textarea::placeholder,
+.formbox input::placeholder,.formbox textarea::placeholder{
+ color:#587386!important;
+ -webkit-text-fill-color:#587386!important;
+ opacity:1!important;
+}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
