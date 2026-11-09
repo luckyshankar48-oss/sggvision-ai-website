@@ -2853,7 +2853,8 @@ async function callAI(prompt,target,button){
  const out=document.getElementById(target), old=button.textContent;
  button.disabled=true;button.textContent='तयार होत आहे...';out.textContent='कृपया थोडा वेळ थांबा...';
  try{
-  const languageRule=window.sggLanguage==='en'?'\n\nIMPORTANT: Write the complete response in clear, natural English only. Do not use Marathi unless the user specifically requests a Marathi phrase.':'\n\nमहत्त्वाचे: संपूर्ण उत्तर शुद्ध, नैसर्गिक मराठीत द्या. वापरकर्त्याने इंग्रजी मजकूर मागितला नसेल तर इंग्रजी वाक्ये वापरू नका.';\n  const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt+languageRule})});
+  const languageRule=window.sggLanguage==='en'?'\n\nIMPORTANT: Write the complete response in clear, natural English only. Do not use Marathi unless the user specifically requests a Marathi phrase.':'\n\nमहत्त्वाचे: संपूर्ण उत्तर शुद्ध, नैसर्गिक मराठीत द्या. वापरकर्त्याने इंग्रजी मजकूर मागितला नसेल तर इंग्रजी वाक्ये वापरू नका.';
+  const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt+languageRule})});
   const data=await r.json();
   if(!r.ok) throw new Error(data.error||'AI सेवा सध्या उपलब्ध नाही.');
   out.innerHTML=formatAIText(data.text||'उत्तर मिळाले नाही.');
