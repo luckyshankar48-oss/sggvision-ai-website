@@ -882,6 +882,26 @@ header.wrap.nav{background:rgba(255,255,255,.68)!important;border-radius:0 0 14p
 @media(prefers-reduced-motion:reduce){
  .hero-card,.card,.tool,.formbox,.hero-card:after,.card:after,.tool:after,.formbox:after{animation:none!important}
 }
+
+/* Fix service-card contrast: beat the older nth-child white-card rules */
+#services .grid>.card:nth-child(n){
+  background:linear-gradient(135deg,rgba(58,119,174,.96),rgba(111,169,211,.94) 52%,rgba(43,91,143,.97))!important;
+  border:1px solid rgba(235,248,255,.78)!important;
+  box-shadow:0 12px 30px rgba(25,65,105,.22),inset 0 1px 0 rgba(255,255,255,.32)!important;
+}
+#services .grid>.card:nth-child(n) h3{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+  text-shadow:0 1px 3px rgba(15,48,79,.45)!important;
+}
+#services .grid>.card:nth-child(n) p{
+  color:#f4faff!important;-webkit-text-fill-color:#f4faff!important;
+  text-shadow:0 1px 3px rgba(15,48,79,.38)!important;
+  font-weight:700!important;
+}
+#services .grid>.card:nth-child(n) .emoji{filter:drop-shadow(0 2px 2px rgba(0,0,0,.2))}
+#services .grid>.card:nth-child(n):after{
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent)!important;
+}
 </style></head>
 <body>
 
