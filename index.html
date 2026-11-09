@@ -2009,6 +2009,32 @@ html body .hero h1 span{
     line-height:1.42!important;
   }
 }
+
+/* Restore the large hero headline size while keeping the cleaner finish */
+html body .hero h1,
+html body .hero h1 span{
+  font-family:"Anek Devanagari","Mukta",sans-serif!important;
+  font-size:clamp(54px,5.8vw,80px)!important;
+  font-weight:900!important;
+  line-height:1.5!important;
+  letter-spacing:0!important;
+  -webkit-text-stroke:0!important;
+  text-shadow:0 2px 4px rgba(0,0,0,.32)!important;
+}
+html body .hero h1 span{
+  background:linear-gradient(100deg,#ffe39a 0%,#ffc45e 48%,#ff9b78 100%)!important;
+  -webkit-background-clip:text!important;
+  background-clip:text!important;
+  color:transparent!important;
+  -webkit-text-fill-color:transparent!important;
+}
+@media(max-width:800px){
+  html body .hero h1,
+  html body .hero h1 span{
+    font-size:clamp(44px,9vw,60px)!important;
+    line-height:1.5!important;
+  }
+}
 </style>
 </head>
 <body>
