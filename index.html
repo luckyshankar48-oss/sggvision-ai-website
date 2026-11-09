@@ -516,4 +516,5 @@ function letterAI(){const t=document.getElementById('letterTopic').value.trim(),
 function makeInquiry(){let n=document.getElementById('customer').value.trim(),s=document.getElementById('service').value,d=document.getElementById('details').value.trim();if(!n||!d){alert('कृपया नाव आणि कामाची माहिती भरा.');return}window.inquiryText='नमस्कार SGGVISION AI, माझे नाव '+n+'. मला '+s+' ही सेवा हवी आहे. कामाची माहिती: '+d+'. कृपया दर आणि वेळ कळवा.';document.getElementById('inquiry').textContent=window.inquiryText}
 function copyInquiry(){if(!window.inquiryText){alert('आधी चौकशीचा संदेश तयार करा.');return}navigator.clipboard.writeText(window.inquiryText).then(()=>alert('संदेश कॉपी झाला.')).catch(()=>alert('संदेश निवडून कॉपी करा.'))}
 document.querySelectorAll('button[onclick^="seoDemo"],button[onclick^="scriptDemo"]').forEach(b=>{let f=b.getAttribute('onclick');b.setAttribute('onclick',f.replace('seoDemo()','seoDemo(this)').replace('scriptDemo()','scriptDemo(this)'))});
-</script></body></html>
+</script><!-- SGGVISION Workers AI production release trigger -->
+</body></html>
