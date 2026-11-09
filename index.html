@@ -503,12 +503,9 @@ body{
    <div>
     <label for="tmMode">थंबनेल तयार करण्याची पद्धत</label>
     <select id="tmMode"><option value="ai">AI ने नवीन पार्श्वचित्र तयार करा</option><option value="photo">माझा फोटो वापरून थंबनेल तयार करा</option></select>
-    <label for="tmTopic">व्हिडिओचा विषय / AI साठी दृश्य वर्णन</label>
-    <textarea id="tmTopic" maxlength="900" placeholder="उदा. रायगड किल्ला, पहाटेचा नजारा, भगवा ध्वज, सिनेमॅटिक ऐतिहासिक वातावरण"></textarea>
-    <label for="tmHeadline">थंबनेलवरील मुख्य मजकूर</label>
-    <input id="tmHeadline" maxlength="90" placeholder="उदा. राजधानी रायगड">
-    <label for="tmSubline">उपमथळा (ऐच्छिक)</label>
-    <input id="tmSubline" maxlength="100" placeholder="उदा. छत्रपती शिवरायांचा अभेद्य दुर्ग">
+    <label for="tmTopic">तुम्हाला कोणते थंबनेल हवे आहे? (संपूर्ण माहिती येथे लिहा)</label>
+    <textarea id="tmTopic" maxlength="1800" rows="7" placeholder="उदा. रायगड किल्ल्याचे भव्य आणि खरे ऐतिहासिक दृश्य दाखवा. आकाशात भगवा ध्वज असू द्या. थंबनेलवरील मोठा मजकूर: राजधानी रायगड. खाली छोटा मजकूर: छत्रपती शिवरायांचा अभेद्य दुर्ग. रंग उठावदार ठेवा, मजकूर मोठा आणि स्पष्ट असू द्या."></textarea>
+    <p class="tm-small">एकाच संदेशात विषय, दाखवायचे दृश्य, मुख्य मजकूर, छोटा मजकूर, रंग आणि आवडती शैली लिहा. वेगळे तांत्रिक पर्याय भरण्याची गरज नाही.</p>
     <label for="tmRatio">इमेजचा आकार</label>
     <select id="tmRatio"><option value="16:9">YouTube Thumbnail 16:9</option><option value="9:16">YouTube Shorts 9:16</option></select>
     <div id="tmPhotoWrap" hidden>
@@ -525,7 +522,7 @@ body{
    <div>
     <label>तयार थंबनेल Preview</label>
     <canvas id="tmCanvas" class="tm-preview" width="1280" height="720" aria-label="तयार थंबनेल Preview"></canvas>
-    <p class="tm-small">मुख्य मजकूर इमेजवर स्पष्ट दिसेल अशा पट्टीत बसवला जाईल. डाउनलोड करण्यापूर्वी मराठी मजकूर तपासा.</p>
+    <p class="tm-small">तुमच्या संदेशातील मुख्य मजकूर मोठ्या अक्षरांत डिझाइनमध्ये बसवला जाईल. डाउनलोड करण्यापूर्वी Preview तपासा.</p>
    </div>
   </div>
  </div>
@@ -592,7 +589,7 @@ function tmWrapText(ctx,text,maxWidth,maxLines){
   }
   return lines;
 }
-function tmCompose(img){
+function tmCompose(img,headlineOverride,subOverride){
   const ratio=document.getElementById('tmRatio').value;
   const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
   const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
@@ -600,8 +597,9 @@ function tmCompose(img){
   if(img){tmDrawCover(ctx,img,w,h)}
   else{const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#111a36');g.addColorStop(.55,'#4b1746');g.addColorStop(1,'#101b39');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
   const vertical=ratio!=='16:9';
-  const headline=document.getElementById('tmHeadline').value.trim();
-  const sub=document.getElementById('tmSubline').value.trim();
+  const brief=tmReadBrief(document.getElementById('tmTopic').value);
+  const headline=headlineOverride||brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70);
+  const sub=subOverride||brief.sub;
   const pad=Math.round(w*(vertical?.065:.055));
   const bandH=Math.round(h*(vertical?.34:.40)),bandY=h-bandH;
   const shade=ctx.createLinearGradient(0,bandY,0,h);
@@ -636,9 +634,16 @@ function tmCompose(img){
   ctx.shadowBlur=0;ctx.shadowColor='transparent';
   tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
+function tmReadBrief(raw){
+  const text=String(raw||'').trim();
+  const get=(labels)=>{const re=new RegExp('(?:'+labels+')[\\s:：-]*([^\\n。]+)','i');const m=text.match(re);return m?m[1].trim():''};
+  const headline=get('मुख्य ?मजकूर|थंबनेलवरील मजकूर|शीर्षक|headline|title');
+  const sub=get('छोटा ?मजकूर|उपमथळा|subline|subtitle');
+  return {text,headline,sub};
+}
 async function makeThumbnail(){
-  const topic=document.getElementById('tmTopic').value.trim();
-  const headline=document.getElementById('tmHeadline').value.trim();
+  const brief=tmReadBrief(document.getElementById('tmTopic').value);
+  const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70),sub=brief.sub;
   const mode=tmModeEl.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
   if(!topic&&!headline){alert('कृपया विषय किंवा मुख्य मजकूर लिहा.');return}
   btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='थंबनेल तयार होत आहे. कृपया थांबा...';
@@ -651,21 +656,21 @@ async function makeThumbnail(){
       const url=URL.createObjectURL(file);
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
-      tmCompose(img);URL.revokeObjectURL(url);
+      tmCompose(img,headline,sub);URL.revokeObjectURL(url);
       status.textContent='तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.';
     }else{
       if(!topic){throw new Error('AI पार्श्वचित्रासाठी विषयाचे वर्णन लिहा.')}
       const ratio=document.getElementById('tmRatio').value;
       const isFort=/(raigad|raygad|fort|killa|किल्ला|रायगड)/i.test(topic);
       const subjectRules=isFort?'Show a historically plausible Maratha hill fort in the Sahyadri: rugged basalt stone ramparts, hilltop terrain, authentic fort gateways and mountain landscape. STRICTLY AVOID domes, minarets, Mughal or Islamic palace architecture, Taj Mahal, grand palace buildings, and modern structures. Do not depict a generic palace.':'Show the specific subject described, accurately and recognizably; avoid unrelated landmarks or architecture.';
-      const prompt='Create a premium, eye-catching Indian Marathi YouTube thumbnail BACKGROUND. Exact subject: '+topic+'. '+subjectRules+' Photorealistic documentary-style photography, dramatic natural lighting, strong subject separation, vivid but believable colors, crisp details, professional editorial composition. Keep the main subject large and unmistakable. Reserve a dark uncluttered area across the bottom 38 percent for large Marathi title text added later. Absolutely no text, letters, captions, signs, watermarks or logos. Aspect ratio '+ratio+'.';
+      const prompt='Create a premium, high-impact YouTube thumbnail BACKGROUND, not a poster, flyer, banner or generic landscape. User brief: '+topic+'. '+subjectRules+' Make a bold thumbnail composition with one unmistakable large subject, dramatic close framing, energetic depth, vivid high-contrast colors, cinematic lighting, crisp detail and clear visual hierarchy. Compose like a professional Indian YouTube creator thumbnail. Keep a clean dark text-safe area across the lower 38 percent. Do not add any text, letters, captions, logos, watermarks, borders or UI. Avoid generic palace architecture and unrelated monuments. Aspect ratio '+ratio+'.';
       const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||'AI इमेज तयार झाली नाही.');
       if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/jpeg;base64,'+data.image});
-      tmCompose(img);status.textContent='AI पार्श्वचित्र आणि तुमचा मजकूर वापरून थंबनेल तयार झाले. Preview तपासा.';
+      tmCompose(img,headline,sub);status.textContent='तुमच्या माहितीनुसार थंबनेल तयार झाले. Preview तपासा.';
     }
   }catch(e){status.textContent='थंबनेल त्रुटी: '+e.message}
   finally{btn.disabled=false;btn.textContent='थंबनेल तयार करा'}
