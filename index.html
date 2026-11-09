@@ -2614,6 +2614,11 @@ html body .result .ai-list-item{margin:5px 0;padding-left:8px}
 .language-switch label{font-weight:800;color:#fff}
 .language-switch select{min-width:110px;padding:8px 12px;border:2px solid #ffd477;border-radius:10px;background:#103b59;color:#fff;font-weight:800}
 @media(max-width:700px){.language-switch{margin:6px 0}.language-switch label{font-size:13px}}
+
+/* Keep the full-page translation control invisible; the site's own selector controls it. */
+.goog-te-banner-frame,.skiptranslate iframe{display:none!important}
+body{top:0!important}
+.goog-te-gadget{font-size:0!important}
 </style>
 </head>
 <body>
@@ -2932,66 +2937,44 @@ Object.assign(sggTranslations,{
 'भाषा':'Language',
 'मराठी':'Marathi'
 });
-function applySggLanguageToNode(node,lang){
- if(!node||node.nodeType!==Node.TEXT_NODE||!node.nodeValue.trim())return;
- if(!window.sggOriginalText)window.sggOriginalText=new Map();
- if(!window.sggOriginalText.has(node))window.sggOriginalText.set(node,node.nodeValue);
- const original=window.sggOriginalText.get(node);
- let value=original;
- if(lang==='en'){
-  const entries=Object.entries(sggTranslations).sort((a,b)=>b[0].length-a[0].length);
-  for(const [mr,en] of entries){if(mr.length>=2&&value.includes(mr))value=value.split(mr).join(en);}
-  const exact=original.trim();if(sggTranslations[exact])value=original.replace(exact,sggTranslations[exact]);
+/* Full-page language switching: translate the complete rendered page, not only dictionary matches. */
+function googleTranslateElementInit(){
+ if(window.google&&google.translate&&google.translate.TranslateElement){
+  new google.translate.TranslateElement({pageLanguage:'mr',includedLanguages:'mr,en',autoDisplay:false},'google_translate_element');
+  window.sggGoogleTranslateReady=true;
+  if(window.sggLanguage&&window.sggLanguage!=='mr')setSggLanguage(window.sggLanguage);
  }
- if(node.nodeValue!==value)node.nodeValue=value;
 }
 function setSggLanguage(lang){
- const root=document.body;if(!root)return;
- if(!window.sggOriginalText)window.sggOriginalText=new Map();
- const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
- let node;while((node=walker.nextNode()))applySggLanguageToNode(node,lang);
- document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
-  if(!el.dataset.mrPlaceholder)el.dataset.mrPlaceholder=el.placeholder;
-  el.placeholder=lang==='en'?(sggAttrTranslations[el.dataset.mrPlaceholder]||sggTranslations[el.dataset.mrPlaceholder]||el.dataset.mrPlaceholder):el.dataset.mrPlaceholder;
- });
- document.querySelectorAll('input[value],button,[title],[aria-label]').forEach(el=>{
-  if(el.matches('input[value]')){
-   if(!el.dataset.mrValue)el.dataset.mrValue=el.value;
-   if(lang==='en')el.value=sggTranslations[el.dataset.mrValue]||el.dataset.mrValue;else el.value=el.dataset.mrValue;
+ lang=lang==='en'?'en':'mr';
+ window.sggLanguage=lang;
+ document.documentElement.lang=lang;
+ const choose=()=>{
+  const combo=document.querySelector('.goog-te-combo');
+  if(!combo)return false;
+  if(combo.value!==lang){
+   combo.value=lang;
+   combo.dispatchEvent(new Event('change',{bubbles:true}));
   }
-  for(const attr of ['title','aria-label']){
-   if(el.hasAttribute(attr)){
-    const key='mr'+attr.split('-').map(x=>x[0].toUpperCase()+x.slice(1)).join('');
-    if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);
-    el.setAttribute(attr,lang==='en'?(sggTranslations[el.dataset[key]]||el.dataset[key]):el.dataset[key]);
-   }
-  }
- });
- document.querySelectorAll('select option').forEach(el=>{
-  if(!el.dataset.mrLabel)el.dataset.mrLabel=el.textContent;
-  el.textContent=lang==='en'?(sggTranslations[el.dataset.mrLabel]||el.dataset.mrLabel):el.dataset.mrLabel;
- });
- document.documentElement.lang=lang==='en'?'en':'mr';window.sggLanguage=lang;
+  return true;
+ };
+ if(lang==='mr'){
+  const reset=document.querySelector('.goog-te-banner-frame');
+  if(reset)reset.style.display='none';
+ }
+ if(!choose()){
+  let attempts=0;
+  const retry=()=>{
+   if(choose()||attempts++>40)return;
+   setTimeout(retry,250);
+  };
+  setTimeout(retry,250);
+ }
 }
 const sggLanguageSelect=document.getElementById('siteLanguage');
 if(sggLanguageSelect){
  sggLanguageSelect.addEventListener('change',e=>setSggLanguage(e.target.value));
- setSggLanguage(sggLanguageSelect.value||'mr');
-}
-if(!window.sggLanguageObserver){
- window.sggLanguageObserver=new MutationObserver(records=>{
-  const lang=window.sggLanguage||'mr';
-  for(const record of records){
-   for(const added of record.addedNodes){
-    if(added.nodeType===Node.TEXT_NODE)applySggLanguageToNode(added,lang);
-    else if(added.nodeType===Node.ELEMENT_NODE){
-     const walker=document.createTreeWalker(added,NodeFilter.SHOW_TEXT);let t;
-     while((t=walker.nextNode()))applySggLanguageToNode(t,lang);
-    }
-   }
-  }
- });
- window.sggLanguageObserver.observe(document.body,{childList:true,subtree:true});
+ window.sggLanguage=sggLanguageSelect.value||'mr';
 }
 async function callAI(prompt,target,button){
  const out=document.getElementById(target), old=button.textContent;
@@ -3399,4 +3382,9 @@ function downloadThumbnail(){
 }
 
 </script><!-- SGGVISION Workers AI production release trigger -->
+<div id="google_translate_element" aria-hidden="true" style="position:absolute;left:-10000px;top:-10000px;width:1px;height:1px;overflow:hidden"></div>
+<script>
+window.googleTranslateElementInit=googleTranslateElementInit;
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
 </body></html>
