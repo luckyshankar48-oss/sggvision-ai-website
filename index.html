@@ -623,6 +623,57 @@ body{font-weight:600!important}
   /* Preserve the SGGVISION logo/wordmark's existing font and color treatment */
   font-family:"Khand","Mukta",sans-serif!important;
 }
+
+/* Header navigation: place all links below the SGGVISION wordmark */
+header.wrap.nav{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:12px!important;
+  padding:18px 20px 16px!important;
+}
+header.wrap.nav>div:last-child{
+  display:flex!important;
+  flex-direction:row!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:8px 22px!important;
+  width:100%!important;
+  margin:0!important;
+}
+header.wrap.nav>div:last-child a{
+  display:inline-block!important;
+  margin:0!important;
+  padding:5px 0!important;
+  white-space:nowrap!important;
+  color:#713708!important;
+  font-family:"Mukta","Noto Sans Devanagari",sans-serif!important;
+  font-size:18px!important;
+  font-weight:800!important;
+  line-height:1.55!important;
+}
+header.wrap.nav>div:last-child a:hover{color:#c65c0a!important}
+.brand,.brand span{
+  font-family:"Khand","Mukta",sans-serif!important;
+}
+.hero h1 span{
+  background:none!important;
+  color:#c65c0a!important;
+  -webkit-text-fill-color:#c65c0a!important;
+  text-shadow:none!important;
+}
+.section-head h2{
+  background:none!important;
+  color:#873f0b!important;
+  -webkit-text-fill-color:#873f0b!important;
+}
+@media(max-width:540px){
+ header.wrap.nav{gap:8px!important;padding:14px 16px 12px!important}
+ header.wrap.nav>div:last-child{gap:5px 15px!important}
+ header.wrap.nav>div:last-child a{font-size:17px!important;padding:4px 0!important}
+}
 </style></head>
 <body>
 
