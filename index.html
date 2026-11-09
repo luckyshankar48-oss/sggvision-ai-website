@@ -1822,43 +1822,53 @@ header.wrap.nav>div:last-child a:hover{
  header.wrap.nav>div:last-child a{font-size:14px!important;padding:7px 3px!important}
 }
 
-/* Extra-bold Marathi hero headline using a loaded heavy Devanagari font */
+/* Extra-bold Marathi hero headline: larger on desktop, fluid and safe on phones */
 html body .hero h1{
   font-family:"Anek Devanagari","Mukta","Noto Sans Devanagari",sans-serif!important;
-  font-size:clamp(48px,5vw,72px)!important;
+  font-size:clamp(54px,5.8vw,80px)!important;
   font-weight:900!important;
-  -webkit-text-stroke:.45px currentColor!important;
-  line-height:1.58!important;
+  -webkit-text-stroke:.7px currentColor!important;
+  line-height:1.62!important;
   letter-spacing:0!important;
   word-spacing:2px!important;
-  margin:18px 0 30px!important;
-  padding:5px 0 10px!important;
+  margin:20px 0 32px!important;
+  padding:7px 0 12px!important;
+  width:100%!important;
   max-width:100%!important;
+  min-width:0!important;
   overflow:visible!important;
+  overflow-wrap:break-word!important;
+  word-break:normal!important;
 }
 html body .hero h1 span{
   display:inline!important;
   line-height:inherit!important;
   font-weight:900!important;
-  -webkit-text-stroke:.55px currentColor!important;
+  -webkit-text-stroke:.8px currentColor!important;
 }
 html body .hero p{
   margin-top:0!important;
   line-height:1.85!important;
+  max-width:100%!important;
 }
 @media(max-width:800px){
  html body .hero h1{
-  font-size:clamp(42px,8.8vw,58px)!important;
-  line-height:1.52!important;
-  margin:16px 0 26px!important;
+  font-size:clamp(44px,9vw,60px)!important;
+  line-height:1.55!important;
+  margin:17px 0 27px!important;
+  padding:6px 0 10px!important;
+  -webkit-text-stroke:.6px currentColor!important;
  }
 }
 @media(max-width:480px){
  html body .hero h1{
-  font-size:clamp(36px,9.5vw,46px)!important;
+  font-size:clamp(36px,9.2vw,46px)!important;
   line-height:1.5!important;
   margin:14px 0 24px!important;
+  padding:5px 0 9px!important;
+  -webkit-text-stroke:.5px currentColor!important;
  }
+ html body .hero h1 span{-webkit-text-stroke:.6px currentColor!important}
 }
 </style>
 </head>
