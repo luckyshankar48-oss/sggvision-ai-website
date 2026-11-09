@@ -638,7 +638,7 @@ function tmReadBrief(raw){
   const text=String(raw||'').trim();
   const get=(labels)=>{const re=new RegExp('(?:'+labels+')[\\s:：-]*([^\\n。]+)','i');const m=text.match(re);return m?m[1].trim():''};
   const headline=get('मुख्य ?मजकूर|थंबनेलवरील मजकूर|शीर्षक|headline|title');
-  const sub=get('छोटा ?मजकूर|उपमथळा|subline|subtitle');
+  const sub=get('उपमजकूर|छोटा ?मजकूर|उपमथळा|subline|subtitle');
   return {text,headline,sub};
 }
 async function makeThumbnail(){
@@ -662,8 +662,8 @@ async function makeThumbnail(){
       if(!topic){throw new Error('AI पार्श्वचित्रासाठी विषयाचे वर्णन लिहा.')}
       const ratio=document.getElementById('tmRatio').value;
       const isFort=/(raigad|raygad|fort|killa|किल्ला|रायगड)/i.test(topic);
-      const subjectRules=isFort?'Show a historically plausible Maratha hill fort in the Sahyadri: rugged basalt stone ramparts, hilltop terrain, authentic fort gateways and mountain landscape. STRICTLY AVOID domes, minarets, Mughal or Islamic palace architecture, Taj Mahal, grand palace buildings, and modern structures. Do not depict a generic palace.':'Show the specific subject described, accurately and recognizably; avoid unrelated landmarks or architecture.';
-      const prompt='Create a premium, high-impact YouTube thumbnail BACKGROUND, not a poster, flyer, banner or generic landscape. User brief: '+topic+'. '+subjectRules+' Make a bold thumbnail composition with one unmistakable large subject, dramatic close framing, energetic depth, vivid high-contrast colors, cinematic lighting, crisp detail and clear visual hierarchy. Compose like a professional Indian YouTube creator thumbnail. Keep a clean dark text-safe area across the lower 38 percent. Do not add any text, letters, captions, logos, watermarks, borders or UI. Avoid generic palace architecture and unrelated monuments. Aspect ratio '+ratio+'.';
+      const subjectRules=isFort?'SUBJECT MUST BE RAIGAD FORT ( रायगड किल्ला ), the real Maratha hill fort in Maharashtra, India. Depict the authentic hilltop fort complex on a rugged Sahyadri mountain ridge: long dark basalt stone fortification walls following the ridge, the recognizable Maha Darwaja stone gateway, rocky plateau, steep green-brown mountain slopes and layered Sahyadri peaks. Historically grounded outdoor landscape photography, wide dramatic view from slightly below the fort, warm sunrise light. The entire scene must read unmistakably as an Indian hill fort, not a palace or monument.':'Show the exact real-world subject described by the user as the dominant recognizable subject, using a documentary photograph composition.';
+      const prompt='Create a premium, high-impact YouTube thumbnail BACKGROUND, not a poster, flyer, banner or generic landscape. User brief: '+topic+'. '+subjectRules+' Make a bold professional Indian YouTube thumbnail composition with the exact subject dominating the frame, dramatic cinematic framing, energetic depth, vivid high-contrast colors, warm directional lighting, crisp realistic detail and clear visual hierarchy. Keep a clean dark text-safe area across the lower 38 percent for title added by the website. Generate only the requested subject and its natural setting. No typography or graphic overlays. Aspect ratio '+ratio+'.';
       const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||'AI इमेज तयार झाली नाही.');
