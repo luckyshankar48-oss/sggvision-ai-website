@@ -640,6 +640,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     travel:{ink:'#fff7dc',accent:'#e5b94e',deep:'#123d37'},
     product:{ink:'#f4fbff',accent:'#49c8e8',deep:'#102538'},
     festival:{ink:'#fff1a8',accent:'#ff9c35',deep:'#54183f'},
+    birthday:{ink:'#fff1ee',accent:'#ffb6c8',deep:'#40152f'},
     education:{ink:'#fff',accent:'#58c6e8',deep:'#103b65'},
     sports:{ink:'#fff',accent:'#ffb52e',deep:'#171717'},
     nature:{ink:'#f5ffe8',accent:'#9bd36b',deep:'#173b27'},
@@ -868,7 +869,8 @@ function tmReadBrief(raw){
   const lower=text.toLowerCase();
   let category='general';
   if(/आग|अपघात|बातमी|न्यूज|news|breaking|महापालिका|निवडणूक|राजकारण/.test(lower))category='news';
-  else if(/जयंती|पुण्यतिथी|जयंती|birthday|वाढदिवस|शुभेच्छा|स्मृतिदिन/.test(lower))category='festival';
+  else if(/birthday|वाढदिवस|जन्मदिन|जन्मदिवस|शुभेच्छा/.test(lower))category='birthday';
+  else if(/जयंती|पुण्यतिथी|स्मृतिदिन|जयंती/.test(lower))category='culture';
   else if(/किल्ला|लेणी|इतिहास|छत्रपती|शिवाजी|दुर्ग|गड|fort|heritage/.test(lower))category='history';
   else if(/प्रवास|पर्यटन|ट्रॅव्हल|travel|भ्रमंती/.test(lower))category='travel';
   else if(/मोबाईल|मोबाइल|अनबॉक्सिंग|गॅजेट|लॅपटॉप|technology|review/.test(lower))category='product';
