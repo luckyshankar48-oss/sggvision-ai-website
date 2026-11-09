@@ -459,6 +459,16 @@ body{
  filter:none!important;mask-image:none!important;
 }
 
+
+/* SGGVISION AI Thumbnail Maker */
+.tm-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.tm-preview{width:100%;max-width:100%;display:block;background:#080f20;border:1px dashed #7b8fb5;border-radius:12px;min-height:180px;object-fit:contain}
+.tm-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.tm-actions .btn{margin:0}
+.tm-small{font-size:13px;color:var(--muted)}
+#tmPhoto{padding:10px}
+@media(max-width:800px){.tm-grid{grid-template-columns:1fr}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
@@ -485,6 +495,42 @@ body{
 <div class="tool"><span class="tag">टूल 06</span><h3>अर्ज / पत्रलेखन</h3><label for="letterTopic">अर्जाचा विषय व तपशील</label><textarea id="letterTopic" placeholder="कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा..."></textarea><label for="letterType">पत्राचा प्रकार</label><select id="letterType"><option>विनंती अर्ज</option><option>तक्रार अर्ज</option><option>कार्यालयीन पत्र</option><option>परवानगी अर्ज</option></select><button class="btn" style="margin-top:14px" onclick="letterAI()">Generate करा • अर्ज तयार करा</button><div id="letterResult" class="result">तयार होणारा अर्ज येथे दिसेल.</div></div></div>
 <div class="notice">AI वापर: ही साधने Cloudflare Workers AI द्वारे चालतात. सुरक्षित AI जोडणी Cloudflare Pages Function मधून होते; वेबसाइटमध्ये कोणतीही API Key ठेवलेली नाही. AI उत्तर प्रकाशित करण्यापूर्वी तथ्य आणि भाषा तपासा.</div>
 </section>
+
+<section id="thumbnail-maker">
+ <div class="section-head"><h2>SGGVISION AI Thumbnail Maker</h2><p>स्वतःचा फोटो वापरा किंवा AI कडून नवीन पार्श्वचित्र तयार करा. YouTube आणि Shorts साठी तयार इमेज डाउनलोड करा.</p></div>
+ <div class="tool">
+  <div class="tm-grid">
+   <div>
+    <label for="tmMode">थंबनेल तयार करण्याची पद्धत</label>
+    <select id="tmMode"><option value="ai">AI ने नवीन पार्श्वचित्र तयार करा</option><option value="photo">माझा फोटो वापरून थंबनेल तयार करा</option></select>
+    <label for="tmTopic">व्हिडिओचा विषय / AI साठी दृश्य वर्णन</label>
+    <textarea id="tmTopic" maxlength="900" placeholder="उदा. रायगड किल्ला, पहाटेचा नजारा, भगवा ध्वज, सिनेमॅटिक ऐतिहासिक वातावरण"></textarea>
+    <label for="tmHeadline">थंबनेलवरील मुख्य मजकूर</label>
+    <input id="tmHeadline" maxlength="90" placeholder="उदा. राजधानी रायगड">
+    <label for="tmSubline">उपमथळा (ऐच्छिक)</label>
+    <input id="tmSubline" maxlength="100" placeholder="उदा. छत्रपती शिवरायांचा अभेद्य दुर्ग">
+    <label for="tmRatio">इमेजचा आकार</label>
+    <select id="tmRatio"><option value="16:9">YouTube Thumbnail 16:9</option><option value="9:16">YouTube Shorts 9:16</option></select>
+    <div id="tmPhotoWrap" hidden>
+     <label for="tmPhoto">तुमचा फोटो अपलोड करा (JPG / PNG / WebP, कमाल 8 MB)</label>
+     <input id="tmPhoto" type="file" accept="image/jpeg,image/png,image/webp">
+    </div>
+    <div class="tm-actions">
+     <button class="btn" id="tmGenerate" type="button" onclick="makeThumbnail()">थंबनेल तयार करा</button>
+     <button class="btn secondary" id="tmDownload" type="button" onclick="downloadThumbnail()" disabled>HD इमेज डाउनलोड</button>
+    </div>
+    <p class="tm-small">AI पार्श्वचित्र निर्मितीसाठी Cloudflare Workers AI वापरले जाईल. प्रत्येक AI निर्मितीला Cloudflare च्या लागू दरांनुसार शुल्क लागू होऊ शकते. फोटो अपलोड मोडमध्ये डिझाइन तुमच्या ब्राउझरमध्ये तयार होते.</p>
+    <div id="tmStatus" class="result" aria-live="polite">तुमची माहिती भरा आणि थंबनेल तयार करा.</div>
+   </div>
+   <div>
+    <label>तयार थंबनेल Preview</label>
+    <canvas id="tmCanvas" class="tm-preview" width="1280" height="720" aria-label="तयार थंबनेल Preview"></canvas>
+    <p class="tm-small">मुख्य मजकूर इमेजवर स्पष्ट दिसेल अशा पट्टीत बसवला जाईल. डाउनलोड करण्यापूर्वी मराठी मजकूर तपासा.</p>
+   </div>
+  </div>
+ </div>
+</section>
+
 <section id="pricing"><div class="section-head"><h2>प्रारंभिक सेवा दर</h2><p>हे सुचवलेले सुरुवातीचे दर आहेत; कामाच्या स्वरूपानुसार अंतिम किंमत ठरेल.</p></div><div class="grid">
 <div class="card"><h3>YouTube SEO पॅक</h3><div class="price">₹100</div><p>Title, Description, Tags आणि Hashtags.</p></div>
 <div class="card"><h3>मराठी स्क्रिप्ट</h3><div class="price">₹100</div><p>विषय व अपेक्षित कालावधीनुसार.</p></div>
@@ -516,5 +562,86 @@ function letterAI(){const t=document.getElementById('letterTopic').value.trim(),
 function makeInquiry(){let n=document.getElementById('customer').value.trim(),s=document.getElementById('service').value,d=document.getElementById('details').value.trim();if(!n||!d){alert('कृपया नाव आणि कामाची माहिती भरा.');return}window.inquiryText='नमस्कार SGGVISION AI, माझे नाव '+n+'. मला '+s+' ही सेवा हवी आहे. कामाची माहिती: '+d+'. कृपया दर आणि वेळ कळवा.';document.getElementById('inquiry').textContent=window.inquiryText}
 function copyInquiry(){if(!window.inquiryText){alert('आधी चौकशीचा संदेश तयार करा.');return}navigator.clipboard.writeText(window.inquiryText).then(()=>alert('संदेश कॉपी झाला.')).catch(()=>alert('संदेश निवडून कॉपी करा.'))}
 document.querySelectorAll('button[onclick^="seoDemo"],button[onclick^="scriptDemo"]').forEach(b=>{let f=b.getAttribute('onclick');b.setAttribute('onclick',f.replace('seoDemo()','seoDemo(this)').replace('scriptDemo()','scriptDemo(this)'))});
+
+/* SGGVISION AI Thumbnail Maker — canvas composition and Workers AI image generation */
+let tmLastImageReady = false;
+const tmModeEl = document.getElementById('tmMode');
+const tmPhotoWrap = document.getElementById('tmPhotoWrap');
+tmModeEl.addEventListener('change', () => {
+  tmPhotoWrap.hidden = tmModeEl.value !== 'photo';
+  document.getElementById('tmStatus').textContent = tmModeEl.value === 'photo'
+    ? 'तुमचा फोटो निवडा. त्यावर शीर्षक आणि डिझाइन लावले जाईल.'
+    : 'विषय लिहा. AI नवीन पार्श्वचित्र तयार करेल.';
+});
+function tmDrawCover(ctx,img,w,h){
+  const scale=Math.max(w/img.width,h/img.height),sw=w/scale,sh=h/scale;
+  ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,0,0,w,h);
+}
+function tmCompose(img){
+  const ratio=document.getElementById('tmRatio').value;
+  const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
+  const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
+  canvas.width=w;canvas.height=h;
+  if(img){
+    ctx.save();tmDrawCover(ctx,img,w,h);ctx.restore();
+  }else{
+    const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#111a36');g.addColorStop(.55,'#4b1746');g.addColorStop(1,'#101b39');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
+  }
+  const bandH=ratio==='16:9'?Math.round(h*.31):Math.round(h*.25);
+  const bandY=h-bandH;
+  const shade=ctx.createLinearGradient(0,bandY,0,h);shade.addColorStop(0,'rgba(4,8,20,.72)');shade.addColorStop(1,'rgba(4,8,20,.96)');
+  ctx.fillStyle=shade;ctx.fillRect(0,bandY,w,bandH);
+  ctx.fillStyle='#ffc94d';ctx.fillRect(0,bandY,w,Math.max(7,Math.round(h*.009)));
+  const headline=document.getElementById('tmHeadline').value.trim();
+  const sub=document.getElementById('tmSubline').value.trim();
+  const pad=Math.round(w*.045),maxW=w-pad*2;
+  ctx.textAlign='left';ctx.textBaseline='middle';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=8;
+  let fs=Math.round(w*(ratio==='16:9'?.064:.058));fs=Math.min(fs,ratio==='16:9'?82:64);
+  const fontStack='"Mukta","Hind Vadodara","Noto Sans Devanagari",sans-serif';
+  ctx.font='800 '+fs+'px '+fontStack;
+  while(headline && ctx.measureText(headline).width>maxW && fs>26){fs-=2;ctx.font='800 '+fs+'px '+fontStack}
+  ctx.fillStyle='#fff4c8';
+  if(headline)ctx.fillText(headline,pad,bandY+bandH*.43,maxW);
+  if(sub){ctx.shadowBlur=4;ctx.font='700 '+Math.round(fs*.43)+'px '+fontStack;ctx.fillStyle='#ffd45d';ctx.fillText(sub,pad,bandY+bandH*.79,maxW)}
+  ctx.shadowBlur=0;tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
+}
+async function makeThumbnail(){
+  const topic=document.getElementById('tmTopic').value.trim();
+  const headline=document.getElementById('tmHeadline').value.trim();
+  const mode=tmModeEl.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
+  if(!topic&&!headline){alert('कृपया विषय किंवा मुख्य मजकूर लिहा.');return}
+  btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='थंबनेल तयार होत आहे. कृपया थांबा...';
+  try{
+    if(mode==='photo'){
+      const file=document.getElementById('tmPhoto').files[0];
+      if(!file){throw new Error('कृपया तुमचा फोटो अपलोड करा.')}
+      if(file.size>8*1024*1024){throw new Error('फोटो 8 MB पेक्षा लहान असावा.')}
+      if(!/^image\/(jpeg|png|webp)$/.test(file.type)){throw new Error('फक्त JPG, PNG किंवा WebP फोटो स्वीकारले जातात.')}
+      const url=URL.createObjectURL(file);
+      const img=new Image();
+      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
+      tmCompose(img);URL.revokeObjectURL(url);
+      status.textContent='तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.';
+    }else{
+      if(!topic){throw new Error('AI पार्श्वचित्रासाठी विषयाचे वर्णन लिहा.')}
+      const ratio=document.getElementById('tmRatio').value;
+      const prompt='Create a polished, dramatic YouTube thumbnail background image. Subject: '+topic+'. Composition: strong clear central subject, cinematic lighting, rich contrast, professional Indian Marathi travel/news channel visual, realistic detailed photography, no text, no letters, no watermark, no logos. Wide clean space near the lower area for a title overlay. Aspect intent: '+ratio+'.';
+      const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
+      const data=await response.json();
+      if(!response.ok)throw new Error(data.error||'AI इमेज तयार झाली नाही.');
+      if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
+      const img=new Image();
+      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/jpeg;base64,'+data.image});
+      tmCompose(img);status.textContent='AI पार्श्वचित्र आणि तुमचा मजकूर वापरून थंबनेल तयार झाले. Preview तपासा.';
+    }
+  }catch(e){status.textContent='थंबनेल त्रुटी: '+e.message}
+  finally{btn.disabled=false;btn.textContent='थंबनेल तयार करा'}
+}
+function downloadThumbnail(){
+  if(!tmLastImageReady)return;
+  const canvas=document.getElementById('tmCanvas'),ratio=document.getElementById('tmRatio').value;
+  const a=document.createElement('a');a.download='SGGVISION-Thumbnail-'+ratio.replace(':','x')+'.png';a.href=canvas.toDataURL('image/png');a.click();
+}
+
 </script><!-- SGGVISION Workers AI production release trigger -->
 </body></html>
