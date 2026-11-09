@@ -1400,6 +1400,68 @@ input::placeholder,textarea::placeholder{color:#dcecf4!important;-webkit-text-fi
  100%{filter:brightness(1.18);box-shadow:0 0 22px #ffc94daa,0 0 38px #ff9b3866}
 }
 
+
+/* FINAL FORCE FIX — every service and AI tool card gets a dark festive panel */
+body #tools .tools > .tool,
+body #services .grid > .card,
+body .hero-card,
+body .formbox,
+body .tools > .tool,
+body .tool,
+body .card{
+ background-color:#123e5d!important;
+ background-image:linear-gradient(135deg,rgba(13,54,88,.99) 0%,rgba(5,91,108,.98) 48%,rgba(62,35,83,.99) 100%)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #ffd477!important;
+ border-radius:18px!important;
+ box-shadow:0 0 0 1px rgba(255,216,119,.28),0 8px 24px rgba(0,0,0,.4),0 0 18px rgba(255,191,70,.32),inset 0 1px 0 rgba(255,255,255,.18)!important;
+ position:relative!important;overflow:hidden!important;
+}
+body #tools .tool h3,body #services .card h3,body .tool h3,body .card h3,
+body .hero-card h2,body .formbox h3{
+ color:#ffe7a0!important;-webkit-text-fill-color:#ffe7a0!important;
+ text-shadow:1px 2px 4px #00182b!important;
+}
+body #tools .tool p,body #tools .tool label,body #tools .tool .hint,
+body #services .card p,body #services .card label,
+body .tool p,body .tool label,body .card p,
+body .formbox p,body .formbox label,body .hint{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ text-shadow:1px 2px 3px #00182b!important;opacity:1!important;
+}
+body #tools .tool input,body #tools .tool textarea,body #tools .tool select,
+body .tool input,body .tool textarea,body .tool select,
+body .formbox input,body .formbox textarea,body .formbox select{
+ background:#7892a8!important;color:#102f46!important;-webkit-text-fill-color:#102f46!important;
+ border:1px solid #f6d58c!important;
+}
+body #tools .tool input::placeholder,body #tools .tool textarea::placeholder,
+body .tool input::placeholder,body .tool textarea::placeholder{
+ color:#24475e!important;-webkit-text-fill-color:#24475e!important;opacity:1!important;
+}
+/* Bright, animated per-card toran bulbs and a moving light sweep */
+body #tools .tool:before,body #services .card:before,body .tool:before,body .card:before,
+body .hero-card:before,body .formbox:before{
+ content:""!important;display:block!important;position:absolute!important;
+ left:0!important;right:0!important;top:0!important;height:9px!important;
+ background:
+  radial-gradient(circle,#fffbdc 0 2px,#ffe16b 3px,#ff9838 5px,transparent 7px) 0 0/28px 9px repeat-x,
+  linear-gradient(90deg,#ff4b88,#ffb347,#fff06a,#51e6bf,#55cfff,#a78bfa,#ff4b88)!important;
+ background-size:28px 9px,300% 100%!important;
+ animation:sggCardToran 1.15s ease-in-out infinite alternate,sggRainbowRun 5s linear infinite!important;
+ filter:drop-shadow(0 0 5px #ffcf58)!important;z-index:5!important;
+}
+body #tools .tool:after,body #services .card:after,body .tool:after,body .card:after,
+body .hero-card:after,body .formbox:after{
+ content:""!important;display:block!important;position:absolute!important;
+ top:9px!important;bottom:0!important;left:-55%!important;width:28%!important;
+ background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent)!important;
+ transform:skewX(-18deg)!important;animation:sggCardSweep 6s ease-in-out infinite!important;
+ pointer-events:none!important;z-index:1!important;
+}
+@keyframes sggCardToran{0%{filter:brightness(.85) drop-shadow(0 0 3px #ffc94d);opacity:.78}100%{filter:brightness(1.35) drop-shadow(0 0 9px #fff0a3);opacity:1}}
+@keyframes sggCardSweep{0%,15%{left:-55%;opacity:0}35%{opacity:1}70%,100%{left:130%;opacity:0}}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
