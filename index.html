@@ -2900,8 +2900,7 @@ Object.assign(sggTranslations,{
 'Thumbnail Maker वापरणे':'Using Thumbnail Maker','इतर':'Other'
 });
 const sggAttrTranslations={
-'उदा. रायगड किल्ला प्रवासवर्णन':'e.g. Raigad Fort travel vlog','उदा. इतिहास, महाराष्ट्र, पर्यटन':'e.g. history, Maharashtra, tourism','उदा. चवदार तळे सत्याग्रह':'e.g. Chavdar Tale Satyagraha','उदा. भीमाशंकर जंगल वाचवा आंदोलन':'e.g. Save Bhimashankar Forest campaign','उदा. रायगड किल्ल्याची सफर':'e.g. A visit to Raigad Fort','उदा. कार्यक्रमाची सूचना':'e.g. Event announcement','कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा...':'Who is the application addressed to, and why?','तुमचे नाव':'Your name','नाव':'Name','काय अडचण येते आहे ते स्पष्ट लिहा...':'Describe the issue clearly...','तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...'
-
+'उदा. रायगड किल्ला प्रवासवर्णन':'e.g. Raigad Fort travel vlog','उदा. इतिहास, महाराष्ट्र, पर्यटन':'e.g. history, Maharashtra, tourism','उदा. चवदार तळे सत्याग्रह':'e.g. Chavdar Tale Satyagraha','उदा. भीमाशंकर जंगल वाचवा आंदोलन':'e.g. Save Bhimashankar Forest campaign','उदा. रायगड किल्ल्याची सफर':'e.g. A visit to Raigad Fort','उदा. कार्यक्रमाची सूचना':'e.g. Event announcement','कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा...':'Who is the application addressed to, and why?','तुमचे नाव':'Your name','नाव':'Name','काय अडचण येते आहे ते स्पष्ट लिहा...':'Describe the issue clearly...','तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...',
 'sgg':'sgg',
 'नाव':'Name',
 'तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...',
@@ -2937,6 +2936,57 @@ Object.assign(sggTranslations,{
 'भाषा':'Language',
 'मराठी':'Marathi'
 });
+
+/* Reliable local bilingual translation layer.
+   The original dictionary was defined above but never applied to the page.
+   Preserve original DOM text/attributes so switching back to Marathi is exact. */
+const sggOriginalText = new WeakMap();
+const sggOriginalAttrs = new WeakMap();
+function sggTranslateTextNode(node, lang){
+  if(!sggOriginalText.has(node)) sggOriginalText.set(node,node.nodeValue);
+  const original=sggOriginalText.get(node);
+  if(lang!=='en'){ node.nodeValue=original; return; }
+  const trimmed=original.trim();
+  if(!trimmed) return;
+  const leading=original.match(/^\s*/)?.[0]||'';
+  const trailing=original.match(/\s*$/)?.[0]||'';
+  let translated=sggTranslations[trimmed];
+  if(!translated){
+    translated=trimmed;
+    const entries=Object.entries(sggTranslations).sort((a,b)=>b[0].length-a[0].length);
+    for(const [mr,en] of entries){
+      if(mr && translated.includes(mr)) translated=translated.split(mr).join(en);
+    }
+  }
+  node.nodeValue=leading+translated+trailing;
+}
+function sggTranslatePage(lang){
+  const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+  let node;
+  while((node=walker.nextNode())) sggTranslateTextNode(node,lang);
+  const attrs=['placeholder','title','aria-label','alt'];
+  document.querySelectorAll('*').forEach(el=>{
+    let originals=sggOriginalAttrs.get(el);
+    if(!originals){ originals={}; sggOriginalAttrs.set(el,originals); }
+    attrs.forEach(attr=>{
+      if(!el.hasAttribute(attr)) return;
+      if(!(attr in originals)) originals[attr]=el.getAttribute(attr);
+      const original=originals[attr];
+      if(lang!=='en'){ el.setAttribute(attr,original); return; }
+      let translated=sggAttrTranslations[original]||sggTranslations[original]||original;
+      if(translated===original){
+        Object.entries(sggAttrTranslations).sort((a,b)=>b[0].length-a[0].length).forEach(([mr,en])=>{
+          translated=translated.split(mr).join(en);
+        });
+        Object.entries(sggTranslations).sort((a,b)=>b[0].length-a[0].length).forEach(([mr,en])=>{
+          translated=translated.split(mr).join(en);
+        });
+      }
+      el.setAttribute(attr,translated);
+    });
+  });
+}
+
 /* Full-page language switching: translate the complete rendered page, not only dictionary matches. */
 function googleTranslateElementInit(){
  if(window.google&&google.translate&&google.translate.TranslateElement){
@@ -2949,6 +2999,7 @@ function setSggLanguage(lang){
  lang=lang==='en'?'en':'mr';
  window.sggLanguage=lang;
  document.documentElement.lang=lang;
+ sggTranslatePage(lang);
  const choose=()=>{
   const combo=document.querySelector('.goog-te-combo');
   if(!combo)return false;
