@@ -589,7 +589,7 @@ function tmWrapText(ctx,text,maxWidth,maxLines){
   }
   return lines;
 }
-function tmCompose(img,headlineOverride,subOverride,category='general'){
+function tmCompose(img,headlineOverride,subOverride,category='general',supportingPoints=[],closingLine=''){
   const ratio=document.getElementById('tmRatio').value;
   const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
   const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
@@ -736,16 +736,37 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     ctx.strokeStyle='rgba(255,246,202,.65)';ctx.lineWidth=Math.max(2,w*.002);
     ctx.beginPath();ctx.moveTo(paperX+paperW*.07,paperY+paperH*.14);ctx.lineTo(paperX+paperW*.92,paperY+paperH*.12);ctx.stroke();
     ctx.restore();
+    const points=Array.isArray(supportingPoints)?supportingPoints.filter(Boolean).slice(0,4):[];
+    const hasDetails=points.length>0||!!closingLine;
     if(sub){
       const subLines=tmWrapText(ctx,sub,paperW*.84,2);
       const subSize=Math.round(w*(vertical?.064:.071));ctx.font='900 '+subSize+'px "Khand","Mukta","Hind Vadodara",sans-serif';
       ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';
-      const lineH=subSize*1.08,startY=paperY+paperH*.51-(subLines.length-1)*lineH*.5;
+      const lineH=subSize*1.08,startY=paperY+paperH*(hasDetails?.29:.51)-(subLines.length-1)*lineH*.5;
       subLines.forEach((line,i)=>{
         const yy=startY+i*lineH;ctx.lineWidth=Math.max(3,subSize*.055);ctx.strokeStyle='rgba(255,225,165,.65)';
         ctx.fillStyle=i===0?'#7b1d0b':'#17110b';ctx.shadowColor='rgba(80,35,8,.35)';ctx.shadowBlur=3;
         ctx.strokeText(line,paperX+paperW*.5,yy,paperW*.84);ctx.fillText(line,paperX+paperW*.5,yy,paperW*.84);
       });ctx.shadowBlur=0;
+    }
+    if(points.length){
+      const cols=2,rows=Math.ceil(points.length/cols),cellW=paperW*.43;
+      const startY=paperY+paperH*(sub?.60:.30),rowH=Math.min(paperH*.20,vertical?42:34);
+      ctx.font='800 '+Math.round(w*(vertical?.031:.027))+'px "Hind Vadodara","Mukta",sans-serif';
+      ctx.textAlign='left';ctx.textBaseline='middle';
+      points.forEach((point,index)=>{
+        const col=index%2,row=Math.floor(index/2),x=paperX+paperW*(col?.53:.07),y=startY+row*rowH;
+        const label=String(point).length>42?String(point).slice(0,40)+'…':String(point);
+        ctx.fillStyle='#7b1d0b';ctx.beginPath();ctx.arc(x,y,Math.max(4,w*.004),0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#21140b';ctx.shadowColor='rgba(255,255,255,.35)';ctx.shadowBlur=1;
+        ctx.fillText(label,x+Math.max(10,w*.012),y,cellW);
+      });ctx.shadowBlur=0;
+    }
+    if(closingLine){
+      const line=String(closingLine).slice(0,90),cy=paperY+paperH*.88;
+      ctx.font='900 '+Math.round(w*(vertical?.033:.03))+'px "Khand","Mukta",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='#5e160a';
+      ctx.fillText(line,paperX+paperW*.5,cy,paperW*.88);
     }
   }else if(category==='festival'||category==='culture'){
     const cx=vertical?w/2:w*.52,cy=vertical?h*.72:h*.78,r=vertical?w*.46:w*.39;
@@ -801,7 +822,7 @@ async function makeThumbnail(){
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
       if(document.fonts&&document.fonts.ready) await document.fonts.ready;
-      tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general');
+      tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general',data.supportingPoints||[],data.closingLine||'');
       const sources=Array.isArray(data.imageSource)?data.imageSource:[];
       const sourceNote=sources.length
         ? ' वापरलेले संदर्भ: '+sources.map(item=>item.title+' ('+item.license+')').join(', ')+'.'
