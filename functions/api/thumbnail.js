@@ -17,7 +17,33 @@ export async function onRequestPost({ request, env }) {
     if (!env.AI || typeof env.AI.run !== "function") {
       return new Response(JSON.stringify({ error: "Workers AI binding उपलब्ध नाही. Cloudflare Pages > Settings > Bindings मध्ये AI binding तपासा." }), { status: 503, headers });
     }
-    const result = await env.AI.run("@cf/black-forest-labs/flux-1-schnell", { prompt, steps: 4 });
+    // Stage 1: understand the customer's single Marathi prompt and convert it into a precise visual brief.
+    const plan = await env.AI.run("@cf/zai-org/glm-4.7-flash", {
+      messages: [
+        {
+          role: "system",
+          content: "You are an expert visual researcher and YouTube thumbnail art director. Understand the user's full brief. Identify the exact subject, place, people, event, mood, and composition. Never replace the requested subject with a famous but unrelated monument. For named real places, describe only recognizable, relevant features and do not invent architecture. Return ONLY a concise English image-generation prompt for a photorealistic, premium YouTube thumbnail background. No text, letters, logos, watermarks, poster templates, or borders. Leave a clean lower area for Marathi title overlay. If the subject is uncertain, keep the prompt conservative and do not invent specifics."
+        },
+        { role: "user", content: prompt }
+      ],
+      max_completion_tokens: 700,
+      temperature: 0.2,
+      chat_template_kwargs: { enable_thinking: false }
+    });
+    const visualPrompt = String(
+      plan?.choices?.[0]?.message?.content ??
+      plan?.result?.choices?.[0]?.message?.content ??
+      plan?.response ?? ""
+    ).trim();
+    if (!visualPrompt) {
+      return new Response(JSON.stringify({ error: "AI ला तुमचा विषय समजून घेता आला नाही. कृपया पुन्हा प्रयत्न करा." }), { status: 502, headers });
+    }
+
+    // Stage 2: generate the actual thumbnail background from the interpreted brief.
+    const result = await env.AI.run("@cf/black-forest-labs/flux-1-schnell", {
+      prompt: visualPrompt,
+      steps: 4
+    });
     const image = result?.image || result?.result?.image;
     if (!image || typeof image !== "string") {
       return new Response(JSON.stringify({ error: "AI मॉडेलकडून इमेज मिळाली नाही." }), { status: 502, headers });
