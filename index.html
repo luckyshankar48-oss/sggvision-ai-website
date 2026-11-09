@@ -2162,6 +2162,53 @@ html body section#thumbnail-maker .tm-grid{
   border-radius:0!important;
   box-shadow:none!important;
 }
+
+/* Site-wide consistent rounded gold frames for all major page sections and cards */
+html body main>section,
+html body section#services,
+html body section#tools,
+html body section#thumbnail-maker,
+html body section#pricing,
+html body section#payment,
+html body section#help,
+html body section#feedback,
+html body section#order{
+  box-sizing:border-box!important;
+  border:2.5px solid #ffd477!important;
+  border-radius:22px!important;
+  box-shadow:0 0 0 1px rgba(255,212,119,.18),0 8px 24px rgba(0,15,35,.30),0 0 15px rgba(255,193,75,.18)!important;
+  margin:24px 0!important;
+  padding:26px 22px!important;
+}
+html body .hero-card,
+html body .grid>.card,
+html body .tools>.tool,
+html body .formbox,
+html body #thumbnail-maker>.tool,
+html body #thumbnail-maker .tm-grid>div{
+  box-sizing:border-box!important;
+  border:2px solid #ffd477!important;
+  border-radius:18px!important;
+  box-shadow:0 0 0 1px rgba(255,212,119,.12),0 7px 20px rgba(0,15,35,.28),0 0 12px rgba(255,193,75,.16)!important;
+}
+html body #thumbnail-maker .tm-grid>div{
+  border-radius:16px!important;
+}
+@media(max-width:700px){
+  html body main>section,
+  html body section#services,
+  html body section#tools,
+  html body section#thumbnail-maker,
+  html body section#pricing,
+  html body section#payment,
+  html body section#help,
+  html body section#feedback,
+  html body section#order{
+    border-radius:18px!important;
+    padding:18px 14px!important;
+    margin:18px 0!important;
+  }
+}
 </style>
 </head>
 <body>
