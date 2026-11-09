@@ -2832,60 +2832,85 @@ Object.assign(sggTranslations,{
 'AI तयार केलेला मजकूर प्रकाशित करण्यापूर्वी तथ्य, भाषा आणि हक्क तपासा.':'Verify facts, language and rights before publishing AI-generated content.',
 'तयार होणारा अर्ज येथे दिसेल.':'Your application will appear here.'
 });
+Object.assign(sggTranslations,{
+'AI मदत / मार्गदर्शन':'AI Help / Guidance',
+'तयार होणारा अर्ज येथे दिसेल.':'Your generated application will appear here.',
+'तयार होणारी स्क्रिप्ट येथे दिसेल.':'Your generated script will appear here.',
+'तयार होणारा मजकूर येथे दिसेल.':'Your generated content will appear here.',
+'तुमचे उत्तर येथे दिसेल.':'Your answer will appear here.',
+'तयार होणारा अर्ज येथे दिसेल':'Your generated application will appear here.',
+'AI कडून तयार होणारा मजकूर येथे दिसेल.':'AI-generated content will appear here.',
+'AI कडून तयार होणारी स्क्रिप्ट येथे दिसेल.':'Your AI-generated script will appear here.',
+'AI कडून तयार होणारा मजकूर येथे दिसेल':'AI-generated content will appear here.',
+'AI कडून तयार होणारी स्क्रिप्ट येथे दिसेल':'Your AI-generated script will appear here.',
+'नाव':'Name',
+'विनंती अर्ज':'Request Letter','तक्रार अर्ज':'Complaint Letter','कार्यालयीन पत्र':'Official Letter','परवानगी अर्ज':'Permission Request',
+'माहितीपूर्ण':'Informative','जाहिरात':'Advertisement','कार्यक्रम सूचना':'Event Announcement','अभिनंदन / शुभेच्छा':'Congratulations / Greetings',
+'Thumbnail Maker वापरणे':'Using Thumbnail Maker','इतर':'Other'
+});
 const sggAttrTranslations={
-'उदा. रायगड किल्ला प्रवासवर्णन':'e.g. Raigad Fort travel vlog','उदा. इतिहास, महाराष्ट्र, पर्यटन':'e.g. history, Maharashtra, tourism','उदा. चवदार तळे सत्याग्रह':'e.g. Chavdar Tale Satyagraha','उदा. भीमाशंकर जंगल वाचवा आंदोलन':'e.g. Save Bhimashankar Forest campaign','उदा. रायगड किल्ल्याची सफर':'e.g. A visit to Raigad Fort','उदा. कार्यक्रमाची सूचना':'e.g. Event announcement','कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा...':'Who is the application addressed to, and why?','तुमचे नाव':'Your name','काय अडचण येते आहे ते स्पष्ट लिहा...':'Describe the issue clearly...','तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...'
+'उदा. रायगड किल्ला प्रवासवर्णन':'e.g. Raigad Fort travel vlog','उदा. इतिहास, महाराष्ट्र, पर्यटन':'e.g. history, Maharashtra, tourism','उदा. चवदार तळे सत्याग्रह':'e.g. Chavdar Tale Satyagraha','उदा. भीमाशंकर जंगल वाचवा आंदोलन':'e.g. Save Bhimashankar Forest campaign','उदा. रायगड किल्ल्याची सफर':'e.g. A visit to Raigad Fort','उदा. कार्यक्रमाची सूचना':'e.g. Event announcement','कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा...':'Who is the application addressed to, and why?','तुमचे नाव':'Your name','नाव':'Name','काय अडचण येते आहे ते स्पष्ट लिहा...':'Describe the issue clearly...','तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...'
 };
+function applySggLanguageToNode(node,lang){
+ if(!node||node.nodeType!==Node.TEXT_NODE||!node.nodeValue.trim())return;
+ if(!window.sggOriginalText)window.sggOriginalText=new Map();
+ if(!window.sggOriginalText.has(node))window.sggOriginalText.set(node,node.nodeValue);
+ const original=window.sggOriginalText.get(node);
+ let value=original;
+ if(lang==='en'){
+  const entries=Object.entries(sggTranslations).sort((a,b)=>b[0].length-a[0].length);
+  for(const [mr,en] of entries){if(mr.length>=2&&value.includes(mr))value=value.split(mr).join(en);}
+  const exact=original.trim();if(sggTranslations[exact])value=original.replace(exact,sggTranslations[exact]);
+ }
+ if(node.nodeValue!==value)node.nodeValue=value;
+}
 function setSggLanguage(lang){
  const root=document.body;if(!root)return;
- const dict=sggTranslations;
- if(!window.sggOriginalText){
-  window.sggOriginalText=new Map();
-  const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-  let node;while((node=walker.nextNode())){if(node.nodeValue.trim())window.sggOriginalText.set(node,node.nodeValue);}
- }
- window.sggOriginalText.forEach((original,node)=>{
-  if(!node.isConnected)return;
-  let value=original;
-  if(lang==='en'){
-   const entries=Object.entries(dict).sort((a,b)=>b[0].length-a[0].length);
-   for(const [mr,en] of entries){
-    if(mr.length<4)continue;
-    if(value.includes(mr))value=value.split(mr).join(en);
-   }
-   const exact=original.trim();
-   if(dict[exact])value=original.replace(exact,dict[exact]);
-  }
-  node.nodeValue=value;
- });
+ if(!window.sggOriginalText)window.sggOriginalText=new Map();
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let node;while((node=walker.nextNode()))applySggLanguageToNode(node,lang);
  document.querySelectorAll('input[placeholder],textarea[placeholder]').forEach(el=>{
   if(!el.dataset.mrPlaceholder)el.dataset.mrPlaceholder=el.placeholder;
-  el.placeholder=lang==='en'?(sggAttrTranslations[el.dataset.mrPlaceholder]||el.dataset.mrPlaceholder):el.dataset.mrPlaceholder;
+  el.placeholder=lang==='en'?(sggAttrTranslations[el.dataset.mrPlaceholder]||sggTranslations[el.dataset.mrPlaceholder]||el.dataset.mrPlaceholder):el.dataset.mrPlaceholder;
  });
  document.querySelectorAll('input[value],button,[title],[aria-label]').forEach(el=>{
   if(el.matches('input[value]')){
    if(!el.dataset.mrValue)el.dataset.mrValue=el.value;
-   if(lang==='en')el.value=dict[el.dataset.mrValue]||el.dataset.mrValue;else el.value=el.dataset.mrValue;
+   if(lang==='en')el.value=sggTranslations[el.dataset.mrValue]||el.dataset.mrValue;else el.value=el.dataset.mrValue;
   }
-  if(el.hasAttribute('title')){
-   if(!el.dataset.mrTitle)el.dataset.mrTitle=el.getAttribute('title');
-   el.setAttribute('title',lang==='en'?(dict[el.dataset.mrTitle]||el.dataset.mrTitle):el.dataset.mrTitle);
-  }
-  if(el.hasAttribute('aria-label')){
-   if(!el.dataset.mrAria)el.dataset.mrAria=el.getAttribute('aria-label');
-   el.setAttribute('aria-label',lang==='en'?(dict[el.dataset.mrAria]||el.dataset.mrAria):el.dataset.mrAria);
+  for(const attr of ['title','aria-label']){
+   if(el.hasAttribute(attr)){
+    const key='mr'+attr.split('-').map(x=>x[0].toUpperCase()+x.slice(1)).join('');
+    if(!el.dataset[key])el.dataset[key]=el.getAttribute(attr);
+    el.setAttribute(attr,lang==='en'?(sggTranslations[el.dataset[key]]||el.dataset[key]):el.dataset[key]);
+   }
   }
  });
  document.querySelectorAll('select option').forEach(el=>{
   if(!el.dataset.mrLabel)el.dataset.mrLabel=el.textContent;
-  el.textContent=lang==='en'?(dict[el.dataset.mrLabel]||el.dataset.mrLabel):el.dataset.mrLabel;
+  el.textContent=lang==='en'?(sggTranslations[el.dataset.mrLabel]||el.dataset.mrLabel):el.dataset.mrLabel;
  });
- document.documentElement.lang=lang==='en'?'en':'mr';
- window.sggLanguage=lang;
+ document.documentElement.lang=lang==='en'?'en':'mr';window.sggLanguage=lang;
 }
 const sggLanguageSelect=document.getElementById('siteLanguage');
 if(sggLanguageSelect){
  sggLanguageSelect.addEventListener('change',e=>setSggLanguage(e.target.value));
  setSggLanguage(sggLanguageSelect.value||'mr');
+}
+if(!window.sggLanguageObserver){
+ window.sggLanguageObserver=new MutationObserver(records=>{
+  const lang=window.sggLanguage||'mr';
+  for(const record of records){
+   for(const added of record.addedNodes){
+    if(added.nodeType===Node.TEXT_NODE)applySggLanguageToNode(added,lang);
+    else if(added.nodeType===Node.ELEMENT_NODE){
+     const walker=document.createTreeWalker(added,NodeFilter.SHOW_TEXT);let t;
+     while((t=walker.nextNode()))applySggLanguageToNode(t,lang);
+    }
+   }
+  }
+ });
+ window.sggLanguageObserver.observe(document.body,{childList:true,subtree:true});
 }
 async function callAI(prompt,target,button){
  const out=document.getElementById(target), old=button.textContent;
