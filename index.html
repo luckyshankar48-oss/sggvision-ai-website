@@ -665,7 +665,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
   const p=selectedColor?{...basePalette,...selectedColor}:basePalette;
   const pad=Math.round(w*.055);
   const displayFonts={history:'"Khand","Baloo 2","Mukta",sans-serif',news:'"Hind Vadodara","Khand","Mukta",sans-serif',travel:'"Khand","Mukta","Hind Vadodara",sans-serif',product:'"Baloo 2","Mukta","Hind Vadodara",sans-serif',festival:'"Baloo 2","Khand","Mukta",sans-serif',culture:'"Khand","Baloo 2","Mukta",sans-serif',sports:'"Khand","Hind Vadodara","Mukta",sans-serif',nature:'"Khand","Mukta","Hind Vadodara",sans-serif',education:'"Hind Vadodara","Mukta",sans-serif',general:'"Baloo 2","Khand","Mukta",sans-serif'};
-  const direction=String(designDirection||'').toLowerCase();
+  const direction=requestedStyle.toLowerCase();
   const directionFont=/paint|brush|hand.?draw|hand.?paint|folk|traditional|artistic|चित्रशैली|हस्तचित्र/i.test(direction)
     ? '"Khand","Baloo 2","Mukta",sans-serif'
     : /modern|technology|minimal|clean|futuristic|आधुनिक/i.test(direction)
