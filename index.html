@@ -651,6 +651,14 @@ function tmCompose(img,headlineOverride,subOverride,category='general'){
     t.lines.forEach((line,i)=>{const yy=y+(i-(t.lines.length-1)/2)*t.lineH;ctx.strokeText(line,x,yy,maxWidth);ctx.fillText(line,x,yy,maxWidth)});
     ctx.shadowBlur=0;
   }
+  // Global typography-safe zone: hide any pseudo-letters hallucinated by the image model.
+  // Keep the upper scene untouched; all real Marathi lettering is drawn afterward by Canvas.
+  const safeTop=Math.round(h*.61);
+  const safe=ctx.createLinearGradient(0,safeTop,0,h);
+  safe.addColorStop(0,'rgba(12,8,7,.68)');
+  safe.addColorStop(.22,'rgba(12,8,7,.92)');
+  safe.addColorStop(1,'rgba(8,6,8,.985)');
+  ctx.fillStyle=safe;ctx.fillRect(0,safeTop,w,h-safeTop);
   // Every subject family gets a different title treatment and placement.
   if(category==='news'){
     const bandH=vertical?h*.34:h*.31,bandY=h-bandH;
