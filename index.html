@@ -1870,6 +1870,60 @@ html body .hero p{
  }
  html body .hero h1 span{-webkit-text-stroke:.6px currentColor!important}
 }
+
+/* Stable text: stop cards/sections from slowly floating while keeping decorative effects */
+html body .hero-card,
+html body .card,
+html body .tool,
+html body .formbox{
+  animation:none!important;
+  transform:none!important;
+}
+/* Keep the light sweep on card surfaces; it must not move the text itself */
+html body .hero-card:after,
+html body .card:after,
+html body .tool:after,
+html body .formbox:after{
+  pointer-events:none!important;
+}
+/* Consistent readable shadow for all visible Marathi/English content */
+html body .eyebrow,
+html body .hero h1,
+html body .hero h1 span,
+html body .hero p,
+html body .section-head h2,
+html body .section-head p,
+html body .card h3,
+html body .card p,
+html body .tool h3,
+html body .tool p,
+html body .tool label,
+html body .formbox h3,
+html body .formbox p,
+html body .formbox label,
+html body .hero-card h2,
+html body .hero-card .stat,
+html body .hero-card .stat span,
+html body .hero-card .stat strong,
+html body .diwali-top,
+html body .diwali-welcome strong,
+html body .diwali-welcome p,
+html body .diwali-offer,
+html body footer,
+html body .nav a,
+html body .brand,
+html body .tag,
+html body .price,
+html body .notice,
+html body .result{
+  text-shadow:1px 2px 3px rgba(0,12,28,.78),0 0 5px rgba(255,220,150,.16)!important;
+}
+/* Do not animate text glyphs or links */
+html body h1,html body h2,html body h3,html body p,
+html body label,html body a,html body button,
+html body .brand,html body .nav a{
+  animation:none!important;
+}
 </style>
 </head>
 <body>
