@@ -17,7 +17,7 @@ function extractRequestedCopy(prompt) {
     headline: /(?:मुख्य\s*शीर्षक|मुख्य\s*मजकूर|थंबनेलवरील\s*मजकूर|शीर्षक|headline|title)\s*[:：-]\s*([\s\S]*?)(?=(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|ठळक\s*माहिती|खालील\s*संदेश|subline|subtitle|supporting\s*points)\s*[:：-]|$)/i,
     subtitle: /(?:दुय्यम\s*शीर्षक|उपशीर्षक|उपमजकूर|छोटा\s*मजकूर|उपमथळा|subline|subtitle)\s*[:：-]\s*([\s\S]*?)(?=(?:ठळक\s*माहिती|खालील\s*संदेश|supporting\s*points)\s*[:：-]|$)/i,
     points: /(?:ठळक\s*माहिती|supporting\s*points)\s*[:：-]\s*([\s\S]*?)(?=(?:खालील\s*संदेश|closing\s*line)\s*[:：-]|$)/i,
-    closing: /(?:खालील\s*संदेश|closing\s*line)\s*[:：-]\s*([\s\S]*?)$/i
+    closing: /(?:खालील\s*संदेश|closing\s*line)\s*[:：-]\s*([\s\S]*?)(?=(?:डिझाइन\s*सूचना|design\s*(?:notes|instructions)|रचना\s*सूचना)\s*[:：-]|$)/i
   };
   const clean = value => String(value || "").replace(/Prompt कॉपी करा/gi, "").replace(/^[\s"'“”]+|[\s"'“”]+$/g, "").replace(/\s+/g, " ").trim();
   const get = key => clean(text.match(labels[key])?.[1] || "");
