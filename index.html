@@ -661,35 +661,35 @@ async function makeThumbnail(){
   const brief=tmReadBrief(document.getElementById('tmTopic').value);
   const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\\n]/)[0].slice(0,70),sub=brief.sub;
   const mode=tmModeEl.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
-  if(!topic&&!headline){alert('कृपया विषय किंवा मुख्य मजकूर लिहा.');return}
-  btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='थंबनेल तयार होत आहे. कृपया थांबा...';
+  if(!topic){alert('कृपया थंबनेलसाठी तुमचा Prompt लिहा.');return}
+  btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='AI तुमचा विषय समजून घेऊन थंबनेल तयार करत आहे...';
   try{
     if(mode==='photo'){
       const file=document.getElementById('tmPhoto').files[0];
       if(!file){throw new Error('कृपया तुमचा फोटो अपलोड करा.')}
       if(file.size>8*1024*1024){throw new Error('फोटो 8 MB पेक्षा लहान असावा.')}
-      if(!/^image\/(jpeg|png|webp)$/.test(file.type)){throw new Error('फक्त JPG, PNG किंवा WebP फोटो स्वीकारले जातात.')}
+      if(!/^image\\/(jpeg|png|webp)$/.test(file.type)){throw new Error('फक्त JPG, PNG किंवा WebP फोटो स्वीकारले जातात.')}
       const url=URL.createObjectURL(file);
-      const img=new Image();
-      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
-      tmCompose(img,headline,sub);URL.revokeObjectURL(url);
+      try{
+        const img=new Image();
+        await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
+        tmCompose(img,headline,sub);
+      }finally{URL.revokeObjectURL(url)}
       status.textContent='तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.';
     }else{
-      if(!topic){throw new Error('AI पार्श्वचित्रासाठी विषयाचे वर्णन लिहा.')}
       const ratio=document.getElementById('tmRatio').value;
-      const isFort=/(raigad|raygad|fort|killa|किल्ला|रायगड)/i.test(topic);
-      const subjectRules=isFort?'SUBJECT MUST BE RAIGAD FORT ( रायगड किल्ला ), the real Maratha hill fort in Maharashtra, India. Depict the authentic hilltop fort complex on a rugged Sahyadri mountain ridge: long dark basalt stone fortification walls following the ridge, the recognizable Maha Darwaja stone gateway, rocky plateau, steep green-brown mountain slopes and layered Sahyadri peaks. Historically grounded outdoor landscape photography, wide dramatic view from slightly below the fort, warm sunrise light. The entire scene must read unmistakably as an Indian hill fort, not a palace or monument.':'Show the exact real-world subject described by the user as the dominant recognizable subject, using a documentary photograph composition.';
-      const aiBrief=topic.replace(/[^.!?\\n]*(?:Taj Mahal|ताजमहाल|मुघल घुमट|आधुनिक इमारत)[^.!?\\n]*[.!?]?/gi,' ').trim();
-      const prompt='Create a premium, high-impact YouTube thumbnail BACKGROUND. User brief: '+aiBrief+'. '+subjectRules+' Make a bold professional Indian YouTube thumbnail composition with the exact subject dominating the frame, dramatic cinematic framing, energetic depth, vivid high-contrast colors, warm directional lighting, crisp realistic detail and clear visual hierarchy. Keep a clean dark text-safe area across the lower 38 percent for title added by the website. Generate only the requested subject and its natural setting. No typography or graphic overlays. Aspect ratio '+ratio+'.';
-      const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
-      const data=await response.json();
-      if(!response.ok)throw new Error(data.error||'AI इमेज तयार झाली नाही.');
+      // Send the customer's original, complete brief unchanged. The server-side art director interprets any topic.
+      const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:topic,ratio})});
+      let data={};
+      try{data=await response.json()}catch(_){throw new Error('सर्व्हरकडून योग्य प्रतिसाद मिळाला नाही.')}
+      if(!response.ok)throw new Error(data.error||'AI इमेज तयार करू शकली नाही.');
       if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
       const img=new Image();
-      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/jpeg;base64,'+data.image});
-      tmCompose(img,headline,sub);status.textContent='तुमच्या माहितीनुसार थंबनेल तयार झाले. Preview तपासा.';
+      await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
+      tmCompose(img,headline,sub);
+      status.textContent='तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.';
     }
-  }catch(e){status.textContent='थंबनेल त्रुटी: '+e.message}
+  }catch(e){status.textContent='थंबनेल त्रुटी: '+(e&&e.message?e.message:'अज्ञात त्रुटी')}
   finally{btn.disabled=false;btn.textContent='थंबनेल तयार करा'}
 }
 function downloadThumbnail(){
