@@ -1510,6 +1510,57 @@ html body .tool:before,html body .card:before,html body .hero-card:before,html b
  filter:drop-shadow(0 0 6px #ffcf58)!important;z-index:5!important;
 }
 
+
+/* SGGVISION FINAL NO-WHITE SURFACES: keep text and generated preview intact */
+html body #thumbnail-maker,
+html body #pricing,
+html body #payment,
+html body #feedback,
+html body #order,
+html body #tools,
+html body #services{
+ background:transparent!important;
+}
+html body #thumbnail-maker>.tool,
+html body #thumbnail-maker .tm-grid,
+html body #thumbnail-maker .tm-grid>div,
+html body #tools .tools>.tool,
+html body #services .grid>.card,
+html body #pricing .grid>.card,
+html body #payment .tools>.tool,
+html body .formbox,
+html body .hero-card{
+ background:#103b59!important;
+ background-image:linear-gradient(135deg,#123e63 0%,#075c70 48%,#42265e 100%)!important;
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #ffd477!important;
+ box-shadow:0 10px 28px #00182b99,0 0 20px #ffc34d55,inset 0 1px 0 #ffffff22!important;
+}
+html body #thumbnail-maker .tm-grid>div{border-radius:14px!important}
+html body #thumbnail-maker label,
+html body #thumbnail-maker p,
+html body #thumbnail-maker .tm-small,
+html body #thumbnail-maker .tool h2,
+html body #thumbnail-maker .tool h3,
+html body #pricing .card h3,
+html body #pricing .card p,
+html body #pricing .price{
+ color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+html body #thumbnail-maker input,
+html body #thumbnail-maker textarea,
+html body #thumbnail-maker select,
+html body #tools input,html body #tools textarea,html body #tools select,
+html body #feedback input,html body #feedback textarea,html body #feedback select{
+ background:#123b59!important;color:#fff!important;-webkit-text-fill-color:#fff!important;
+ border:1px solid #ffd477!important;
+}
+html body #thumbnail-maker input::placeholder,
+html body #thumbnail-maker textarea::placeholder{
+ color:#d8e8f3!important;-webkit-text-fill-color:#d8e8f3!important;opacity:1!important;
+}
+html body #thumbnail-maker #tmCanvas{background:#080f20!important}
+
 </style></head>
 <body>
 <div class="rangoli-wallpaper" aria-hidden="true"></div><div class="fireworks-layer" aria-hidden="true"><i class="firework f1"></i><i class="firework f2"></i><i class="firework f3"></i><i class="firework f4"></i></div>
