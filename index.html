@@ -2072,6 +2072,26 @@ html body section#help{
     margin:16px 0!important;
   }
 }
+
+/* Consistent rounded corners for every frame inside Thumbnail Maker */
+html body #thumbnail-maker{
+  border-radius:22px!important;
+  overflow:hidden!important;
+  clip-path:inset(0 round 22px)!important;
+}
+html body #thumbnail-maker>.tool{
+  border-radius:18px!important;
+  overflow:hidden!important;
+}
+html body #thumbnail-maker .tm-grid>div{
+  border-radius:16px!important;
+  overflow:hidden!important;
+}
+html body #thumbnail-maker .tm-preview,
+html body #thumbnail-maker .tm-preview canvas,
+html body #thumbnail-maker .tm-preview img{
+  border-radius:12px!important;
+}
 </style>
 </head>
 <body>
