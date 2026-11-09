@@ -577,33 +577,67 @@ function tmDrawCover(ctx,img,w,h){
   const scale=Math.max(w/img.width,h/img.height),sw=w/scale,sh=h/scale;
   ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,0,0,w,h);
 }
+function tmWrapText(ctx,text,maxWidth,maxLines){
+  const words=String(text||'').trim().split(/\\s+/).filter(Boolean),lines=[];
+  let line='';
+  for(const word of words){
+    const test=line?line+' '+word:word;
+    if(ctx.measureText(test).width<=maxWidth||!line){line=test}
+    else{lines.push(line);line=word;if(lines.length>=maxLines-1)break}
+  }
+  if(line&&lines.length<maxLines)lines.push(line);
+  if(words.length&&lines.length===maxLines){
+    const used=lines.join(' ').split(/\\s+/).length;
+    if(used<words.length){let last=lines.length-1;while(ctx.measureText(lines[last]+'…').width>maxWidth&&lines[last].length>2)lines[last]=lines[last].slice(0,-1);lines[last]+='…'}
+  }
+  return lines;
+}
 function tmCompose(img){
   const ratio=document.getElementById('tmRatio').value;
   const w=ratio==='16:9'?1280:720,h=ratio==='16:9'?720:1280;
   const canvas=document.getElementById('tmCanvas'),ctx=canvas.getContext('2d');
   canvas.width=w;canvas.height=h;
-  if(img){
-    ctx.save();tmDrawCover(ctx,img,w,h);ctx.restore();
-  }else{
-    const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#111a36');g.addColorStop(.55,'#4b1746');g.addColorStop(1,'#101b39');ctx.fillStyle=g;ctx.fillRect(0,0,w,h);
-  }
-  const bandH=ratio==='16:9'?Math.round(h*.31):Math.round(h*.25);
-  const bandY=h-bandH;
-  const shade=ctx.createLinearGradient(0,bandY,0,h);shade.addColorStop(0,'rgba(4,8,20,.72)');shade.addColorStop(1,'rgba(4,8,20,.96)');
-  ctx.fillStyle=shade;ctx.fillRect(0,bandY,w,bandH);
-  ctx.fillStyle='#ffc94d';ctx.fillRect(0,bandY,w,Math.max(7,Math.round(h*.009)));
+  if(img){tmDrawCover(ctx,img,w,h)}
+  else{const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,'#111a36');g.addColorStop(.55,'#4b1746');g.addColorStop(1,'#101b39');ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
+  const vertical=ratio!=='16:9';
   const headline=document.getElementById('tmHeadline').value.trim();
   const sub=document.getElementById('tmSubline').value.trim();
-  const pad=Math.round(w*.045),maxW=w-pad*2;
-  ctx.textAlign='left';ctx.textBaseline='middle';ctx.shadowColor='rgba(0,0,0,.65)';ctx.shadowBlur=8;
-  let fs=Math.round(w*(ratio==='16:9'?.064:.058));fs=Math.min(fs,ratio==='16:9'?82:64);
+  const pad=Math.round(w*(vertical?.065:.055));
+  const bandH=Math.round(h*(vertical?.34:.40)),bandY=h-bandH;
+  const shade=ctx.createLinearGradient(0,bandY,0,h);
+  shade.addColorStop(0,'rgba(5,8,22,.62)');shade.addColorStop(.18,'rgba(5,8,22,.88)');shade.addColorStop(1,'rgba(5,8,22,.98)');
+  ctx.fillStyle=shade;ctx.fillRect(0,bandY,w,bandH);
+  ctx.fillStyle='#ffbd36';ctx.fillRect(0,bandY,w,Math.max(8,Math.round(h*.012)));
+  ctx.fillStyle='#fff0bd';ctx.fillRect(pad,bandY+Math.round(bandH*.13),Math.round(w*.13),Math.max(5,Math.round(h*.008)));
   const fontStack='"Mukta","Hind Vadodara","Noto Sans Devanagari",sans-serif';
-  ctx.font='800 '+fs+'px '+fontStack;
-  while(headline && ctx.measureText(headline).width>maxW && fs>26){fs-=2;ctx.font='800 '+fs+'px '+fontStack}
-  ctx.fillStyle='#fff4c8';
-  if(headline)ctx.fillText(headline,pad,bandY+bandH*.43,maxW);
-  if(sub){ctx.shadowBlur=4;ctx.font='700 '+Math.round(fs*.43)+'px '+fontStack;ctx.fillStyle='#ffd45d';ctx.fillText(sub,pad,bandY+bandH*.79,maxW)}
-  ctx.shadowBlur=0;tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
+  ctx.textAlign='left';ctx.textBaseline='top';
+  const label=vertical?'SGGVISION • SHORTS':'SGGVISION • विशेष व्हिडिओ';
+  ctx.font='700 '+Math.round(w*(vertical?.027:.026))+'px '+fontStack;
+  ctx.fillStyle='#ffd66b';ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=5;
+  ctx.fillText(label,pad,bandY+Math.round(bandH*.20));
+  let fs=Math.round(w*(vertical?.092:.095));
+  const maxW=w-pad*2;
+  let lines=[];
+  while(fs>(vertical?40:48)){
+    ctx.font='900 '+fs+'px '+fontStack;
+    lines=tmWrapText(ctx,headline,maxW,2);
+    if(lines.every(line=>ctx.measureText(line).width<=maxW))break;
+    fs-=3;
+  }
+  ctx.font='900 '+fs+'px '+fontStack;
+  const lineH=Math.round(fs*1.12);
+  const titleY=bandY+Math.round(bandH*.34);
+  ctx.lineWidth=Math.max(3,Math.round(fs*.075));ctx.strokeStyle='rgba(25,10,25,.92)';
+  ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=12;ctx.fillStyle='#fff7dc';
+  lines.forEach((line,i)=>{const y=titleY+i*lineH;ctx.strokeText(line,pad,y,maxW);ctx.fillText(line,pad,y,maxW)});
+  if(sub){
+    const subFs=Math.round(fs*(vertical?.39:.34));
+    ctx.font='800 '+subFs+'px '+fontStack;ctx.fillStyle='#ffd04f';ctx.shadowBlur=5;
+    const subLines=tmWrapText(ctx,sub,maxW,1);
+    ctx.fillText(subLines[0]||'',pad,Math.min(h-subFs*1.45,titleY+lines.length*lineH+Math.round(fs*.16)),maxW);
+  }
+  ctx.shadowBlur=0;ctx.shadowColor='transparent';
+  tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
 async function makeThumbnail(){
   const topic=document.getElementById('tmTopic').value.trim();
@@ -625,7 +659,7 @@ async function makeThumbnail(){
     }else{
       if(!topic){throw new Error('AI पार्श्वचित्रासाठी विषयाचे वर्णन लिहा.')}
       const ratio=document.getElementById('tmRatio').value;
-      const prompt='Create a polished, dramatic YouTube thumbnail background image. Subject: '+topic+'. Composition: strong clear central subject, cinematic lighting, rich contrast, professional Indian Marathi travel/news channel visual, realistic detailed photography, no text, no letters, no watermark, no logos. Wide clean space near the lower area for a title overlay. Aspect intent: '+ratio+'.';
+      const isFort=/(raigad|raygad|fort|killa|किल्ला|रायगड)/i.test(topic);\n      const subjectRules=isFort?'Show a historically plausible Maratha hill fort in the Sahyadri: rugged basalt stone ramparts, hilltop terrain, authentic fort gateways and mountain landscape. STRICTLY AVOID domes, minarets, Mughal or Islamic palace architecture, Taj Mahal, grand palace buildings, and modern structures. Do not depict a generic palace.':'Show the specific subject described, accurately and recognizably; avoid unrelated landmarks or architecture.';\n      const prompt='Create a premium, eye-catching Indian Marathi YouTube thumbnail BACKGROUND. Exact subject: '+topic+'. '+subjectRules+' Photorealistic documentary-style photography, dramatic natural lighting, strong subject separation, vivid but believable colors, crisp details, professional editorial composition. Keep the main subject large and unmistakable. Reserve a dark uncluttered area across the bottom 38 percent for large Marathi title text added later. Absolutely no text, letters, captions, signs, watermarks or logos. Aspect ratio '+ratio+'.';
       const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||'AI इमेज तयार झाली नाही.');
