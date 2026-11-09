@@ -22,7 +22,7 @@ async function findReferenceImage(query) {
   const url = new URL("https://api.openverse.org/v1/images/");
   url.searchParams.set("q", query.slice(0, 200));
   url.searchParams.set("page_size", "8");
-  url.searchParams.set("license_type", "commercial");
+  url.searchParams.set("license", "cc0,pdm");
   url.searchParams.set("mature", "false");
   const response = await fetch(url.toString(), {
     headers: { "Accept": "application/json", "User-Agent": "SGGVISION-AI-Thumbnail/1.0" }
@@ -36,7 +36,8 @@ async function findReferenceImage(query) {
     .sort((a, b) => b.score - a.score);
   const best = ranked[0];
   // Avoid feeding a weakly related image into the generator.
-  if (!best || best.score < 1 || !best.item.thumbnail) return null;
+  const wordCount = String(query).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(word => word.length > 2).length;
+  if (!best || best.score < Math.min(2, wordCount) || !best.item.thumbnail) return null;
   const imageResponse = await fetch(best.item.thumbnail);
   if (!imageResponse.ok) return null;
   const blob = await imageResponse.blob();
@@ -79,7 +80,7 @@ export async function onRequestPost({ request, env }) {
       messages: [
         {
           role: "system",
-          content: "You are a universal YouTube thumbnail art director and visual researcher. Understand the user's complete prompt in its original language. Do not assume the topic. Identify the exact subject, named people, place, event, product, factual context, emotional tone, and any exact headline/subtitle text. Never invent a person's identity, a real location's architecture, a product model, or a news event. Return ONLY valid JSON with these keys: search_query (short English query for a relevant real reference photo; empty string if no specific real-world visual is needed), image_prompt (detailed English prompt for a cinematic, professional thumbnail background that faithfully depicts the user's topic; no words, letters, captions, logos, watermarks or graphic text), visual_subject (short plain-language subject label), category (one of: history, news, travel, product, festival, education, sports, nature, culture, general), and design_direction (short description of a suitable composition and mood). Make the design specific to this topic, not a reusable generic poster. If the prompt names a real person, do not fabricate their face; use a reference photo if found, otherwise compose without a recognizable portrait. For real places, prioritize recognizable authentic features and avoid substituting unrelated famous landmarks. The user's requested text will be typeset separately by the website."
+          content: "You are a universal YouTube thumbnail art director and visual researcher. Understand the user's complete prompt in its original language. Do not assume the topic. Identify the exact subject, named people, place, event, product, factual context, emotional tone, and any exact headline/subtitle text. Never invent a person's identity, a real location's architecture, a product model, or a news event. Return ONLY valid JSON with these keys: search_query (short English query for a relevant real reference photo; empty string if no specific real-world visual is needed), image_prompt (detailed English prompt for a cinematic, professional thumbnail background that faithfully depicts the user's topic; no words, letters, captions, logos, watermarks or graphic text), visual_subject (short plain-language subject label), category (one of: history, news, travel, product, festival, education, sports, nature, culture, general), and design_direction (short description of a suitable composition and mood). Make the design specific to this topic, not a reusable generic poster. If the prompt names a real person, do not fabricate their face; use a reference photo if found, otherwise compose without a recognizable portrait. For real places, prioritize recognizable authentic features and avoid substituting unrelated famous landmarks. The user's requested text will be typeset separately by the website. Compose the image so the main subject is visually dominant and leave a clean, low-detail text-safe zone in the lower third without making the whole image a dark generic background."
         },
         { role: "user", content: prompt }
       ],
