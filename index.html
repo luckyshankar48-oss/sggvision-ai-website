@@ -1821,6 +1821,37 @@ header.wrap.nav>div:last-child a:hover{
  header.wrap.nav>div:last-child{gap:7px!important}
  header.wrap.nav>div:last-child a{font-size:14px!important;padding:7px 3px!important}
 }
+
+/* Make the hero headline larger, clearer and comfortably spaced */
+html body .hero h1{
+  font-family:"Mukta","Noto Sans Devanagari","Hind Vadodara",sans-serif!important;
+  font-size:clamp(44px,4.5vw,66px)!important;
+  font-weight:900!important;
+  line-height:1.42!important;
+  letter-spacing:.15px!important;
+  word-spacing:1px!important;
+  margin:16px 0 24px!important;
+  padding:2px 0 6px!important;
+  max-width:100%!important;
+}
+html body .hero h1 span{
+  display:inline!important;
+  line-height:inherit!important;
+}
+@media(max-width:800px){
+ html body .hero h1{
+  font-size:clamp(40px,8.5vw,54px)!important;
+  line-height:1.38!important;
+  margin:14px 0 22px!important;
+ }
+}
+@media(max-width:480px){
+ html body .hero h1{
+  font-size:clamp(34px,9.2vw,44px)!important;
+  line-height:1.4!important;
+  margin:12px 0 20px!important;
+ }
+}
 </style>
 </head>
 <body>
