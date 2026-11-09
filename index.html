@@ -690,7 +690,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     const t=fitLines(sub,maxWidth,Math.round(h*.14),Math.round(w*(vertical?.052:.047)),vertical?24:28);
     ctx.textAlign=align;ctx.textBaseline='middle';ctx.font='900 '+t.size+'px "Hind Vadodara","Mukta",sans-serif';
     ctx.textAlign=align;ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,t.size*.07);ctx.strokeStyle='rgba(0,0,0,.8)';
-    ctx.fillStyle='#fff';ctx.shadowColor='rgba(0,0,0,.9)';ctx.shadowBlur=11;
+    ctx.fillStyle=category==='news'?'#ffe33b':'#fff';ctx.shadowColor='rgba(0,0,0,.95)';ctx.shadowBlur=13;
     t.lines.forEach((line,i)=>{const yy=y+(i-(t.lines.length-1)/2)*t.lineH;ctx.strokeText(line,x,yy,maxWidth);ctx.fillText(line,x,yy,maxWidth)});
     ctx.shadowBlur=0;
   }
