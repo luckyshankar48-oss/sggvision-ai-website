@@ -651,6 +651,36 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     t.lines.forEach((line,i)=>{const yy=y+(i-(t.lines.length-1)/2)*t.lineH;ctx.strokeText(line,x,yy,maxWidth);ctx.fillText(line,x,yy,maxWidth)});
     ctx.shadowBlur=0;
   }
+  function drawSupportingInfo(){
+    const points=Array.isArray(supportingPoints)?supportingPoints.filter(Boolean).slice(0,4):[];
+    if(!points.length&&!closingLine)return;
+    const panelY=h*.765,panelH=h*.205,panelX=pad,panelW=w-pad*2;
+    ctx.save();ctx.fillStyle='rgba(5,9,16,.88)';ctx.strokeStyle=p.accent;ctx.lineWidth=Math.max(2,w*.0025);
+    ctx.beginPath();ctx.roundRect(panelX,panelY,panelW,panelH,Math.max(10,w*.012));ctx.fill();ctx.stroke();
+    const closeSpace=closingLine?panelH*.22:0;
+    if(points.length){
+      const cols=points.length===1?1:2,rows=Math.ceil(points.length/cols);
+      const rowH=(panelH-closeSpace)*.88/rows;
+      const cellW=panelW/cols;
+      ctx.font='800 '+Math.max(vertical?18:20,Math.round(w*(vertical?.027:.023)))+'px "Hind Vadodara","Mukta",sans-serif';
+      ctx.textAlign='left';ctx.textBaseline='middle';
+      points.forEach((point,index)=>{
+        const col=index%cols,row=Math.floor(index/cols),x=panelX+col*cellW+panelW*.025,y=panelY+panelH*.10+row*rowH+rowH*.5;
+        const maxTextW=cellW-panelW*.065;
+        const lines=tmWrapText(ctx,String(point),maxTextW,2);
+        const fs=Math.max(vertical?16:18,Math.round(w*(vertical?.024:.020)));
+        ctx.font='800 '+fs+'px "Hind Vadodara","Mukta",sans-serif';
+        ctx.fillStyle=p.accent;ctx.beginPath();ctx.arc(x,y,Math.max(3,w*.0035),0,Math.PI*2);ctx.fill();
+        ctx.fillStyle='#fff';lines.forEach((line,k)=>ctx.fillText(line,x+Math.max(10,w*.012),y+(k-(lines.length-1)/2)*fs*1.08,maxTextW));
+      });
+    }
+    if(closingLine){
+      ctx.font='900 '+Math.max(vertical?17:19,Math.round(w*(vertical?.025:.021)))+'px "Hind Vadodara","Mukta",sans-serif';
+      ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=p.accent;
+      ctx.fillText(String(closingLine).slice(0,100),w/2,panelY+panelH*.88,panelW*.92);
+    }
+    ctx.restore();
+  }
   // Global typography-safe zone: hide any pseudo-letters hallucinated by the image model.
   // Keep the upper scene untouched; all real Marathi lettering is drawn afterward by Canvas.
   const safeTop=Math.round(h*.60);
@@ -667,7 +697,7 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(8,12,22,.35)');g.addColorStop(.3,'rgba(8,12,22,.94)');g.addColorStop(1,'rgba(8,12,22,.98)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(0,bandY,w,Math.max(12,h*.018));
-    drawTitle(pad,bandY+bandH*.49,maxW,bandH*.58,'left');drawSub(pad,bandY+bandH*.83,maxW*.94,'left');
+    drawTitle(pad,bandY+bandH*.30,maxW,bandH*.36,'left');drawSub(pad,bandY+bandH*.56,maxW*.94,'left');
   }else if(category==='product'){
     const panelW=vertical?w*.9:w*.48,panelH=vertical?h*.34:h*.72;
     const px=vertical?w*.05:w*.035,py=vertical?h*.62:h*.14;
@@ -676,11 +706,11 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     drawTitle(px+panelW*.07,py+panelH*.43,panelW*.86,panelH*.52,'left');
     drawSub(px+panelW*.07,py+panelH*.82,panelW*.86,'left');
   }else if(category==='travel'||category==='nature'){
-    const bandY=vertical?h*.68:h*.62,bandH=h-bandY;
+    const bandY=vertical?h*.64:h*.57,bandH=h-bandY;
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(3,20,20,0)');g.addColorStop(.22,'rgba(3,20,20,.76)');g.addColorStop(1,'rgba(3,20,20,.94)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.13,160),Math.max(7,h*.012));
-    drawTitle(pad,bandY+bandH*.54,maxW,bandH*.56,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
+    drawTitle(pad,bandY+bandH*.30,maxW,bandH*.38,'left');drawSub(pad,bandY+bandH*.57,maxW*.94,'left');
   }else if(category==='history'){
     // Cinematic historical title treatment: red brush heading, oversized gold hero word,
     // and a warm torn-parchment subtitle panel inspired by the supplied reference.
@@ -774,15 +804,15 @@ function tmCompose(img,headlineOverride,subOverride,category='general',supportin
     ctx.fillStyle=glow;ctx.fillRect(0,cy-r,w,r*2);
     ctx.textAlign='center';ctx.strokeStyle=p.accent;ctx.lineWidth=Math.max(4,w*.004);
     ctx.beginPath();ctx.moveTo(w*.13,cy-r*.52);ctx.lineTo(w*.87,cy-r*.52);ctx.stroke();
-    drawTitle(w/2,cy,maxW*.9,h*.25,'center');drawSub(w/2,cy+h*.17,maxW*.86,'center');
+    drawTitle(w/2,cy-r*.12,maxW*.9,h*.18,'center');drawSub(w/2,cy+r*.18,maxW*.86,'center');
   }else{
-    const bandY=vertical?h*.64:h*.60,bandH=h-bandY;
+    const bandY=vertical?h*.64:h*.57,bandH=h-bandY;
     const g=ctx.createLinearGradient(0,bandY,0,h);g.addColorStop(0,'rgba(10,10,24,.12)');g.addColorStop(.3,'rgba(10,10,24,.88)');g.addColorStop(1,'rgba(10,10,24,.96)');
     ctx.fillStyle=g;ctx.fillRect(0,bandY,w,bandH);
     ctx.fillStyle=p.accent;ctx.fillRect(pad,bandY+h*.035,Math.min(w*.15,190),Math.max(7,h*.01));
-    drawTitle(pad,bandY+bandH*.52,maxW,bandH*.55,'left');drawSub(pad,bandY+bandH*.84,maxW*.94,'left');
+    drawTitle(pad,bandY+bandH*.30,maxW,bandH*.38,'left');drawSub(pad,bandY+bandH*.57,maxW*.94,'left');
   }
-  tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
+  if(category!=='history')drawSupportingInfo();\n  tmLastImageReady=true;document.getElementById('tmDownload').disabled=false;
 }
 function tmReadBrief(raw){
   const text=String(raw||'').replace(/Prompt कॉपी करा/gi,'').trim();
