@@ -29,7 +29,23 @@ export async function onRequestPost({ request, env }) {
       }
     }
 
-    const body = await request.json();
+    const contentType = request.headers.get("Content-Type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) {
+      return new Response(JSON.stringify({ error: "JSON स्वरूपातील विनंती आवश्यक आहे." }), { status: 415, headers });
+    }
+    const declaredLength = Number(request.headers.get("Content-Length") || 0);
+    if (declaredLength > 512 * 1024) {
+      return new Response(JSON.stringify({ error: "विनंतीचा आकार मर्यादेपेक्षा जास्त आहे." }), { status: 413, headers });
+    }
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return new Response(JSON.stringify({ error: "विनंतीतील JSON माहिती वाचता आली नाही." }), { status: 400, headers });
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return new Response(JSON.stringify({ error: "विनंतीचा डेटा योग्य स्वरूपात नाही." }), { status: 400, headers });
+    }
     const prompt = String(body.prompt || "").trim();
 
     if (!prompt || prompt.length > 12000) {
