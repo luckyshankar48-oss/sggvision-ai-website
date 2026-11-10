@@ -30,6 +30,6 @@ jobs:
             .map(match => match[1])
             .filter(source => source.trim());
           if (!scripts.length) throw new Error('No inline JavaScript blocks found');
-          scripts.forEach((source, index) => new vm.Script(source, { filename: \`index-inline-\${index + 1}.js\` }));
-          console.log(\`Validated \${scripts.length} inline JavaScript blocks.\`);
+          scripts.forEach((source, index) => new vm.Script(source, { filename: 'index-inline-' + (index + 1) + '.js' }));
+          console.log('Validated ' + scripts.length + ' inline JavaScript blocks.');
           NODE
