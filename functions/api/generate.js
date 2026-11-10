@@ -239,7 +239,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         messages: [
           {
             role: "system",
-            content: systemPrompt + durationInstruction + (isEnglishRequest ? "\\n\\nIMPORTANT: The user explicitly selected English. Write the entire response in English only, including all headings and the call to action. Do not write Marathi." : "")
+            content: systemPrompt + durationInstruction + (isEnglishRequest ? "\n\nIMPORTANT: The user explicitly selected English. Write the entire response in English only, including all headings and the call to action. Do not write Marathi." : "")
           },
           {
             role: "user",
@@ -326,7 +326,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
           },
           {
             role: "user",
-            content: prompt + "\n\n" + researchContext + "\n\nपहिला मसुदा वापरू नका आणि त्याची नक्कल करू नका. फक्त मूळ विषय व वरील संदर्भ वापरून नव्याने पूर्ण स्क्रिप्ट लिहा. संदर्भात आधार नसलेले तपशील घालू नका."
+            content: prompt + "\n\n" + researchContext + "\n\n" + (isEnglishRequest ? "Ignore the failed draft. Write a fresh complete script in English only, using supported facts and no invented details." : "पहिला मसुदा वापरू नका आणि त्याची नक्कल करू नका. फक्त मूळ विषय व वरील संदर्भ वापरून नव्याने पूर्ण स्क्रिप्ट लिहा. संदर्भात आधार नसलेले तपशील घालू नका.")
           }
         ],
         max_completion_tokens: minutes ? Math.min(6000, Math.max(1800, minutes * 1200)) : 3000,
