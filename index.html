@@ -21,6 +21,11 @@ section{padding:38px 0}.section-head{margin-bottom:20px}.section-head h2{font-si
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:18px}.tool label,.formbox label{display:block;font-size:14px;font-weight:700;margin:12px 0 6px}
 input,textarea,select{width:100%;padding:13px;background:#0a152a;color:var(--text);border:1px solid #49618c;border-radius:10px;font:inherit;font-size:16px}input:focus,textarea:focus,select:focus{outline:2px solid #69d9ff;border-color:#69d9ff}
 textarea{min-height:115px;resize:vertical}.hint{font-size:12px;color:var(--muted)}.result{background:#0a1325;border:1px dashed #52698e;padding:14px;border-radius:10px;white-space:pre-wrap;min-height:90px;color:#dce7f8;margin-top:12px}
+.result-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:10px}
+.result-actions .btn{font-size:14px;padding:10px 13px;margin:0}
+.result-actions .btn.secondary{margin:0}
+@media(max-width:480px){.result-actions{display:grid;grid-template-columns:1fr}.result-actions .btn{width:100%}}
+
 .price{color:var(--gold);font-size:23px;font-weight:850}.tag{display:inline-block;padding:5px 11px;border-radius:30px;background:linear-gradient(90deg,#203d61,#3b3269);color:#e3efff;font-size:13px;font-weight:700;border:1px solid #4c6590}
 footer{border-top:1px solid var(--line);padding:25px 0;color:var(--muted);font-size:13px}
 .notice{border-left:3px solid var(--gold);padding:12px 14px;background:#211f1a;color:#f4dfad;border-radius:8px;font-size:13px;margin-top:15px}
@@ -2637,12 +2642,30 @@ body{top:0!important}
 <div class="card"><div class="emoji">📄</div><h3>अर्ज आणि पत्रलेखन</h3><p>मराठी अर्ज, विनंतीपत्र, बायोडाटा आणि व्यावसायिक मजकूर.</p></div>
 <div class="card"><div class="emoji">📣</div><h3>सोशल मीडिया कंटेंट</h3><p>पोस्ट कॅप्शन, जाहिरात मजकूर आणि कार्यक्रम सूचना.</p></div></div></section>
 <section id="tools"><div class="section-head"><h2>AI टूल्स — ChatGPT सहाय्य</h2><p>माहिती भरा आणि सुरक्षित सर्व्हरद्वारे OpenAI AI कडून मजकूर तयार करून घ्या.</p></div>
-<div class="tools"><div class="tool"><span class="tag">टूल 01</span><h3>YouTube SEO मजकूर तयार करा</h3><label for="topic">व्हिडिओचा विषय</label><input id="topic" placeholder="उदा. रायगड किल्ला प्रवासवर्णन"><label for="kw">महत्त्वाचे शब्द (ऐच्छिक)</label><input id="kw" placeholder="उदा. इतिहास, महाराष्ट्र, पर्यटन"><button class="btn" style="margin-top:14px" onclick="seoDemo()">Generate करा • AI मजकूर तयार करा</button><div id="seoResult" class="result">AI कडून तयार होणारा मजकूर येथे दिसेल.</div></div>
-<div class="tool"><span class="tag">टूल 02</span><h3>मराठी व्हिडिओ स्क्रिप्ट आराखडा</h3><label for="scriptTopic">स्क्रिप्टचा विषय</label><input id="scriptTopic" placeholder="उदा. चवदार तळे सत्याग्रह"><label for="duration">व्हिडिओचा कालावधी</label><select id="duration"><option>१ मिनिट</option><option>५ मिनिटे</option><option>१० मिनिटे</option><option>१५ मिनिटे</option></select><button class="btn" style="margin-top:14px" onclick="scriptDemo()">Generate करा • AI स्क्रिप्ट तयार करा</button><div id="scriptResult" class="result">AI कडून तयार होणारी स्क्रिप्ट येथे दिसेल.</div></div>
-<div class="tool"><span class="tag">टूल 03</span><h3>Thumbnail / पोस्टर मजकूर</h3><label for="thumbTopic">व्हिडिओ किंवा कार्यक्रमाचा विषय</label><input id="thumbTopic" placeholder="उदा. भीमाशंकर जंगल वाचवा आंदोलन"><label for="thumbStyle">डिझाइनचा प्रकार</label><select id="thumbStyle"><option>YouTube Thumbnail 16:9</option><option>YouTube Shorts 9:16</option><option>सोशल मीडिया पोस्ट</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('thumbTopic','thumbStyle','thumbResult','तुम्ही मराठी YouTube Thumbnail आणि पोस्टर तज्ज्ञ आहात. विषयासाठी आकर्षक, अचूक आणि शुद्ध मराठीतील मुख्य मथळा, उपमथळा, 3 पर्यायी मजकूर आणि दृश्य मांडणी सुचवा. चुकीची नावे किंवा तथ्य बनवू नका.')">Generate करा • Thumbnail मजकूर</button><div id="thumbResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div></div>
-<div class="tool"><span class="tag">टूल 04</span><h3>Reels / Shorts कॅप्शन</h3><label for="reelTopic">व्हिडिओचा विषय</label><input id="reelTopic" placeholder="उदा. रायगड किल्ल्याची सफर"><label for="reelTone">कॅप्शनचा प्रकार</label><select id="reelTone"><option>आकर्षक आणि माहितीपूर्ण</option><option>भावनिक</option><option>विनोदी</option><option>बातमी / माहिती</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('reelTopic','reelTone','reelResult','तुम्ही मराठी सोशल मीडिया लेखक आहात. विषयासाठी Reels/Shorts साठी 3 छोटे हुक, कॅप्शन, call-to-action आणि संबंधित हॅशटॅग तयार करा. भाषा नैसर्गिक ठेवा; तथ्य बनवू नका.')">Generate करा • Reels कॅप्शन</button><div id="reelResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div></div>
-<div class="tool"><span class="tag">टूल 05</span><h3>सोशल मीडिया पोस्ट</h3><label for="postTopic">पोस्टचा विषय</label><input id="postTopic" placeholder="उदा. कार्यक्रमाची सूचना"><label for="postTone">पोस्टचा प्रकार</label><select id="postTone"><option>माहितीपूर्ण</option><option>जाहिरात</option><option>कार्यक्रम सूचना</option><option>अभिनंदन / शुभेच्छा</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('postTopic','postTone','postResult','तुम्ही मराठी सोशल मीडिया कंटेंट लेखक आहात. विषय आणि प्रकारानुसार पोस्टसाठी तयार मजकूर, योग्य शीर्षक आणि हॅशटॅग द्या. दिलेली माहितीच वापरा; तपशील नसल्यास जागा रिकामी ठेवा.')">Generate करा • पोस्ट तयार करा</button><div id="postResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div></div>
-<div class="tool"><span class="tag">टूल 06</span><h3>अर्ज / पत्रलेखन</h3><label for="letterTopic">अर्जाचा विषय व तपशील</label><textarea id="letterTopic" placeholder="कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा..."></textarea><label for="letterType">पत्राचा प्रकार</label><select id="letterType"><option>विनंती अर्ज</option><option>तक्रार अर्ज</option><option>कार्यालयीन पत्र</option><option>परवानगी अर्ज</option></select><button class="btn" style="margin-top:14px" onclick="letterAI()">Generate करा • अर्ज तयार करा</button><div id="letterResult" class="result">तयार होणारा अर्ज येथे दिसेल.</div></div></div>
+<div class="tools"><div class="tool"><span class="tag">टूल 01</span><h3>YouTube SEO मजकूर तयार करा</h3><label for="topic">व्हिडिओचा विषय</label><input id="topic" placeholder="उदा. रायगड किल्ला प्रवासवर्णन"><label for="kw">महत्त्वाचे शब्द (ऐच्छिक)</label><input id="kw" placeholder="उदा. इतिहास, महाराष्ट्र, पर्यटन"><button class="btn" style="margin-top:14px" onclick="seoDemo()">Generate करा • AI मजकूर तयार करा</button><div id="seoResult" class="result">AI कडून तयार होणारा मजकूर येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('seoResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('seoResult')">📄 PDF / प्रिंट</button>
+</div></div>
+<div class="tool"><span class="tag">टूल 02</span><h3>मराठी व्हिडिओ स्क्रिप्ट आराखडा</h3><label for="scriptTopic">स्क्रिप्टचा विषय</label><input id="scriptTopic" placeholder="उदा. चवदार तळे सत्याग्रह"><label for="duration">व्हिडिओचा कालावधी</label><select id="duration"><option>१ मिनिट</option><option>५ मिनिटे</option><option>१० मिनिटे</option><option>१५ मिनिटे</option></select><button class="btn" style="margin-top:14px" onclick="scriptDemo()">Generate करा • AI स्क्रिप्ट तयार करा</button><div id="scriptResult" class="result">AI कडून तयार होणारी स्क्रिप्ट येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('scriptResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('scriptResult')">📄 PDF / प्रिंट</button>
+</div></div>
+<div class="tool"><span class="tag">टूल 03</span><h3>Thumbnail / पोस्टर मजकूर</h3><label for="thumbTopic">व्हिडिओ किंवा कार्यक्रमाचा विषय</label><input id="thumbTopic" placeholder="उदा. भीमाशंकर जंगल वाचवा आंदोलन"><label for="thumbStyle">डिझाइनचा प्रकार</label><select id="thumbStyle"><option>YouTube Thumbnail 16:9</option><option>YouTube Shorts 9:16</option><option>सोशल मीडिया पोस्ट</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('thumbTopic','thumbStyle','thumbResult','तुम्ही मराठी YouTube Thumbnail आणि पोस्टर तज्ज्ञ आहात. विषयासाठी आकर्षक, अचूक आणि शुद्ध मराठीतील मुख्य मथळा, उपमथळा, 3 पर्यायी मजकूर आणि दृश्य मांडणी सुचवा. चुकीची नावे किंवा तथ्य बनवू नका.')">Generate करा • Thumbnail मजकूर</button><div id="thumbResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('thumbResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('thumbResult')">📄 PDF / प्रिंट</button>
+</div></div>
+<div class="tool"><span class="tag">टूल 04</span><h3>Reels / Shorts कॅप्शन</h3><label for="reelTopic">व्हिडिओचा विषय</label><input id="reelTopic" placeholder="उदा. रायगड किल्ल्याची सफर"><label for="reelTone">कॅप्शनचा प्रकार</label><select id="reelTone"><option>आकर्षक आणि माहितीपूर्ण</option><option>भावनिक</option><option>विनोदी</option><option>बातमी / माहिती</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('reelTopic','reelTone','reelResult','तुम्ही मराठी सोशल मीडिया लेखक आहात. विषयासाठी Reels/Shorts साठी 3 छोटे हुक, कॅप्शन, call-to-action आणि संबंधित हॅशटॅग तयार करा. भाषा नैसर्गिक ठेवा; तथ्य बनवू नका.')">Generate करा • Reels कॅप्शन</button><div id="reelResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('reelResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('reelResult')">📄 PDF / प्रिंट</button>
+</div></div>
+<div class="tool"><span class="tag">टूल 05</span><h3>सोशल मीडिया पोस्ट</h3><label for="postTopic">पोस्टचा विषय</label><input id="postTopic" placeholder="उदा. कार्यक्रमाची सूचना"><label for="postTone">पोस्टचा प्रकार</label><select id="postTone"><option>माहितीपूर्ण</option><option>जाहिरात</option><option>कार्यक्रम सूचना</option><option>अभिनंदन / शुभेच्छा</option></select><button class="btn" style="margin-top:14px" onclick="extraAI('postTopic','postTone','postResult','तुम्ही मराठी सोशल मीडिया कंटेंट लेखक आहात. विषय आणि प्रकारानुसार पोस्टसाठी तयार मजकूर, योग्य शीर्षक आणि हॅशटॅग द्या. दिलेली माहितीच वापरा; तपशील नसल्यास जागा रिकामी ठेवा.')">Generate करा • पोस्ट तयार करा</button><div id="postResult" class="result">तयार होणारा मजकूर येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('postResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('postResult')">📄 PDF / प्रिंट</button>
+</div></div>
+<div class="tool"><span class="tag">टूल 06</span><h3>अर्ज / पत्रलेखन</h3><label for="letterTopic">अर्जाचा विषय व तपशील</label><textarea id="letterTopic" placeholder="कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा..."></textarea><label for="letterType">पत्राचा प्रकार</label><select id="letterType"><option>विनंती अर्ज</option><option>तक्रार अर्ज</option><option>कार्यालयीन पत्र</option><option>परवानगी अर्ज</option></select><button class="btn" style="margin-top:14px" onclick="letterAI()">Generate करा • अर्ज तयार करा</button><div id="letterResult" class="result">तयार होणारा अर्ज येथे दिसेल.</div><div class="result-actions" aria-label="मजकूर जतन करण्याचे पर्याय">
+<button class="btn result-action-copy" type="button" onclick="copyAIResult('letterResult')">📋 संपूर्ण मजकूर कॉपी करा</button>
+<button class="btn secondary result-action-pdf" type="button" onclick="saveAIResultPDF('letterResult')">📄 PDF / प्रिंट</button>
+</div></div></div>
 <div class="notice">AI वापर: ही साधने Cloudflare Workers AI द्वारे चालतात. सुरक्षित AI जोडणी Cloudflare Pages Function मधून होते; वेबसाइटमध्ये कोणतीही API Key ठेवलेली नाही. AI उत्तर प्रकाशित करण्यापूर्वी तथ्य आणि भाषा तपासा.</div>
 </section>
 
@@ -2694,15 +2717,21 @@ body{top:0!important}
 </main><footer><div class="wrap">© 2026 SGGVISION AI Digital Services • मराठी डिजिटल सेवा<br>AI तयार केलेला मजकूर प्रकाशित करण्यापूर्वी तथ्य, भाषा आणि हक्क तपासा.</div></footer>
 <script>
 function formatAIText(value){
- const esc=String(value||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
- return esc
-  .replace(/^###\\s+(.+)$/gm,'<h4>$1</h4>')
-  .replace(/^##\\s+(.+)$/gm,'<h3>$1</h3>')
-  .replace(/^#\\s+(.+)$/gm,'<h2>$1</h2>')
-  .replace(/\\*\\*(.+?)\\*\\*/g,'<strong>$1</strong>')
-  .replace(/^\\s*---+\\s*$/gm,'<hr>')
-  .replace(/^\\s*[-*]\\s+(.+)$/gm,'<div class="ai-list-item">• $1</div>')
-  .replace(/\\n/g,'<br>');
+  // Convert common entities emitted literally by the model before HTML escaping.
+  let text=String(value||'')
+    .replace(/&amp;#39;|&#39;|&apos;/gi,"'")
+    .replace(/&amp;quot;|&quot;/gi,'"')
+    .replace(/&amp;nbsp;|&nbsp;/gi,' ')
+    .replace(/&amp;amp;/gi,'&');
+  const esc=text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  return esc
+    .replace(/^###\s+(.+)$/gm,'<h4>$1</h4>')
+    .replace(/^##\s+(.+)$/gm,'<h3>$1</h3>')
+    .replace(/^#\s+(.+)$/gm,'<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^\s*---+\s*$/gm,'<hr>')
+    .replace(/^\s*[-*]\s+(.+)$/gm,'<div class="ai-list-item">• $1</div>')
+    .replace(/\n/g,'<br>');
 }
 
 /* SGGVISION bilingual interface and AI output language */
@@ -3027,6 +3056,47 @@ if(sggLanguageSelect){
  sggLanguageSelect.addEventListener('change',e=>setSggLanguage(e.target.value));
  window.sggLanguage=sggLanguageSelect.value||'mr';
 }
+function getAIResultText(target){
+ const out=document.getElementById(target);
+ if(!out)return '';
+ return (out.innerText||out.textContent||'').trim();
+}
+async function copyAIResult(target){
+ const text=getAIResultText(target);
+ if(!text||/AI कडून तयार होणारा|तयार होणारा मजकूर येथे|तयार होणारी स्क्रिप्ट येथे|तयार होणारा अर्ज येथे/.test(text)){
+  alert('आधी AI मजकूर तयार करा.');return;
+ }
+ try{
+  if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(text);
+  else{
+   const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();
+   const ok=document.execCommand('copy');area.remove();if(!ok)throw new Error('कॉपी करता आले नाही.');
+  }
+  alert('संपूर्ण मजकूर कॉपी झाला.');
+ }catch(e){alert('कॉपी करता आले नाही. कृपया पुन्हा प्रयत्न करा.');}
+}
+function saveAIResultPDF(target){
+ const out=document.getElementById(target),text=getAIResultText(target);
+ if(!out||!text||/AI कडून तयार होणारा|तयार होणारा मजकूर येथे|तयार होणारी स्क्रिप्ट येथे|तयार होणारा अर्ज येथे/.test(text)){
+  alert('आधी AI मजकूर तयार करा.');return;
+ }
+ const titleMap={seoResult:'YouTube SEO',scriptResult:'व्हिडिओ स्क्रिप्ट',thumbResult:'Thumbnail मजकूर',reelResult:'Reels / Shorts कॅप्शन',postResult:'सोशल मीडिया पोस्ट',letterResult:'अर्ज / पत्र'};
+ const title=titleMap[target]||'SGGVISION AI मजकूर';
+ const w=window.open('','_blank');
+ if(!w){alert('PDF तयार करण्यासाठी नवीन विंडो उघडता आली नाही. कृपया Pop-ups परवानगी द्या.');return;}
+ const safe=text.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+ w.document.open();
+ w.document.write(`<!doctype html><html lang="mr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} - SGGVISION</title><style>
+ @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+ body{font-family:'Noto Sans Devanagari','Nirmala UI','Mangal',sans-serif;color:#171717;max-width:850px;margin:28px auto;padding:0 28px;line-height:1.85}
+ h1{font-size:22px;border-bottom:2px solid #b58a2a;padding-bottom:10px;color:#5c3b0b}
+ pre{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
+ .note{font-size:12px;color:#666;margin-top:24px;border-top:1px solid #ddd;padding-top:10px}
+ @page{size:A4;margin:18mm}
+ @media print{body{margin:0;padding:0}.note{display:none}}
+ </style></head><body><h1>${title}</h1><pre>${safe}</pre><div class="note">SGGVISION AI Digital Services</div><script>window.addEventListener('load',()=>{setTimeout(()=>window.print(),700)});<\/script></body></html>`);
+ w.document.close();
+}
 async function callAI(prompt,target,button){
  const out=document.getElementById(target), old=button.textContent;
  button.disabled=true;button.textContent='तयार होत आहे...';out.textContent='कृपया थोडा वेळ थांबा...';
@@ -3040,7 +3110,15 @@ async function callAI(prompt,target,button){
  finally{button.disabled=false;button.textContent=old;}
 }
 function seoDemo(btn){let t=document.getElementById('topic').value.trim(),k=document.getElementById('kw').value.trim();if(!t){alert(window.sggLanguage==='en'?'Please enter a video topic.':'कृपया व्हिडिओचा विषय लिहा.');return}callAI((window.sggLanguage==='en'?'You are a YouTube SEO expert. Reply entirely in English. Create 3 factual titles (each under 100 characters), a detailed description, search keywords and 10 hashtags. Do not invent facts; state when information is insufficient. Topic: ':'तुम्ही मराठी YouTube SEO तज्ज्ञ आहात. खालील विषयासाठी मराठीत आकर्षक पण तथ्याधारित 3 शीर्षके (प्रत्येक 100 अक्षरांच्या आत), सविस्तर वर्णन, शोधशब्द आणि 10 हॅशटॅग द्या. चुकीचे तथ्य बनवू नका; माहिती अपुरी असल्यास तसे सांगा. विषय: ')+t+'. अतिरिक्त शब्द: '+k+'.', 'seoResult',btn)}
-function scriptDemo(btn){let t=document.getElementById('scriptTopic').value.trim(),d=document.getElementById('duration').value;if(!t){alert(window.sggLanguage==='en'?'Please enter a topic.':'कृपया विषय लिहा.');return}callAI((window.sggLanguage==='en'?'You are a professional English voice-over writer. Write the complete script in natural English. Include a strong hook, introduction, main section, conclusion and YouTube call to action. Do not invent unverified historical or scientific facts; identify uncertainty. Topic: ':'तुम्ही मराठी व्हॉइसओव्हर लेखक आहात. विषय: ')+t+'. अपेक्षित कालावधी: '+d+'. '+(window.sggLanguage==='en'?'Write a natural English script with hook, introduction, main section, conclusion and YouTube call to action. Do not invent unverified facts.':'सुरुवातीचा hook, प्रस्तावना, मुख्य भाग, निष्कर्ष आणि YouTube call-to-action असलेली नैसर्गिक मराठी स्क्रिप्ट लिहा. पडताळणी नसलेली ऐतिहासिक/वैज्ञानिक माहिती बनवू नका; अनिश्चित मुद्दे स्पष्ट करा.'), 'scriptResult',btn)}
+function scriptDemo(btn){
+ let t=document.getElementById('scriptTopic').value.trim(),d=document.getElementById('duration').value;
+ if(!t){alert(window.sggLanguage==='en'?'Please enter a topic.':'कृपया विषय लिहा.');return}
+ const en=window.sggLanguage==='en';
+ const prompt=en
+  ? 'Act as an experienced English documentary and YouTube voice-over scriptwriter and careful fact-checking editor. Write a complete, natural spoken script for the exact topic below. Duration: '+d+'. Use a strong opening hook, a clear introduction, logically ordered sections, smooth transitions, a conclusion and a brief YouTube call to action. Use simple, fluent language that sounds natural when read aloud. Do not add unsupported dates, names, quotations, statistics, claims or invented events. For history, clearly separate established facts from legends or uncertain claims; if a detail cannot be verified from the prompt, omit it or explicitly say it needs verification. Do not repeat the same point. Do not output HTML entities, HTML tags, code, or broken markup. Use clean headings and paragraphs only. Topic: '+t
+  : 'तुम्ही अनुभवी मराठी माहितीपट व YouTube व्हॉइसओव्हर लेखक आणि काळजीपूर्वक तथ्यतपासणी करणारे संपादक आहात. खाली दिलेल्या नेमक्या विषयावर पूर्ण, सलग आणि निवेदनासाठी सहज वाचता येईल अशी शुद्ध मराठी स्क्रिप्ट लिहा. अपेक्षित कालावधी: '+d+'. सुरुवातीला प्रभावी पण तथ्याधारित प्रस्तावना द्या. त्यानंतर विषयाची पार्श्वभूमी, मुख्य माहिती योग्य क्रमाने, उपयुक्त तपशील, निष्कर्ष आणि छोटा YouTube call-to-action द्या. भाषा नैसर्गिक, व्याकरणदृष्ट्या शुद्ध आणि बोलण्यास सोपी ठेवा. मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे आणि व्यक्ती/स्थळांची नावे काळजीपूर्वक लिहा. एकच मुद्दा पुन्हा पुन्हा सांगू नका. इतिहास किंवा वारसा स्थळांविषयी लिहिताना पडताळणी नसलेल्या तारखा, व्यक्ती, उद्धरणे, आकडे किंवा कथा बनवू नका. लोककथा आणि ऐतिहासिक पुरावा वेगळे स्पष्ट करा; खात्री नसलेली माहिती वगळा किंवा पडताळणी आवश्यक असल्याचे नमूद करा. HTML entities (उदा. &#39; किंवा &quot;), HTML tags, code किंवा तुटक markup अजिबात देऊ नका. स्वच्छ शीर्षके आणि परिच्छेद वापरा. विषय: '+t;
+ callAI(prompt,'scriptResult',btn);
+}
 function extraAI(inputId,selectId,resultId,role){const t=document.getElementById(inputId).value.trim(),v=document.getElementById(selectId).value;if(!t){alert('कृपया विषय किंवा माहिती लिहा.');return}const btn=document.querySelector(`[onclick^="extraAI('${inputId}'"]`);callAI(role+' प्रकार: '+v+'. विषय: '+t, resultId, btn)}
 function letterAI(){const t=document.getElementById('letterTopic').value.trim(),v=document.getElementById('letterType').value;if(!t){alert('कृपया अर्जाचा विषय व तपशील लिहा.');return}callAI('तुम्ही शुद्ध मराठी कार्यालयीन लेखन तज्ज्ञ आहात. '+v+' तयार करा. वापरकर्त्याने दिलेलीच माहिती वापरा; नावे, पत्ते, तारखा किंवा तथ्य स्वतः बनवू नका. आवश्यक माहिती नसल्यास [येथे माहिती भरा] असे दाखवा. तपशील: '+t,'letterResult',document.querySelector('button[onclick="letterAI()"]'))}
 async function askPortalHelp(){
