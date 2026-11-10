@@ -132,147 +132,88 @@ code किंवा raw markup देऊ नका.
 वापरकर्त्याला थेट वापरता येईल असा स्वच्छ अंतिम मजकूर द्या.
 `;
 
-    // मोफत Wikipedia आणि Wikidata संशोधन
+    // विषयाधारित संशोधन: फक्त YouTube / माहितीपट स्क्रिप्टसाठी
     let researchContext = "";
+    const isScriptRequest = /स्क्रिप्ट|व्हॉइस.?ओव्हर|voice.?over|documentary script|youtube script|write a script/i.test(prompt);
 
-    try {
-      const searchWikipedia = async (language) => {
-        const searchUrl = new URL(
-          `https://${language}.wikipedia.org/w/api.php`
-        );
+    if (isScriptRequest) {
+      // संपूर्ण सूचना न शोधता प्रत्यक्ष विषय शोधा.
+      const topicMatch = prompt.match(/(?:विषय|topic)\s*[:：]\s*([\s\S]+)$/i);
+      const researchQuery = (topicMatch ? topicMatch[1] : prompt)
+        .replace(/\s+/g, " ")
+        .trim()
+        .slice(0, 180);
 
-        searchUrl.search = new URLSearchParams({
-          action: "query",
-          list: "search",
-          srsearch: prompt.slice(0, 300),
-          srlimit: "3",
-          format: "json",
-          utf8: "1"
-        });
+      if (researchQuery) {
+        try {
+          const searchWikipedia = async (language) => {
+            const url = new URL(`https://${language}.wikipedia.org/w/api.php`);
+            url.search = new URLSearchParams({
+              action: "query",
+              list: "search",
+              srsearch: researchQuery,
+              srlimit: "2",
+              format: "json",
+              utf8: "1"
+            });
 
-        const response = await fetch(searchUrl.toString());
+            const response = await fetch(url.toString());
+            if (!response.ok) return [];
+            const data = await response.json();
+            return data?.query?.search || [];
+          };
 
-        if (!response.ok) return [];
+          // दोन भाषांतील शोध समांतर; Wikidata च्या अतिरिक्त दोन विनंत्या टाळल्या.
+          const [mrResults, enResults] = await Promise.all([
+            searchWikipedia("mr"),
+            searchWikipedia("en")
+          ]);
 
-        const data = await response.json();
-        return data?.query?.search || [];
-      };
+          const extractPages = async (language, results) => {
+            const pageIds = results
+              .map(item => item.pageid)
+              .filter(Boolean);
+            if (!pageIds.length) return "";
 
-      const searchWikidata = async (language) => {
-        const url = new URL(
-          "https://www.wikidata.org/w/api.php"
-        );
+            const url = new URL(`https://${language}.wikipedia.org/w/api.php`);
+            url.search = new URLSearchParams({
+              action: "query",
+              prop: "extracts",
+              exintro: "1",
+              explaintext: "1",
+              pageids: pageIds.join("|"),
+              format: "json",
+              utf8: "1"
+            });
 
-        url.search = new URLSearchParams({
-          action: "wbsearchentities",
-          search: prompt.slice(0, 200),
-          language,
-          uselang: language,
-          limit: "3",
-          format: "json"
-        });
+            const response = await fetch(url.toString());
+            if (!response.ok) return "";
+            const data = await response.json();
 
-        const response = await fetch(url.toString());
+            return Object.values(data?.query?.pages || {})
+              .map(page => page.extract || "")
+              .filter(Boolean)
+              .map(text => text.slice(0, 2200))
+              .join("\n\n");
+          };
 
-        if (!response.ok) return [];
+          const [mrExtract, enExtract] = await Promise.all([
+            extractPages("mr", mrResults),
+            extractPages("en", enResults)
+          ]);
 
-        const data = await response.json();
-        return data?.search || [];
-      };
-
-      const [mrResults, enResults, mrWikidata, enWikidata] =
-        await Promise.all([
-          searchWikipedia("mr"),
-          searchWikipedia("en"),
-          searchWikidata("mr"),
-          searchWikidata("en")
-        ]);
-
-      const wikiPages = [
-        ...mrResults.map(item => ({
-          language: "मराठी Wikipedia",
-          pageid: item.pageid
-        })),
-        ...enResults.map(item => ({
-          language: "English Wikipedia",
-          pageid: item.pageid
-        }))
-      ];
-
-      const extractPages = async (language, pages) => {
-        if (!pages.length) return "";
-
-        const url = new URL(
-          `https://${language}.wikipedia.org/w/api.php`
-        );
-
-        url.search = new URLSearchParams({
-          action: "query",
-          prop: "extracts",
-          exintro: "1",
-          explaintext: "1",
-          pageids: pages.map(p => p.pageid).join("|"),
-          format: "json"
-        });
-
-        const response = await fetch(url.toString());
-
-        if (!response.ok) return "";
-
-        const data = await response.json();
-
-        return Object.values(data?.query?.pages || {})
-          .map(page => page.extract || "")
-          .filter(Boolean)
-          .map(text => text.slice(0, 1800))
-          .join("\n\n");
-      };
-
-      const [mrExtract, enExtract] = await Promise.all([
-        extractPages(
-          "mr",
-          wikiPages.filter(p => p.language === "मराठी Wikipedia")
-        ),
-        extractPages(
-          "en",
-          wikiPages.filter(p => p.language === "English Wikipedia")
-        )
-      ]);
-
-      const wikidataText = [
-        ...mrWikidata,
-        ...enWikidata
-      ]
-        .map(item =>
-          `${item.label || ""}: ${item.description || ""}`
-        )
-        .filter(Boolean)
-        .join("\n");
-
-      researchContext = `
-मोफत ऑनलाइन संशोधनातून मिळालेली प्राथमिक माहिती:
-
+          researchContext = `\n\nप्राथमिक ऑनलाइन संदर्भ (फक्त स्क्रिप्टच्या विषयाशी संबंधित माहिती वापरा):
 मराठी Wikipedia:
-${mrExtract || "माहिती उपलब्ध नाही."}
+${mrExtract || "संबंधित माहिती उपलब्ध नाही."}
 
 English Wikipedia:
-${enExtract || "माहिती उपलब्ध नाही."}
+${enExtract || "संबंधित माहिती उपलब्ध नाही."}
 
-Wikidata:
-${wikidataText || "माहिती उपलब्ध नाही."}
-
-महत्त्वाची सूचना:
-वरील माहिती प्राथमिक संदर्भ म्हणून वापरा.
-ती पूर्णपणे सत्यापित आहे असे समजू नका.
-विसंगत किंवा अपुरी माहिती असल्यास तथ्य बनवू नका.
-वापरकर्त्याने मागितलेल्या विषयाशी संबंध नसलेली
-माहिती स्क्रिप्टमध्ये घालू नका.
-अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक देऊ नका.
-`;
-    } catch (researchError) {
-      researchContext =
-        "ऑनलाइन संशोधन सध्या उपलब्ध नाही. " +
-        "अखात्रीशीर माहिती किंवा बनावट तथ्ये देऊ नका.";
+तथ्यतपासणी सूचना: Wikipedia हा प्राथमिक संदर्भ आहे; अंतिम किंवा निर्विवाद पुरावा नाही. दोन्ही भाषांतील माहिती विसंगत असल्यास वादग्रस्त तपशील निश्चित म्हणून मांडू नका. उपलब्ध संदर्भात नसलेली तारीख, संस्था, पुस्तक, व्यक्ती, उद्धरण किंवा घटना बनवू नका. माहिती अपुरी असल्यास ते स्पष्ट करा. अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक देऊ नका.`;
+        } catch (researchError) {
+          researchContext = "\n\nऑनलाइन संशोधन सध्या उपलब्ध नाही. खात्री नसलेली माहिती, तारखा किंवा ऐतिहासिक तपशील बनवू नका.";
+        }
+      }
     }
 
     const result = await env.AI.run(
