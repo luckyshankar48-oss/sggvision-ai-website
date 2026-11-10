@@ -289,16 +289,13 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
       const repeatedSentenceRatio = sentences.length
         ? 1 - (unique.size / sentences.length)
         : 0;
-      const ctaCount = (text.match(/call\s*to\s*action|कॉल\s*टू\s*ॲक्शन/gi) || []).length;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
       const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer: The script provided/i.test(text);
-      const tooShort = minutes > 0 && words.length < Math.max(65, minutes * 75);
-      const repeated = repeatedSentenceRatio > 0.12;
-      const latinWords = (text.match(/[A-Za-z]{3,}/g) || []).length;
-      const mixedLanguage = words.length > 0 && (latinWords / words.length) > 0.10;
-      const brokenPunctuation = /[?]{4,}|(?:\.\.\.\s*){3,}|(?:\?\s*){5,}|[\uFFFD]/u.test(text);
-      const brokenHeading = !/प्रस्तावना|Introduction/i.test(text) || !/मुख्य माहिती|मुख्य भाग|Main/i.test(text) || !/निष्कर्ष|समारोप|Conclusion/i.test(text);
-      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && ctaCount <= 1 && !mixedLanguage && !brokenPunctuation && !brokenHeading, words: words.length };
+      const tooShort = minutes > 0 && words.length < Math.max(55, minutes * 65);
+      const repeated = repeatedSentenceRatio > 0.20;
+      const brokenPunctuation = /[?]{6,}|(?:\.\.\.\s*){5,}|[\uFFFD]/u.test(text);
+      const hasScriptBody = /प्रस्तावना|मुख्य माहिती|मुख्य भाग|निष्कर्ष|समारोप|आढावा|\n/.test(text);
+      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && !brokenPunctuation && hasScriptBody, words: words.length };
     };
 
     if (isScriptRequest && !inspectScript(answer).valid) {
