@@ -67,6 +67,9 @@ jobs:
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
             throw new Error('English response handling is missing from the text AI endpoint.');
           }
+          if (!generate.includes('main content|conclusion') || !generate.includes('hasScriptBody')) {
+            throw new Error('English script section headings are not accepted by script quality validation.');
+          }
           if (html.includes('AI Tools — ChatGPT Assistance')) {
             throw new Error('The portal must not mislabel Cloudflare Workers AI as ChatGPT.');
           }
