@@ -67,6 +67,9 @@ jobs:
           if (!thumbnail.includes('const parsedPlan = parsePlannerOutput(plannerText)') || !thumbnail.includes('typeof plan[key] !== "string"') || !thumbnail.includes('filter(point => typeof point === "string")')) {
             throw new Error('Thumbnail planner output type validation is missing.');
           }
+          if (!thumbnail.includes('async function readImageBlobLimited') || !thumbnail.includes('total > maxBytes') || !thumbnail.includes('await readImageBlobLimited(imageResponse)')) {
+            throw new Error('Reference image streaming size limit is missing.');
+          }
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
             throw new Error('English response handling is missing from the text AI endpoint.');
           }
