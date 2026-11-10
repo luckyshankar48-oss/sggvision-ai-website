@@ -93,6 +93,12 @@ jobs:
             });
             assert.equal(response.status, 403, name + ' must reject cross-origin requests');
 
+            response = await handler({
+              request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { Origin: 'not-a-valid-origin' }),
+              env: {}
+            });
+            assert.equal(response.status, 403, name + ' must reject malformed origin headers');
+
             response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'valid test prompt' }), env: {} });
             assert.equal(response.status, 503, name + ' must report a missing AI binding clearly');
           }
