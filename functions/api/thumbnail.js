@@ -112,7 +112,23 @@ export async function onRequestPost({ request, env }) {
         return jsonResponse({ error: "अवैध वेबसाइट विनंती." }, 403, headers);
       }
     }
-    const body = await request.json();
+    const contentType = request.headers.get("Content-Type") || "";
+    if (!contentType.toLowerCase().includes("application/json")) {
+      return jsonResponse({ error: "JSON स्वरूपातील विनंती आवश्यक आहे." }, 415, headers);
+    }
+    const declaredLength = Number(request.headers.get("Content-Length") || 0);
+    if (declaredLength > 256 * 1024) {
+      return jsonResponse({ error: "विनंतीचा आकार मर्यादेपेक्षा जास्त आहे." }, 413, headers);
+    }
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonResponse({ error: "विनंतीतील JSON माहिती वाचता आली नाही." }, 400, headers);
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return jsonResponse({ error: "विनंतीचा डेटा योग्य स्वरूपात नाही." }, 400, headers);
+    }
     const prompt = String(body.prompt || "").trim();
     if (!prompt || prompt.length > 2048) {
       return jsonResponse({ error: "कृपया 2048 अक्षरांच्या आत संपूर्ण थंबनेल Prompt लिहा." }, 400, headers);
