@@ -300,13 +300,15 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         ? 1 - (unique.size / sentences.length)
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
-      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer:|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Title:|Introduction|Main Content|Conclusion|Disclaimer/i.test(text);
+      const leaksInstructions = isEnglishRequest
+        ? /Call to Error|Mandatory script requirements|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Disclaimer:/i.test(text)
+        : /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer:|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Title:|Introduction|Main Content|Conclusion|Disclaimer/i.test(text);
       const tooShort = minutes > 0 && words.length < Math.max(70, minutes * 75);
       const tooLong = minutes > 0 && words.length > minutes * 165;
       const repeated = repeatedSentenceRatio > 0.15;
       const brokenPunctuation = /[?]{6,}|(?:\.\.\.\s*){5,}|[\uFFFD]/u.test(text);
       const latinWords = (text.match(/[A-Za-z]{3,}/g) || []).length;
-      const excessiveEnglish = words.length > 0 && latinWords / words.length > 0.08;
+      const excessiveEnglish = !isEnglishRequest && words.length > 0 && latinWords / words.length > 0.08;
       const repeatedCta = (text.match(/Call\s*to\s*Action|कॉल\s*टू\s*ॲक्शन/gi) || []).length > 1;
       const hasScriptBody = /प्रस्तावना|मुख्य माहिती|मुख्य भाग|निष्कर्ष|समारोप|आढावा|\n/.test(text);
       return { valid: !hasCorruption && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
