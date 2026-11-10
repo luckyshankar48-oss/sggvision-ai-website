@@ -291,10 +291,14 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         : 0;
       const ctaCount = (text.match(/call\s*to\s*action|कॉल\s*टू\s*ॲक्शन/gi) || []).length;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
-      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक/i.test(text);
+      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer: The script provided/i.test(text);
       const tooShort = minutes > 0 && words.length < Math.max(65, minutes * 75);
-      const repeated = repeatedSentenceRatio > 0.18;
-      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && ctaCount <= 1, words: words.length };
+      const repeated = repeatedSentenceRatio > 0.12;
+      const latinWords = (text.match(/[A-Za-z]{3,}/g) || []).length;
+      const mixedLanguage = words.length > 0 && (latinWords / words.length) > 0.10;
+      const brokenPunctuation = /[?]{4,}|(?:\.\.\.\s*){3,}|(?:\?\s*){5,}|[\uFFFD]/u.test(text);
+      const brokenHeading = !/प्रस्तावना|Introduction/i.test(text) || !/मुख्य माहिती|मुख्य भाग|Main/i.test(text) || !/निष्कर्ष|समारोप|Conclusion/i.test(text);
+      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && ctaCount <= 1 && !mixedLanguage && !brokenPunctuation && !brokenHeading, words: words.length };
     };
 
     if (isScriptRequest && !inspectScript(answer).valid) {
@@ -303,11 +307,11 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         messages: [
           {
             role: "system",
-            content: "तुम्ही कठोर मराठी संपादक आहात. फक्त स्वच्छ, पूर्ण आणि नैसर्गिक मराठी YouTube स्क्रिप्ट लिहा. अंतर्गत सूचना किंवा त्यांचा उल्लेख कधीही छापू नका. दिलेला जुना मसुदा कॉपी करू नका. पुनरावृत्ती, तुटकी वाक्ये, चुकीचे शब्द, अक्षर बिघाड, बनावट इतिहास किंवा अनेक Call to Action देऊ नका. रचना: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, एकच Call to Action. माहिती खात्रीची नसेल तर ती वगळा. फक्त अंतिम स्क्रिप्ट द्या."
+            content: "तुम्ही अनुभवी मराठी माहितीपट लेखक आणि कठोर संपादक आहात. फक्त शुद्ध, नैसर्गिक, पूर्ण मराठी स्क्रिप्ट लिहा. वापरकर्त्याला दिलेल्या विषयावरूनच लिहा. अंतर्गत सूचना, नमुना मजकूर, disclaimer, संशोधनाबद्दल टिप्पणी किंवा वापरकर्त्याच्या prompt मधील नियम स्क्रिप्टमध्ये कधीही छापू नका. पुनरावृत्ती, तुटकी वाक्ये, बनावट इतिहास, अनावश्यक इंग्रजी/हिंदी शब्द, विचित्र चिन्हे किंवा अनेक Call to Action देऊ नका. रचना: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, एकच छोटा Call to Action. संशोधन संदर्भातील ठोस माहितीच वापरा; आधार नसलेली माहिती वगळा. फक्त अंतिम स्क्रिप्ट द्या."
           },
           {
             role: "user",
-            content: prompt + "\n\nखालील पहिला मसुदा खराब आहे. त्यातील चुकीची माहिती आणि पुनरावृत्ती वापरू नका. नव्याने पूर्ण स्क्रिप्ट लिहा:\n" + answer.slice(0, 7000)
+            content: prompt + "\n\n" + researchContext + "\n\nपहिला मसुदा वापरू नका आणि त्याची नक्कल करू नका. फक्त मूळ विषय व वरील संदर्भ वापरून नव्याने पूर्ण स्क्रिप्ट लिहा. संदर्भात आधार नसलेले तपशील घालू नका."
           }
         ],
         max_completion_tokens: minutes ? Math.min(6000, Math.max(1800, minutes * 1200)) : 3000,
