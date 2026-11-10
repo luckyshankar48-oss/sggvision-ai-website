@@ -24,9 +24,21 @@ jobs:
         run: |
           node <<'NODE'
           const fs = require('node:fs');
+          const vm = require('node:vm');
           const html = fs.readFileSync('index.html', 'utf8');
           const thumbnail = fs.readFileSync('functions/api/thumbnail.js', 'utf8');
           const generate = fs.readFileSync('functions/api/generate.js', 'utf8');
+          const dictionaryMatch = html.match(/const sggTranslations=(\\{[\\s\\S]*?\\n\\};)/);
+          if (!dictionaryMatch) throw new Error('The local English translation dictionary is missing.');
+          const translations = vm.runInNewContext('(' + dictionaryMatch[1].slice(0, -1) + ')');
+          const pageBody = html.split('<body>')[1]?.split('</body>')[0] || '';
+          const visibleText = [...pageBody.matchAll(/>([^<>]+)</g)]
+            .map(match => match[1].replace(/\\s+/g, ' ').trim())
+            .filter(value => /[\\u0900-\\u097F]/.test(value) && value.length > 3);
+          const untranslated = [...new Set(visibleText)].filter(value =>
+            !translations[value] && !Object.keys(translations).some(key => key.length > 8 && value.includes(key))
+          );
+          if (untranslated.length) throw new Error('Visible Marathi text lacks English translations: ' + untranslated.join(' | '));
           const ids = [...html.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]);
           const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
           if (duplicates.length) throw new Error('Duplicate HTML ids: ' + [...new Set(duplicates)].join(', '));
