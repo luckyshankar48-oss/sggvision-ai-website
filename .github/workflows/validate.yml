@@ -20,6 +20,37 @@ jobs:
         run: |
           node --input-type=module --check < functions/api/generate.js
           node --input-type=module --check < functions/api/thumbnail.js
+      - name: Check portal feature wiring
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const thumbnail = fs.readFileSync('functions/api/thumbnail.js', 'utf8');
+          const generate = fs.readFileSync('functions/api/generate.js', 'utf8');
+          const required = [
+            ['SEO result copy/PDF', 'seoResult'],
+            ['Script result copy/PDF', 'scriptResult'],
+            ['Thumbnail text copy/PDF', 'thumbResult'],
+            ['Reels result copy/PDF', 'reelResult'],
+            ['Social post copy/PDF', 'postResult'],
+            ['Letter result copy/PDF', 'letterResult'],
+          ];
+          for (const [label, id] of required) {
+            if (!html.includes("copyAIResult('" + id + "')") || !html.includes("saveAIResultPDF('" + id + "')")) {
+              throw new Error('Missing copy/PDF controls for ' + label);
+            }
+          }
+          if (!html.includes("fetch('/api/generate'") || !html.includes("fetch('/api/thumbnail'")) {
+            throw new Error('A required AI API endpoint is not connected to the website.');
+          }
+          if (!thumbnail.includes('"birthday"') || !thumbnail.includes("category==='birthday'")) {
+            throw new Error('Birthday thumbnail category is not supported end-to-end.');
+          }
+          if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
+            throw new Error('English response handling is missing from the text AI endpoint.');
+          }
+          console.log('Verified six result copy/PDF controls, both AI endpoints, bilingual text generation, and birthday thumbnail routing.');
+          NODE
       - name: Check website inline JavaScript syntax
         run: |
           node <<'NODE'
