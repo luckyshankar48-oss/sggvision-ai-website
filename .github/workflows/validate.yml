@@ -49,6 +49,12 @@ jobs:
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
             throw new Error('English response handling is missing from the text AI endpoint.');
           }
+          if (html.includes('AI Tools — ChatGPT Assistance')) {
+            throw new Error('The portal must not mislabel Cloudflare Workers AI as ChatGPT.');
+          }
+          if (!html.includes('AI Tools — Smart AI Assistance')) {
+            throw new Error('The English AI tools heading is missing or inaccurate.');
+          }
           console.log('Verified six result copy/PDF controls, both AI endpoints, bilingual text generation, and birthday thumbnail routing.');
           NODE
       - name: Check website inline JavaScript syntax
