@@ -1,0 +1,35 @@
+name: Validate SGGVISION portal
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check Cloudflare Pages functions syntax
+        run: |
+          node --input-type=module --check < functions/api/generate.js
+          node --input-type=module --check < functions/api/thumbnail.js
+      - name: Check website inline JavaScript syntax
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const vm = require('node:vm');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const scripts = [...html.matchAll(/<script(?:\\s[^>]*)?>([\\s\\S]*?)<\\/script>/gi)]
+            .map(match => match[1])
+            .filter(source => source.trim());
+          if (!scripts.length) throw new Error('No inline JavaScript blocks found');
+          scripts.forEach((source, index) => new vm.Script(source, { filename: `index-inline-${index + 1}.js` }));
+          console.log(`Validated ${scripts.length} inline JavaScript blocks.`);
+          NODE
