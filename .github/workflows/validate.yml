@@ -116,6 +116,20 @@ jobs:
             });
             assert.equal(response.status, 400, name + ' must reject malformed JSON safely');
 
+            const oversizedBody = JSON.stringify({
+              prompt: 'valid prompt',
+              extra: 'x'.repeat(name === 'generate' ? 513 * 1024 : 257 * 1024)
+            });
+            response = await handler({
+              request: new Request('https://portal.test/api/' + name, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Host: 'portal.test' },
+                body: oversizedBody
+              }),
+              env: {}
+            });
+            assert.equal(response.status, 413, name + ' must reject oversized streamed bodies without relying on Content-Length');
+
             response = await handler({
               request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { 'Content-Type': 'text/plain' }),
               env: {}
