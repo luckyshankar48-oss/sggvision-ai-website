@@ -49,7 +49,7 @@ jobs:
           if (!html.includes("fetch('/api/generate'") || !html.includes("fetch('/api/thumbnail'")) {
             throw new Error('A required AI API endpoint is not connected to the website.');
           }
-          if (!thumbnail.includes('"birthday"') || !thumbnail.includes("category==='birthday'")) {
+          if (!thumbnail.includes('"birthday"') || !html.includes("category==='birthday'")) {
             throw new Error('Birthday thumbnail category is not supported end-to-end.');
           }
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
