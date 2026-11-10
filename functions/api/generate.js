@@ -145,7 +145,8 @@ code किंवा raw markup देऊ नका.
     let researchContext = "";
     if (isScriptRequest) {
       // संपूर्ण सूचना न शोधता प्रत्यक्ष विषय शोधा.
-      const topicMatch = prompt.match(/(?:विषय|topic)\s*[:：]\s*([^\r\n]+)/i);searchQuery = (topicMatch ? topicMatch[1] : prompt)
+      const topicMatch = prompt.match(/(?:विषय|topic)\s*[:：]\s*([^\r\n]+)/i);
+      const researchQuery = (topicMatch ? topicMatch[1] : prompt)
         .replace(/\s+/g, " ")
         .trim()
         .slice(0, 180);
