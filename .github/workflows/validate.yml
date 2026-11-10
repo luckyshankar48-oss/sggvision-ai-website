@@ -61,6 +61,9 @@ jobs:
           if (!html.includes('AI Tools — Smart AI Assistance')) {
             throw new Error('The English AI tools heading is missing or inaccurate.');
           }
+          if (!html.includes('function sggWatchGoogleTranslate()') || !html.includes('new MutationObserver(')) {
+            throw new Error('Asynchronous full-page language switching is missing its load observer.');
+          }
           console.log('Verified six result copy/PDF controls, both AI endpoints, bilingual text generation, and birthday thumbnail routing.');
           NODE
       - name: Check website inline JavaScript syntax
