@@ -100,6 +100,20 @@ jobs:
             assert.equal(response.status, 400, name + ' must reject empty prompts');
 
             response = await handler({
+              request: new Request('https://portal.test/api/' + name, {
+                method: 'POST', headers: { 'Content-Type': 'application/json', Host: 'portal.test' }, body: '{invalid json'
+              }),
+              env: {}
+            });
+            assert.equal(response.status, 400, name + ' must reject malformed JSON safely');
+
+            response = await handler({
+              request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { 'Content-Type': 'text/plain' }),
+              env: {}
+            });
+            assert.equal(response.status, 415, name + ' must reject non-JSON content types');
+
+            response = await handler({
               request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { Origin: 'https://attacker.test' }),
               env: {}
             });
