@@ -64,6 +64,9 @@ jobs:
           if (!thumbnail.includes('"birthday"') || !html.includes("category==='birthday'")) {
             throw new Error('Birthday thumbnail category is not supported end-to-end.');
           }
+          if (!thumbnail.includes('const parsedPlan = parsePlannerOutput(plannerText)') || !thumbnail.includes('typeof plan[key] !== "string"') || !thumbnail.includes('filter(point => typeof point === "string")')) {
+            throw new Error('Thumbnail planner output type validation is missing.');
+          }
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
             throw new Error('English response handling is missing from the text AI endpoint.');
           }
