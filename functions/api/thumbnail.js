@@ -103,8 +103,14 @@ export async function onRequestPost({ request, env }) {
     }
     const origin = request.headers.get("Origin");
     const host = request.headers.get("Host");
-    if (origin && host && new URL(origin).host !== host) {
-      return jsonResponse({ error: "ही विनंती या वेबसाइटवरून आलेली नाही." }, 403, headers);
+    if (origin && host) {
+      try {
+        if (new URL(origin).host !== host) {
+          return jsonResponse({ error: "ही विनंती या वेबसाइटवरून आलेली नाही." }, 403, headers);
+        }
+      } catch {
+        return jsonResponse({ error: "अवैध वेबसाइट विनंती." }, 403, headers);
+      }
     }
     const body = await request.json();
     const prompt = String(body.prompt || "").trim();
