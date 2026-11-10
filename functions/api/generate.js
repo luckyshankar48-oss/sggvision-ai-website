@@ -59,9 +59,19 @@ export async function onRequestPost({ request, env }) {
       : 0;
 
     const isScriptRequest = /स्क्रिप्ट|व्हॉइस.?ओव्हर|voice.?over|documentary script|youtube script|write a script/i.test(prompt);
+    const isEnglishRequest = /(?:IMPORTANT:\s*Write the complete response in clear, natural English only|Act as an experienced English|reply entirely in English|write.*English documentary)/i.test(prompt);
 
     const durationInstruction = isScriptRequest
-      ? `\n\nस्क्रिप्टसाठी बंधनकारक संपादकीय नियम:
+      ? (isEnglishRequest
+        ? `\n\nMandatory script requirements:
+- Write one complete, ready-to-record script only. Do not include meta commentary or explanations.
+- Structure: Title, Introduction, Main Content, Conclusion, and one brief audience-question call to action at the end.
+- Keep every paragraph relevant. Do not invent events, dates, names, quotations, statistics, or claims.
+- For historical topics, distinguish established facts from legends and omit unsupported details.
+- Use fluent, natural English. Avoid repetition, broken sentences, markup, and HTML entities.
+- Stop immediately after the final call to action.
+${minutes ? `\nTarget duration: ${minutes} minutes. Aim for approximately 115–125 speakable English words per minute; do not pad with repetition.` : ""}`
+        : `\n\nस्क्रिप्टसाठी बंधनकारक संपादकीय नियम:
 - उत्तर एकाच पूर्ण स्क्रिप्टचे असावे; सूचना, स्पष्टीकरण किंवा मेटा-टिप्पणी देऊ नका.
 - रचना नेमकी अशी ठेवा: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, आणि शेवटी एकच छोटा प्रेक्षकांना प्रश्न विचारणारा Call to Action.
 - "Call to Action" हा विभाग फक्त एकदाच द्या. "Call to Error", पुनरावृत्तीचे CTA, किंवा CTA नंतर अतिरिक्त परिच्छेद देऊ नका.
@@ -71,7 +81,7 @@ export async function onRequestPost({ request, env }) {
 - "द्या. द्या. द्या." सारखी पुनरावृत्ती, HTML entities, तुटलेला मजकूर किंवा अपूर्ण वाक्ये अजिबात देऊ नका.
 - शेवटचा Call to Action पूर्ण झाल्यावर उत्तर थांबवा. त्यानंतर दुसरे शीर्षक किंवा मजकूर देऊ नका.
 ${minutes ? `\nअपेक्षित कालावधी: ${minutes} मिनिटे. साधारण 115 ते 125 बोलण्यायोग्य मराठी शब्द प्रति मिनिट लिहा. एक मिनिटासाठी साधारण 115–125 शब्दांचा सलग निवेदनयोग्य मजकूर द्या. अनावश्यक पुनरावृत्ती करून शब्दसंख्या वाढवू नका.` : ""}
-`
+`)
       : "";
 
     const systemPrompt = `
@@ -229,7 +239,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         messages: [
           {
             role: "system",
-            content: systemPrompt + durationInstruction
+            content: systemPrompt + durationInstruction + (isEnglishRequest ? "\\n\\nIMPORTANT: The user explicitly selected English. Write the entire response in English only, including all headings and the call to action. Do not write Marathi." : "")
           },
           {
             role: "user",
@@ -308,7 +318,9 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         messages: [
           {
             role: "system",
-            content: "तुम्ही मराठी माहितीपट लेखक आहात. उत्तर संपूर्णपणे मराठीत द्या. फक्त एकच स्क्रिप्ट लिहा: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष आणि शेवटी एक छोटा प्रेक्षक प्रश्न. इंग्रजी शीर्षके, Disclaimer, Self-Correction, स्पष्टीकरण, स्रोतांविषयी टिप्पणी, अंतर्गत सूचना किंवा दुसरी आवृत्ती लिहू नका. विषयाशी थेट संबंधित व पडताळलेल्या संदर्भातील माहितीच वापरा. व्यक्ती, वर्ष, गाव, संस्था किंवा घटना बनवू नका. पुनरावृत्ती, तुटकी वाक्ये आणि अक्षरदोष नकोत. एक मिनिटासाठी 115 ते 125 मराठी शब्द लिहा. फक्त अंतिम स्क्रिप्ट द्या."
+            content: isEnglishRequest
+              ? "You are an English documentary scriptwriter. Write the complete script in natural English only: Title, Introduction, Main Content, Conclusion, and one brief audience-question call to action. Do not add explanations, disclaimers, internal notes, or alternate versions. Use only supported facts; never invent people, dates, places, institutions, or events. Avoid repetition, broken sentences, and typos. Aim for 115–125 speakable English words per minute. Output only the final script."
+              : "तुम्ही मराठी माहितीपट लेखक आहात. उत्तर संपूर्णपणे मराठीत द्या. फक्त एकच स्क्रिप्ट लिहा: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष आणि शेवटी एक छोटा प्रेक्षक प्रश्न. इंग्रजी शीर्षके, Disclaimer, Self-Correction, स्पष्टीकरण, स्रोतांविषयी टिप्पणी, अंतर्गत सूचना किंवा दुसरी आवृत्ती लिहू नका. विषयाशी थेट संबंधित व पडताळलेल्या संदर्भातील माहितीच वापरा. व्यक्ती, वर्ष, गाव, संस्था किंवा घटना बनवू नका. पुनरावृत्ती, तुटकी वाक्ये आणि अक्षरदोष नकोत. एक मिनिटासाठी 115 ते 125 मराठी शब्द लिहा. फक्त अंतिम स्क्रिप्ट द्या."
           },
           {
             role: "user",
