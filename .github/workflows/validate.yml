@@ -66,6 +66,38 @@ jobs:
           }
           console.log('Verified six result copy/PDF controls, both AI endpoints, bilingual text generation, and birthday thumbnail routing.');
           NODE
+      - name: Smoke test API validation and safe error paths
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { onRequestPost as generate } from './functions/api/generate.js';
+          import { onRequestPost as thumbnail } from './functions/api/thumbnail.js';
+
+          const makeRequest = (url, method = 'POST', body = {}, extraHeaders = {}) =>
+            new Request(url, {
+              method,
+              headers: { 'Content-Type': 'application/json', Host: 'portal.test', ...extraHeaders },
+              body: method === 'GET' ? undefined : JSON.stringify(body)
+            });
+
+          for (const [name, handler] of [['generate', generate], ['thumbnail', thumbnail]]) {
+            let response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'GET'), env: {} });
+            assert.equal(response.status, 405, name + ' must reject non-POST requests');
+
+            response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: '' }), env: {} });
+            assert.equal(response.status, 400, name + ' must reject empty prompts');
+
+            response = await handler({
+              request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { Origin: 'https://attacker.test' }),
+              env: {}
+            });
+            assert.equal(response.status, 403, name + ' must reject cross-origin requests');
+
+            response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'valid test prompt' }), env: {} });
+            assert.equal(response.status, 503, name + ' must report a missing AI binding clearly');
+          }
+          console.log('API validation smoke tests passed for both endpoints.');
+          NODE
       - name: Check website inline JavaScript syntax
         run: |
           node <<'NODE'
