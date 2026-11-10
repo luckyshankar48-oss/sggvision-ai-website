@@ -3017,12 +3017,34 @@ function sggTranslatePage(lang){
   });
 }
 
-/* Full-page language switching: translate the complete rendered page, not only dictionary matches. */
+/* Full-page language switching: use the local dictionary first, then reliably activate
+   Google Translate when its asynchronously loaded selector becomes available. */
+function sggApplyGoogleLanguage(){
+ const combo=document.querySelector('.goog-te-combo');
+ if(!combo)return false;
+ const lang=window.sggLanguage==='en'?'en':'mr';
+ if(combo.value!==lang){
+  combo.value=lang;
+  combo.dispatchEvent(new Event('change',{bubbles:true}));
+ }
+ if(window.sggGoogleTranslateObserver){
+  window.sggGoogleTranslateObserver.disconnect();
+  window.sggGoogleTranslateObserver=null;
+ }
+ return true;
+}
+function sggWatchGoogleTranslate(){
+ if(sggApplyGoogleLanguage()||window.sggGoogleTranslateObserver)return;
+ window.sggGoogleTranslateObserver=new MutationObserver(()=>{
+  if(sggApplyGoogleLanguage())return;
+ });
+ window.sggGoogleTranslateObserver.observe(document.body,{childList:true,subtree:true});
+}
 function googleTranslateElementInit(){
  if(window.google&&google.translate&&google.translate.TranslateElement){
   new google.translate.TranslateElement({pageLanguage:'mr',includedLanguages:'mr,en',autoDisplay:false},'google_translate_element');
   window.sggGoogleTranslateReady=true;
-  if(window.sggLanguage&&window.sggLanguage!=='mr')setSggLanguage(window.sggLanguage);
+  sggWatchGoogleTranslate();
  }
 }
 function setSggLanguage(lang){
@@ -3030,27 +3052,11 @@ function setSggLanguage(lang){
  window.sggLanguage=lang;
  document.documentElement.lang=lang;
  sggTranslatePage(lang);
- const choose=()=>{
-  const combo=document.querySelector('.goog-te-combo');
-  if(!combo)return false;
-  if(combo.value!==lang){
-   combo.value=lang;
-   combo.dispatchEvent(new Event('change',{bubbles:true}));
-  }
-  return true;
- };
  if(lang==='mr'){
   const reset=document.querySelector('.goog-te-banner-frame');
   if(reset)reset.style.display='none';
  }
- if(!choose()){
-  let attempts=0;
-  const retry=()=>{
-   if(choose()||attempts++>40)return;
-   setTimeout(retry,250);
-  };
-  setTimeout(retry,250);
- }
+ sggWatchGoogleTranslate();
 }
 const sggLanguageSelect=document.getElementById('siteLanguage');
 if(sggLanguageSelect){
