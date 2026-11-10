@@ -271,12 +271,67 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
       rawAnswer = rawAnswer.text || rawAnswer.content || "";
     }
 
-    const answer = String(rawAnswer || "").trim();
+    let answer = String(rawAnswer || "").trim();
 
     if (!answer) {
       return new Response(JSON.stringify({
         error: "AI कडून रिकामे उत्तर मिळाले. कृपया पुन्हा प्रयत्न करा."
       }), { status: 502, headers });
+    }
+
+    // स्क्रिप्ट आउटपुटची मूलभूत गुणवत्ता तपासणी; खराब मजकूर ग्राहकाला दाखवू नका.
+    const inspectScript = (value) => {
+      const text = String(value || "").trim();
+      const words = text.split(/\s+/).filter(Boolean);
+      const sentences = text.split(/[.!?।]+/).map(s => s.trim()).filter(s => s.length > 18);
+      const normalized = sentences.map(s => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim());
+      const unique = new Set(normalized);
+      const repeatedSentenceRatio = sentences.length
+        ? 1 - (unique.size / sentences.length)
+        : 0;
+      const ctaCount = (text.match(/call\s*to\s*action|कॉल\s*टू\s*ॲक्शन/gi) || []).length;
+      const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
+      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक/i.test(text);
+      const tooShort = minutes > 0 && words.length < Math.max(65, minutes * 75);
+      const repeated = repeatedSentenceRatio > 0.18;
+      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && ctaCount <= 1, words: words.length };
+    };
+
+    if (isScriptRequest && !inspectScript(answer).valid) {
+      // एकदाच पुनर्लेखनाचा प्रयत्न; खराब पहिला मसुदा अंतिम वापरकर्त्याला दाखवू नका.
+      const repair = await env.AI.run("@cf/zai-org/glm-4.7-flash", {
+        messages: [
+          {
+            role: "system",
+            content: "तुम्ही कठोर मराठी संपादक आहात. फक्त स्वच्छ, पूर्ण आणि नैसर्गिक मराठी YouTube स्क्रिप्ट लिहा. अंतर्गत सूचना किंवा त्यांचा उल्लेख कधीही छापू नका. दिलेला जुना मसुदा कॉपी करू नका. पुनरावृत्ती, तुटकी वाक्ये, चुकीचे शब्द, अक्षर बिघाड, बनावट इतिहास किंवा अनेक Call to Action देऊ नका. रचना: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, एकच Call to Action. माहिती खात्रीची नसेल तर ती वगळा. फक्त अंतिम स्क्रिप्ट द्या."
+          },
+          {
+            role: "user",
+            content: prompt + "\n\nखालील पहिला मसुदा खराब आहे. त्यातील चुकीची माहिती आणि पुनरावृत्ती वापरू नका. नव्याने पूर्ण स्क्रिप्ट लिहा:\n" + answer.slice(0, 7000)
+          }
+        ],
+        max_completion_tokens: minutes ? Math.min(6000, Math.max(1800, minutes * 1200)) : 3000,
+        temperature: 0.2,
+        frequency_penalty: 0.35,
+        presence_penalty: 0.1,
+        chat_template_kwargs: { enable_thinking: false }
+      });
+
+      const repairedMessage = repair?.choices?.[0]?.message || repair?.result?.choices?.[0]?.message || {};
+      let repairedText = repairedMessage.content ?? repair?.response ?? repair?.result?.response ?? "";
+      if (Array.isArray(repairedText)) {
+        repairedText = repairedText.map(part => typeof part === "string" ? part : (part?.text || part?.content || "")).join("\n");
+      } else if (repairedText && typeof repairedText === "object") {
+        repairedText = repairedText.text || repairedText.content || "";
+      }
+      const candidate = String(repairedText || "").trim();
+      if (candidate && inspectScript(candidate).valid) {
+        answer = candidate;
+      } else {
+        return new Response(JSON.stringify({
+          error: "या विषयावर पूर्ण आणि शुद्ध स्क्रिप्ट तयार करण्यात AI ला अडचण आली. कृपया विषय थोडक्यात लिहून पुन्हा प्रयत्न करा. अपूर्ण किंवा चुकीचा मजकूर दाखवलेला नाही."
+        }), { status: 502, headers });
+      }
     }
 
     return new Response(JSON.stringify({
