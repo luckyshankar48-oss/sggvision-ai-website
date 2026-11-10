@@ -55,6 +55,32 @@ async function prepareReferenceBlob(blob) {
   }
 }
 
+async function readImageBlobLimited(response, maxBytes = 5 * 1024 * 1024) {
+  const declaredLength = Number(response.headers.get("Content-Length") || 0);
+  if (declaredLength > maxBytes) return null;
+  if (!response.body) return null;
+  const reader = response.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const type = response.headers.get("Content-Type") || "";
+  if (!type.toLowerCase().startsWith("image/")) return null;
+  return new Blob(chunks, { type });
+}
+
 async function findReferenceImage(query, kind = "subject") {
   if (!query) return null;
   const url = new URL("https://api.openverse.org/v1/images/");
@@ -77,8 +103,8 @@ async function findReferenceImage(query, kind = "subject") {
   if (!best || best.relevance.matched < 2 || !best.item.thumbnail) return null;
   const imageResponse = await fetch(best.item.thumbnail, { signal: AbortSignal.timeout(9000) });
   if (!imageResponse.ok) return null;
-  const originalBlob = await imageResponse.blob();
-  if (!originalBlob.type.startsWith("image/") || originalBlob.size > 5 * 1024 * 1024) return null;
+  const originalBlob = await readImageBlobLimited(imageResponse);
+  if (!originalBlob) return null;
   const blob = await prepareReferenceBlob(originalBlob);
   return {
     blob,
