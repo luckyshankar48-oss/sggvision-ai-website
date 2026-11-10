@@ -155,8 +155,19 @@ export async function onRequestPost({ request, env }) {
       planResult?.result?.choices?.[0]?.message?.content ??
       planResult?.response ?? ""
     ).trim();
-    const plan = parsePlannerOutput(plannerText);
+    const parsedPlan = parsePlannerOutput(plannerText);
+    const plan = parsedPlan && typeof parsedPlan === "object" && !Array.isArray(parsedPlan)
+      ? parsedPlan
+      : null;
     if (plan) {
+      // Accept only expected scalar/list types from the model; malformed fields must not
+      // leak as "[object Object]" into the UI or image prompt.
+      for (const key of ["headline", "subtitle", "closing_line", "place_search_query", "person_search_query", "search_query", "image_prompt", "visual_subject", "design_direction", "category"]) {
+        if (typeof plan[key] !== "string") plan[key] = "";
+      }
+      plan.supporting_points = Array.isArray(plan.supporting_points)
+        ? plan.supporting_points.filter(point => typeof point === "string").slice(0, 4)
+        : [];
       // Preserve copy explicitly supplied by the customer; the model may classify/design,
       // but must not silently rewrite Marathi wording or omit requested bullet points.
       const requestedCopy = extractRequestedCopy(prompt);
