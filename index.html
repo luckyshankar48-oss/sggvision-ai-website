@@ -3145,7 +3145,18 @@ function sendPortalFeedback(){
  window.location.href='mailto:sggvisiondigitalservices@gmail.com?subject='+subject+'&body='+body;
 }
 function makeInquiry(){let n=document.getElementById('customer').value.trim(),s=document.getElementById('service').value,d=document.getElementById('details').value.trim();if(!n||!d){alert('कृपया नाव आणि कामाची माहिती भरा.');return}window.inquiryText='नमस्कार SGGVISION AI, माझे नाव '+n+'. मला '+s+' ही सेवा हवी आहे. कामाची माहिती: '+d+'. कृपया दर आणि वेळ कळवा.';document.getElementById('inquiry').textContent=window.inquiryText}
-function copyInquiry(){if(!window.inquiryText){alert('आधी चौकशीचा संदेश तयार करा.');return}navigator.clipboard.writeText(window.inquiryText).then(()=>alert('संदेश कॉपी झाला.')).catch(()=>alert('संदेश निवडून कॉपी करा.'))}
+async function copyInquiry(){
+ if(!window.inquiryText){alert('आधी चौकशीचा संदेश तयार करा.');return}
+ try{
+  if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(window.inquiryText);
+  else{
+   const area=document.createElement('textarea');area.value=window.inquiryText;area.style.position='fixed';area.style.opacity='0';
+   document.body.appendChild(area);area.select();const ok=document.execCommand('copy');area.remove();
+   if(!ok)throw new Error('कॉपी करता आले नाही.');
+  }
+  alert('संपूर्ण चौकशी संदेश कॉपी झाला.');
+ }catch(error){alert('संदेश कॉपी करता आला नाही. कृपया पुन्हा प्रयत्न करा.');}
+}
 document.querySelectorAll('button[onclick^="seoDemo"],button[onclick^="scriptDemo"]').forEach(b=>{let f=b.getAttribute('onclick');b.setAttribute('onclick',f.replace('seoDemo()','seoDemo(this)').replace('scriptDemo()','scriptDemo(this)'))});
 
 /* SGGVISION AI Thumbnail Maker — canvas composition and Workers AI image generation */
