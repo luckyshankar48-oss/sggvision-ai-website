@@ -58,11 +58,18 @@ export async function onRequestPost({ request, env }) {
       ? Math.min(60, Math.max(1, Number(durationMatch[1])))
       : 0;
 
-    const durationInstruction = minutes
-      ? `\n\nविशेष सूचना: वापरकर्त्याने ${minutes} मिनिटांची स्क्रिप्ट मागितली आहे.
-साधारण 115 ते 125 बोलण्यायोग्य शब्द प्रति मिनिट या प्रमाणात
-स्क्रिप्ट तयार करा. आवश्यक तेवढा सविस्तर मजकूर द्या.
-स्क्रिप्ट अकाली संपवू नका.`
+    const isScriptRequest = /स्क्रिप्ट|व्हॉइस.?ओव्हर|voice.?over|documentary script|youtube script|write a script/i.test(prompt);
+
+    const durationInstruction = isScriptRequest
+      ? `\n\nस्क्रिप्टसाठी बंधनकारक नियम:
+- फक्त एकच पूर्ण स्क्रिप्ट द्या.
+- क्रम: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, आणि शेवटी एकच छोटा Call to Action.
+- Call to Action हा संपूर्ण उत्तरात फक्त एकदाच असावा. "Call to Error", पुन्हा पुन्हा "Call to Action", किंवा पुनरावृत्तीचे परिच्छेद देऊ नका.
+- "द्या. द्या. द्या." किंवा अर्थहीन/तुटक वाक्ये अजिबात लिहू नका.
+- शेवटचा परिच्छेद पूर्ण झाल्यावर उत्तर त्वरित थांबवा. कोणतीही अतिरिक्त टिप्पणी किंवा दुसरा CTA देऊ नका.
+- विषयाशी संबंध नसलेली माहिती, बनावट तपशील किंवा अंदाज टाळा.
+${minutes ? `\nअपेक्षित कालावधी: ${minutes} मिनिटे. साधारण 115 ते 125 बोलण्यायोग्य शब्द प्रति मिनिट लिहा. दिलेल्या कालावधीच्या प्रमाणातच मजकूर ठेवा.` : ""}
+`
       : "";
 
     const systemPrompt = `
@@ -134,8 +141,6 @@ code किंवा raw markup देऊ नका.
 
     // विषयाधारित संशोधन: फक्त YouTube / माहितीपट स्क्रिप्टसाठी
     let researchContext = "";
-    const isScriptRequest = /स्क्रिप्ट|व्हॉइस.?ओव्हर|voice.?over|documentary script|youtube script|write a script/i.test(prompt);
-
     if (isScriptRequest) {
       // संपूर्ण सूचना न शोधता प्रत्यक्ष विषय शोधा.
       const topicMatch = prompt.match(/(?:विषय|topic)\s*[:：]\s*([\s\S]+)$/i);
@@ -229,8 +234,11 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
             content: prompt + "\n\n" + researchContext
           }
         ],
-        max_completion_tokens: 6000,
-        temperature: 0.45,
+        // अनावश्यक पुनरावृत्ती/लूप कमी करण्यासाठी स्क्रिप्टला कालावधीनुसार मर्यादित टोकन्स.
+        max_completion_tokens: isScriptRequest
+          ? (minutes ? Math.min(6000, Math.max(500, minutes * 500)) : 3000)
+          : 6000,
+        temperature: isScriptRequest ? 0.25 : 0.45,
         chat_template_kwargs: {
           enable_thinking: false
         }
