@@ -145,7 +145,7 @@ code किंवा raw markup देऊ नका.
     let researchContext = "";
     if (isScriptRequest) {
       // संपूर्ण सूचना न शोधता प्रत्यक्ष विषय शोधा.
-      const topicMatch = prompt.match(/(?:विषय|topic)\s*[:：]\s*([\s\S]+)$/i);
+      const topicMatch = prompt.match(/(?:विषय|topic)\\s*[:：]\\s*([^\\r\\n]+)/i);
       const researchQuery = (topicMatch ? topicMatch[1] : prompt)
         .replace(/\s+/g, " ")
         .trim()
@@ -164,7 +164,7 @@ code किंवा raw markup देऊ नका.
               utf8: "1"
             });
 
-            const response = await fetch(url.toString());
+            const response = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
             if (!response.ok) return [];
             const data = await response.json();
             return data?.query?.search || [];
@@ -193,7 +193,7 @@ code किंवा raw markup देऊ नका.
               utf8: "1"
             });
 
-            const response = await fetch(url.toString());
+            const response = await fetch(url.toString(), { signal: AbortSignal.timeout(5000) });
             if (!response.ok) return "";
             const data = await response.json();
 
@@ -334,7 +334,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         answer = candidate;
       } else {
         return new Response(JSON.stringify({
-          error: "या विषयावर पूर्ण आणि शुद्ध स्क्रिप्ट तयार करण्यात AI ला अडचण आली. कृपया विषय थोडक्यात लिहून पुन्हा प्रयत्न करा. अपूर्ण किंवा चुकीचा मजकूर दाखवलेला नाही."
+          error: "AI ने दोन प्रयत्नांनंतरही गुणवत्ता तपासणी पूर्ण करणारी स्क्रिप्ट तयार केली नाही. कृपया काही वेळाने पुन्हा प्रयत्न करा. अपूर्ण किंवा चुकीचा मजकूर दाखवलेला नाही."
         }), { status: 502, headers });
       }
     }
