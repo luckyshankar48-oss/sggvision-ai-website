@@ -290,12 +290,16 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         ? 1 - (unique.size / sentences.length)
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
-      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer: The script provided/i.test(text);
-      const tooShort = minutes > 0 && words.length < Math.max(55, minutes * 65);
-      const repeated = repeatedSentenceRatio > 0.20;
+      const leaksInstructions = /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer:|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Title:|Introduction|Main Content|Conclusion|Disclaimer/i.test(text);
+      const tooShort = minutes > 0 && words.length < Math.max(70, minutes * 75);
+      const tooLong = minutes > 0 && words.length > minutes * 165;
+      const repeated = repeatedSentenceRatio > 0.15;
       const brokenPunctuation = /[?]{6,}|(?:\.\.\.\s*){5,}|[\uFFFD]/u.test(text);
+      const latinWords = (text.match(/[A-Za-z]{3,}/g) || []).length;
+      const excessiveEnglish = words.length > 0 && latinWords / words.length > 0.08;
+      const repeatedCta = (text.match(/Call\s*to\s*Action|कॉल\s*टू\s*ॲक्शन/gi) || []).length > 1;
       const hasScriptBody = /प्रस्तावना|मुख्य माहिती|मुख्य भाग|निष्कर्ष|समारोप|आढावा|\n/.test(text);
-      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !repeated && !brokenPunctuation && hasScriptBody, words: words.length };
+      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
     };
 
     if (isScriptRequest && !inspectScript(answer).valid) {
@@ -304,7 +308,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         messages: [
           {
             role: "system",
-            content: "तुम्ही अनुभवी मराठी माहितीपट लेखक आणि कठोर संपादक आहात. फक्त शुद्ध, नैसर्गिक, पूर्ण मराठी स्क्रिप्ट लिहा. वापरकर्त्याला दिलेल्या विषयावरूनच लिहा. अंतर्गत सूचना, नमुना मजकूर, disclaimer, संशोधनाबद्दल टिप्पणी किंवा वापरकर्त्याच्या prompt मधील नियम स्क्रिप्टमध्ये कधीही छापू नका. पुनरावृत्ती, तुटकी वाक्ये, बनावट इतिहास, अनावश्यक इंग्रजी/हिंदी शब्द, विचित्र चिन्हे किंवा अनेक Call to Action देऊ नका. रचना: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष, एकच छोटा Call to Action. संशोधन संदर्भातील ठोस माहितीच वापरा; आधार नसलेली माहिती वगळा. फक्त अंतिम स्क्रिप्ट द्या."
+            content: "तुम्ही मराठी माहितीपट लेखक आहात. उत्तर संपूर्णपणे मराठीत द्या. फक्त एकच स्क्रिप्ट लिहा: शीर्षक, प्रस्तावना, मुख्य माहिती, निष्कर्ष आणि शेवटी एक छोटा प्रेक्षक प्रश्न. इंग्रजी शीर्षके, Disclaimer, Self-Correction, स्पष्टीकरण, स्रोतांविषयी टिप्पणी, अंतर्गत सूचना किंवा दुसरी आवृत्ती लिहू नका. विषयाशी थेट संबंधित व पडताळलेल्या संदर्भातील माहितीच वापरा. व्यक्ती, वर्ष, गाव, संस्था किंवा घटना बनवू नका. पुनरावृत्ती, तुटकी वाक्ये आणि अक्षरदोष नकोत. एक मिनिटासाठी 115 ते 125 मराठी शब्द लिहा. फक्त अंतिम स्क्रिप्ट द्या."
           },
           {
             role: "user",
