@@ -1,4 +1,38 @@
 
+async function readJsonBodyLimited(request, maxBytes = 524288) {
+  const declaredLength = Number(request.headers.get("Content-Length") || 0);
+  if (declaredLength > maxBytes) return { tooLarge: true };
+  if (!request.body) return { invalid: true };
+  const reader = request.body.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel();
+        return { tooLarge: true };
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  try {
+    return { body: JSON.parse(new TextDecoder().decode(bytes)) };
+  } catch {
+    return { invalid: true };
+  }
+}
+
 export async function onRequestPost({ request, env }) {
   const headers = {
     "Content-Type": "application/json; charset=utf-8",
@@ -33,16 +67,14 @@ export async function onRequestPost({ request, env }) {
     if (!contentType.toLowerCase().includes("application/json")) {
       return new Response(JSON.stringify({ error: "JSON स्वरूपातील विनंती आवश्यक आहे." }), { status: 415, headers });
     }
-    const declaredLength = Number(request.headers.get("Content-Length") || 0);
-    if (declaredLength > 512 * 1024) {
+    const parsedRequest = await readJsonBodyLimited(request);
+    if (parsedRequest.tooLarge) {
       return new Response(JSON.stringify({ error: "विनंतीचा आकार मर्यादेपेक्षा जास्त आहे." }), { status: 413, headers });
     }
-    let body;
-    try {
-      body = await request.json();
-    } catch {
+    if (parsedRequest.invalid) {
       return new Response(JSON.stringify({ error: "विनंतीतील JSON माहिती वाचता आली नाही." }), { status: 400, headers });
     }
+    const body = parsedRequest.body;
     if (!body || typeof body !== "object" || Array.isArray(body)) {
       return new Response(JSON.stringify({ error: "विनंतीचा डेटा योग्य स्वरूपात नाही." }), { status: 400, headers });
     }
