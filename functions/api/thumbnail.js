@@ -43,9 +43,16 @@ async function prepareReferenceBlob(blob) {
   const height = Math.max(1, Math.round(bitmap.height * scale));
   const canvas = new OffscreenCanvas(width, height);
   const context = canvas.getContext("2d");
-  context.drawImage(bitmap, 0, 0, width, height);
-  bitmap.close();
-  return canvas.convertToBlob({ type: "image/jpeg", quality: 0.88 });
+  if (!context) {
+    bitmap.close();
+    throw new Error("Reference image canvas is unavailable.");
+  }
+  try {
+    context.drawImage(bitmap, 0, 0, width, height);
+    return await canvas.convertToBlob({ type: "image/jpeg", quality: 0.88 });
+  } finally {
+    bitmap.close();
+  }
 }
 
 async function findReferenceImage(query, kind = "subject") {
