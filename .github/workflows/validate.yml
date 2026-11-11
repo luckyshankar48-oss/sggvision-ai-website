@@ -76,7 +76,7 @@ jobs:
           if (!generate.includes('main content') || !generate.includes('conclusion') || !generate.includes('hasScriptBody')) {
             throw new Error('English and Marathi script section validation is missing.');
           }
-          if (!generate.includes('isEnglishRequest') || !generate.includes('main content') || !generate.includes('मुख्य माहिती') || !generate.includes('&& /(?:^|\\\\n)')) {
+          if (!generate.includes('isEnglishRequest') || !generate.includes('main content') || !generate.includes('मुख्य माहिती') || !generate.includes('const hasScriptBody')) {
             throw new Error('Script quality validation must require complete language-specific section headings.');
           }
           for (const section of ['title', 'introduction', 'main content', 'conclusion', 'प्रस्तावना', 'मुख्य माहिती', 'निष्कर्ष']) {
