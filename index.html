@@ -3158,11 +3158,12 @@ async function callAI(prompt,target,button){
  button.disabled=true;button.textContent='तयार होत आहे...';out.textContent='कृपया थोडा वेळ थांबा...';
  try{
   const languageRule=window.sggLanguage==='en'?'\n\nIMPORTANT: Write the complete response in clear, natural English only. Do not use Marathi unless the user specifically requests a Marathi phrase.':'\n\nमहत्त्वाचे: संपूर्ण उत्तर शुद्ध, नैसर्गिक मराठीत द्या. वापरकर्त्याने इंग्रजी मजकूर मागितला नसेल तर इंग्रजी वाक्ये वापरू नका.';
-  const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt+languageRule})});
-  const data=await r.json();
+  const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt+languageRule}),signal:AbortSignal.timeout(120000)});
+  let data={};
+  try{data=await r.json()}catch(_){throw new Error('सर्व्हरकडून योग्य प्रतिसाद मिळाला नाही.')}
   if(!r.ok) throw new Error(data.error||'AI सेवा सध्या उपलब्ध नाही.');
   out.innerHTML=formatAIText(data.text||'उत्तर मिळाले नाही.');
- }catch(e){out.textContent='AI सेवा त्रुटी: '+e.message;}
+ }catch(e){out.textContent='AI सेवा त्रुटी: '+(e&&e.name==='TimeoutError'?'उत्तर मिळण्यास जास्त वेळ लागत आहे. कृपया पुन्हा प्रयत्न करा.':e.message);}
  finally{button.disabled=false;button.textContent=old;}
 }
 function seoDemo(btn){let t=document.getElementById('topic').value.trim(),k=document.getElementById('kw').value.trim();if(!t){alert(window.sggLanguage==='en'?'Please enter a video topic.':'कृपया व्हिडिओचा विषय लिहा.');return}callAI((window.sggLanguage==='en'?'You are a YouTube SEO expert. Reply entirely in English. Create 3 factual titles (each under 100 characters), a detailed description, search keywords and 10 hashtags. Do not invent facts; state when information is insufficient. Topic: ':'तुम्ही मराठी YouTube SEO तज्ज्ञ आहात. दिलेला व्हिडिओ विषय आणि महत्त्वाचे शब्द हे SEO तयार करण्यासाठी पुरेसे इनपुट आहेत; वापरकर्त्याला अधिक तपशील विचारू नका. विषयावर आधारित 3 आकर्षक, शोधसुलभ शीर्षके (प्रत्येक 100 अक्षरांच्या आत), व्हिडिओचे वर्णन, संबंधित शोधशब्द आणि 10 हॅशटॅग थेट तयार करा. वापरकर्त्याने दिलेले महत्त्वाचे शब्द नक्की समाविष्ट करा. प्रवासवर्णन किंवा वैयक्तिक अनुभवाच्या विषयात न दिलेले ऐतिहासिक/तांत्रिक दावे करू नका; खात्री नसलेले तपशील टाळा. माहिती मर्यादित असली तरी उपलब्ध विषयावर उपयुक्त SEO तयार करा; अतिरिक्त माहिती मागणारा प्रतिसाद देऊ नका. विषय: ')+t+'. अतिरिक्त शब्द: '+k+'.', 'seoResult',btn)}
@@ -3553,7 +3554,7 @@ async function makeThumbnail(){
     }else{
       const ratio=document.getElementById('tmRatio').value;
       // Send the customer's original, complete brief unchanged. The server-side art director interprets any topic.
-      const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:topic,ratio})});
+      const response=await fetch('/api/thumbnail',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:topic,ratio}),signal:AbortSignal.timeout(180000)});
       let data={};
       try{data=await response.json()}catch(_){throw new Error('सर्व्हरकडून योग्य प्रतिसाद मिळाला नाही.')}
       if(!response.ok)throw new Error(data.error||'AI इमेज तयार करू शकली नाही.');
@@ -3568,7 +3569,7 @@ async function makeThumbnail(){
         : ' योग्य परवान्याचा संदर्भफोटो मिळाला नाही; स्वतंत्र AI चित्र वापरले.';
       status.textContent='तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.'+sourceNote;
     }
-  }catch(e){status.textContent='थंबनेल त्रुटी: '+(e&&e.message?e.message:'अज्ञात त्रुटी')}
+  }catch(e){status.textContent='थंबनेल त्रुटी: '+(e&&e.name==='TimeoutError'?'थंबनेल तयार होण्यास जास्त वेळ लागत आहे. कृपया पुन्हा प्रयत्न करा.':(e&&e.message?e.message:'अज्ञात त्रुटी'))}
   finally{btn.disabled=false;btn.textContent='थंबनेल तयार करा'}
 }
 function downloadThumbnail(){
