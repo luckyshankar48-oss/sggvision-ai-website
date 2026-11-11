@@ -3558,7 +3558,10 @@ async function makeThumbnail(){
       let data={};
       try{data=await response.json()}catch(_){throw new Error('सर्व्हरकडून योग्य प्रतिसाद मिळाला नाही.')}
       if(!response.ok)throw new Error(data.error||'AI इमेज तयार करू शकली नाही.');
-      if(!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
+      if(typeof data.image!=='string'||!data.image)throw new Error('AI कडून इमेज मिळाली नाही.');
+      if(data.image.length>10*1024*1024||data.image.length%4!==0||!/^[A-Za-z0-9+/]+={0,2}$/.test(data.image)){
+        throw new Error('AI कडून मिळालेली इमेज योग्य स्वरूपात नाही किंवा आकाराने खूप मोठी आहे. कृपया पुन्हा प्रयत्न करा.');
+      }
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
       if(document.fonts&&document.fonts.ready) await document.fonts.ready;
