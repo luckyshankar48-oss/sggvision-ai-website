@@ -352,7 +352,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
       // स्वतंत्रपणे पडलेली मात्रा/चिन्हे ही अनेकदा तुटलेल्या Unicode मजकुराची खूण असतात.
-      const hasOrphanDevanagariMark = /(?:^|[\\s.,!?।:;()[\\]{}])(?:[\\u0900-\\u0903\\u093A-\\u094F\\u0951-\\u0957\\u0962-\\u0963])/u.test(text);
+      const hasOrphanDevanagariMark = /(?:^|[\s.,!?।:;()[\]{}])(?:[\u0900-\u0903\u093A-\u094F\u0951-\u0957\u0962-\u0963])/u.test(text);
       const leaksMarkup = /&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);|<\/?[a-z][^>]*>/i.test(text);
       const leaksInstructions = isEnglishRequest
         ? /Call to Error|Mandatory script requirements|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Disclaimer:/i.test(text)
