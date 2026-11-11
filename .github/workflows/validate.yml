@@ -61,6 +61,14 @@ jobs:
           if (!html.includes("fetch('/api/generate'") || !html.includes("fetch('/api/thumbnail'")) {
             throw new Error('A required AI API endpoint is not connected to the website.');
           }
+          const scriptGenerator = html.slice(html.indexOf('function scriptDemo()'), html.indexOf('\nfunction extraAI', html.indexOf('function scriptDemo()')));
+          if (!scriptGenerator.includes("document.querySelector('button[onclick=\"scriptDemo()\"]')") ||
+              !scriptGenerator.includes("callAI(prompt,'scriptResult',btn,['scriptTopic','duration'])") ||
+              !html.includes('async function callAI(prompt,target,button,lockIds=[])') ||
+              !html.includes("lockedControls.forEach(control=>{control.disabled=true") ||
+              !html.includes("lockedControls.forEach(control=>{control.disabled=false")) {
+            throw new Error('Script generation must bind its own button and lock/restore topic and duration controls.');
+          }
           if (!html.includes('function tmValidateImageDimensions(img)') ||
               !html.includes('width*height>40000000') ||
               !html.includes('tmValidateImageDimensions(img);')) {
