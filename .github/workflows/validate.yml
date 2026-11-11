@@ -123,6 +123,48 @@ jobs:
           if (!html.includes("signal:AbortSignal.timeout(120000)") || !html.includes("signal:AbortSignal.timeout(180000)") || !html.includes("TimeoutError")) {
             throw new Error('AI frontend request timeouts and readable timeout messages are missing.');
           }
+          const validatorMatch = generate.match(/const inspectScript = \(value\) => \{[\s\S]*?\n    \};/);
+          if (!validatorMatch) throw new Error('Could not extract the script quality validator for behavior tests.');
+          const makeValidator = (isEnglishRequest, minutes) => vm.runInNewContext(
+            '(' + validatorMatch[0].replace('const inspectScript = ', '') + ')',
+            { isEnglishRequest, minutes }
+          );
+          const marathiValidator = makeValidator(false, 5);
+          const marathiLines = [
+            'शीर्षक',
+            'प्रस्तावना',
+            ...Array.from({length: 42}, (_, index) =>
+              'या विषयाचा महत्त्वाचा पैलू क्रमांक ' + (index + 1) + ' समाजाच्या अनुभवाशी आणि दैनंदिन जीवनाशी जवळून संबंधित आहे'
+            ),
+            'मुख्य माहिती',
+            'निष्कर्ष'
+          ];
+          const validMarathiScript = marathiLines.join('. ') + '.';
+          if (!marathiValidator(validMarathiScript).valid) {
+            throw new Error('A complete, sufficiently long Marathi script should pass quality validation.');
+          }
+          if (marathiValidator(validMarathiScript + ' &eacute;').valid) {
+            throw new Error('Named HTML entities must fail Marathi script quality validation.');
+          }
+          if (marathiValidator(validMarathiScript + ' <div>अयोग्य मजकूर</div>').valid) {
+            throw new Error('HTML tags must fail Marathi script quality validation.');
+          }
+          const repeatedLine = 'या विषयाचा महत्त्वाचा पैलू समाजाच्या अनुभवाशी आणि दैनंदिन जीवनाशी जवळून संबंधित आहे';
+          if (marathiValidator(validMarathiScript + '. ' + Array(9).fill(repeatedLine).join('. ')).valid) {
+            throw new Error('Excessive repeated sentences must fail Marathi script quality validation.');
+          }
+          const englishValidator = makeValidator(true, 5);
+          const englishScript = [
+            'Title', 'Introduction',
+            ...Array.from({length: 42}, (_, index) =>
+              'This important aspect number ' + (index + 1) + ' connects the subject with everyday experiences and practical understanding'
+            ),
+            'Main Content', 'Conclusion'
+          ].join('. ') + '.';
+          if (!englishValidator(englishScript).valid) {
+            throw new Error('A complete English script should pass quality validation.');
+          }
+          console.log('Script quality behavior tests passed for Marathi and English, markup leakage, and repetition.');
           console.log('Verified six result copy/PDF controls, both AI endpoints, bilingual text generation, and birthday thumbnail routing.');
           NODE
       - name: Smoke test API validation and safe error paths
