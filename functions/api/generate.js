@@ -351,6 +351,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         ? 1 - (unique.size / sentences.length)
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
+      const leaksMarkup = /&(?:#\d+|#x[0-9a-f]+|amp|lt|gt|quot|apos);|<\/?[a-z][^>]*>/i.test(text);
       const leaksInstructions = isEnglishRequest
         ? /Call to Error|Mandatory script requirements|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Disclaimer:/i.test(text)
         : /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer:|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Title:|Introduction|Main Content|Conclusion|Disclaimer/i.test(text);
@@ -370,7 +371,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
           && /(?:^|\n)\s*(?:प्रस्तावना)\s*[:：-]?/m.test(text)
           && /(?:^|\n)\s*(?:मुख्य माहिती|मुख्य भाग)\s*[:：-]?/m.test(text)
           && /(?:^|\n)\s*(?:निष्कर्ष|समारोप)\s*[:：-]?/m.test(text);
-      return { valid: !hasCorruption && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
+      return { valid: !hasCorruption && !leaksMarkup && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
     };
 
     if (isScriptRequest && !inspectScript(answer).valid) {
