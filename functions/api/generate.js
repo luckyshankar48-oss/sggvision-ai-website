@@ -64,7 +64,7 @@ export async function onRequestPost({ request, env }) {
     }
 
     const contentType = request.headers.get("Content-Type") || "";
-    if (!contentType.toLowerCase().includes("application/json")) {
+    if (!/^application\/json(?:\s*;|$)/i.test(contentType.trim())) {
       return new Response(JSON.stringify({ error: "JSON स्वरूपातील विनंती आवश्यक आहे." }), { status: 415, headers });
     }
     const parsedRequest = await readJsonBodyLimited(request);
@@ -78,7 +78,10 @@ export async function onRequestPost({ request, env }) {
     if (!body || typeof body !== "object" || Array.isArray(body)) {
       return new Response(JSON.stringify({ error: "विनंतीचा डेटा योग्य स्वरूपात नाही." }), { status: 400, headers });
     }
-    const prompt = String(body.prompt || "").trim();
+    if (typeof body.prompt !== "string") {
+      return new Response(JSON.stringify({ error: "Prompt मजकूर स्वरूपात देणे आवश्यक आहे." }), { status: 400, headers });
+    }
+    const prompt = body.prompt.trim();
 
     if (!prompt || prompt.length > 12000) {
       return new Response(JSON.stringify({
