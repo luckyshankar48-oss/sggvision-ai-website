@@ -120,8 +120,8 @@ jobs:
           if (!html.includes('function sggWatchGoogleTranslate()') || !html.includes('new MutationObserver(')) {
             throw new Error('Asynchronous full-page language switching is missing its load observer.');
           }
-          if (!html.includes("signal:AbortSignal.timeout(120000)") || !html.includes("signal:AbortSignal.timeout(180000)") || !html.includes("TimeoutError")) {
-            throw new Error('AI frontend request timeouts and readable timeout messages are missing.');
+          if (!html.includes('async function sggFetchWithTimeout(') || !html.includes("sggFetchWithTimeout('/api/generate'") || !html.includes("},120000)") || !html.includes("sggFetchWithTimeout('/api/thumbnail'") || !html.includes("},180000)") || !html.includes("timeoutError.name='TimeoutError'") || !html.includes('new AbortController()') || !html.includes('clearTimeout(timer)')) {
+            throw new Error('AI frontend compatible request timeouts and cleanup are missing.');
           }
           const validatorMatch = generate.match(/const inspectScript = \(value\) => \{[\s\S]*?\n    \};/);
           if (!validatorMatch) throw new Error('Could not extract the script quality validator for behavior tests.');
