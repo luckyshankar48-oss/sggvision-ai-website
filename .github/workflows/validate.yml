@@ -99,6 +99,7 @@ jobs:
       - name: Smoke test API validation and safe error paths
         run: |
           node --input-type=module <<'NODE'
+          import fs from 'node:fs';
           import assert from 'node:assert/strict';
           import { onRequestPost as generate } from './functions/api/generate.js';
           import { onRequestPost as thumbnail } from './functions/api/thumbnail.js';
