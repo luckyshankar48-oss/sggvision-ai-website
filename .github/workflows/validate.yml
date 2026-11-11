@@ -73,8 +73,8 @@ jobs:
           if (!generate.includes('isEnglishRequest') || !generate.includes('Write the entire response in English only')) {
             throw new Error('English response handling is missing from the text AI endpoint.');
           }
-          if (!generate.includes('main content|conclusion') || !generate.includes('hasScriptBody')) {
-            throw new Error('English script section headings are not accepted by script quality validation.');
+          if (!generate.includes('main content') || !generate.includes('conclusion') || !generate.includes('hasScriptBody')) {
+            throw new Error('English and Marathi script section validation is missing.');
           }
           if (!generate.includes('isEnglishRequest') || !generate.includes('main content') || !generate.includes('मुख्य माहिती') || !generate.includes('&& /(?:^|\\\\n)')) {
             throw new Error('Script quality validation must require complete language-specific section headings.');
