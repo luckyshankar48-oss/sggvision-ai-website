@@ -70,6 +70,13 @@ jobs:
               !html.includes('डाउनलोड त्रुटी:')) {
             throw new Error('Thumbnail PNG download error handling is missing.');
           }
+          if (!html.includes("let tmLastRatio = '16:9'") ||
+              !html.includes("ratio=ratioField.value") ||
+              !html.includes("tmCompose(img,headline,sub,brief.category,brief.supportingPoints,brief.closingLine,'',ratio)") ||
+              !html.includes("const canvas=document.getElementById('tmCanvas'),ratio=tmLastRatio") ||
+              !html.includes("field.disabled=true") || !html.includes("field.disabled=false")) {
+            throw new Error('Thumbnail generation must lock the selected settings and preserve the output ratio through download.');
+          }
           if (!thumbnail.includes('"birthday"') || !html.includes("category==='birthday'")) {
             throw new Error('Birthday thumbnail category is not supported end-to-end.');
           }
