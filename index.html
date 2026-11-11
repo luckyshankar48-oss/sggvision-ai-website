@@ -3066,6 +3066,41 @@ function sggTranslatePage(lang){
   });
 }
 
+/* Keep newly-rendered interface content in the selected language.
+   This covers AI results, validation messages and dynamically-added controls. */
+function sggTranslateAddedNode(root,lang){
+ if(!root||lang!=='en')return;
+ if(root.nodeType===Node.TEXT_NODE){sggTranslateTextNode(root,lang);return;}
+ if(root.nodeType!==Node.ELEMENT_NODE&&root.nodeType!==Node.DOCUMENT_FRAGMENT_NODE)return;
+ const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walker.nextNode()))sggTranslateTextNode(node,lang);
+ if(root.nodeType===Node.ELEMENT_NODE){
+  const attrs=['placeholder','title','aria-label','alt'];
+  const elements=[root,...root.querySelectorAll('*')];
+  elements.forEach(el=>{
+   let originals=sggOriginalAttrs.get(el);
+   if(!originals){originals={};sggOriginalAttrs.set(el,originals);}
+   attrs.forEach(attr=>{
+    if(!el.hasAttribute(attr))return;
+    if(!(attr in originals))originals[attr]=el.getAttribute(attr);
+    const original=originals[attr];
+    let translated=sggAttrTranslations[original]||sggTranslations[original]||original;
+    if(translated===original){
+     Object.entries(sggAttrTranslations).sort((a,b)=>b[0].length-a[0].length).forEach(([mr,en])=>{translated=translated.split(mr).join(en);});
+     Object.entries(sggTranslations).sort((a,b)=>b[0].length-a[0].length).forEach(([mr,en])=>{translated=translated.split(mr).join(en);});
+    }
+    el.setAttribute(attr,translated);
+   });
+  });
+ }
+}
+const sggDynamicLanguageObserver=new MutationObserver(records=>{
+ if(window.sggLanguage!=='en')return;
+ records.forEach(record=>record.addedNodes.forEach(node=>sggTranslateAddedNode(node,'en')));
+});
+sggDynamicLanguageObserver.observe(document.body,{childList:true,subtree:true});
+
 /* Full-page language switching: use the local dictionary first, then reliably activate
    Google Translate when its asynchronously loaded selector becomes available. */
 function sggApplyGoogleLanguage(){
