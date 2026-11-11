@@ -1,0 +1,41 @@
+name: Chat Portal Validation
+
+on:
+  push:
+    branches: [chat-portal-v1]
+    paths:
+      - "chat-portal/**"
+      - ".github/workflows/chat-portal.yml"
+  pull_request:
+    paths:
+      - "chat-portal/**"
+      - ".github/workflows/chat-portal.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check Pages Function syntax
+        run: node --check --input-type=module < chat-portal/functions/api/chat.js
+      - name: Check frontend JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("chat-portal/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+          assert scripts, "No inline JavaScript found"
+          Path("/tmp/portal-inline.js").write_text("\n".join(scripts), encoding="utf-8")
+          assert "/api/chat" in html, "Chat API route missing"
+          assert "SGGVISION AI" in html, "Portal branding missing"
+          PY
+          node --check /tmp/portal-inline.js
+      - name: Check required project files
+        run: |
+          test -s chat-portal/index.html
+          test -s chat-portal/functions/api/chat.js
+          test -s chat-portal/README.md
