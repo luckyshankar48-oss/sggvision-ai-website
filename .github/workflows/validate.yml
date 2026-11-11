@@ -58,7 +58,7 @@ jobs:
               throw new Error('Missing copy/PDF controls for ' + label);
             }
           }
-          if (!html.includes("fetch('/api/generate'") || !html.includes("fetch('/api/thumbnail'")) {
+          if (!html.includes("sggFetchWithTimeout('/api/generate'") || !html.includes("sggFetchWithTimeout('/api/thumbnail'")) {
             throw new Error('A required AI API endpoint is not connected to the website.');
           }
           const scriptGenerator = html.slice(html.indexOf('function scriptDemo()'), html.indexOf('\nfunction extraAI', html.indexOf('function scriptDemo()')));
