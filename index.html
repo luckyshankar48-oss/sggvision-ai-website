@@ -3225,6 +3225,14 @@ tmModeEl.addEventListener('change', () => {
     ? 'तुमचा फोटो निवडा. त्यावर शीर्षक आणि डिझाइन लावले जाईल.'
     : 'विषय लिहा. AI नवीन पार्श्वचित्र तयार करेल.';
 });
+function tmValidateImageDimensions(img){
+  const width=Number(img&&img.naturalWidth||img&&img.width||0);
+  const height=Number(img&&img.naturalHeight||img&&img.height||0);
+  if(!Number.isFinite(width)||!Number.isFinite(height)||width<1||height<1||width>12000||height>12000||width*height>40000000){
+    throw new Error('इमेजचे माप सुरक्षित मर्यादेत नाही. कृपया कमी आकाराची इमेज वापरा.');
+  }
+  return true;
+}
 function tmDrawCover(ctx,img,w,h){
   const scale=Math.max(w/img.width,h/img.height),sw=w/scale,sh=h/scale;
   ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,0,0,w,h);
@@ -3547,6 +3555,7 @@ async function makeThumbnail(){
       try{
         const img=new Image();
         await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('फोटो उघडता आला नाही.'));img.src=url});
+        tmValidateImageDimensions(img);
         if(document.fonts&&document.fonts.ready) await document.fonts.ready;
         tmCompose(img,headline,sub,brief.category,brief.supportingPoints,brief.closingLine);
       }finally{URL.revokeObjectURL(url)}
@@ -3564,6 +3573,7 @@ async function makeThumbnail(){
       }
       const img=new Image();
       await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=()=>reject(new Error('AI इमेज दाखवता आली नाही.'));img.src='data:image/png;base64,'+data.image});
+      tmValidateImageDimensions(img);
       if(document.fonts&&document.fonts.ready) await document.fonts.ready;
       tmCompose(img,data.headline||headline,data.subtitle||sub,data.category||'general',data.supportingPoints||[],data.closingLine||'',data.designDirection||'');
       const sources=Array.isArray(data.imageSource)?data.imageSource:[];
@@ -3578,7 +3588,16 @@ async function makeThumbnail(){
 function downloadThumbnail(){
   if(!tmLastImageReady)return;
   const canvas=document.getElementById('tmCanvas'),ratio=document.getElementById('tmRatio').value;
-  const a=document.createElement('a');a.download='SGGVISION-Thumbnail-'+ratio.replace(':','x')+'.png';a.href=canvas.toDataURL('image/png');a.click();
+  try{
+    if(!canvas||!canvas.width||!canvas.height)throw new Error('डाउनलोडसाठी Preview उपलब्ध नाही.');
+    const dataUrl=canvas.toDataURL('image/png');
+    if(!dataUrl||!dataUrl.startsWith('data:image/png'))throw new Error('PNG फाइल तयार करता आली नाही.');
+    const a=document.createElement('a');a.download='SGGVISION-Thumbnail-'+ratio.replace(':','x')+'.png';a.href=dataUrl;
+    document.body.appendChild(a);a.click();a.remove();
+    document.getElementById('tmStatus').textContent='HD PNG थंबनेल डाउनलोड सुरू झाले.';
+  }catch(error){
+    document.getElementById('tmStatus').textContent='डाउनलोड त्रुटी: '+(error&&error.message?error.message:'PNG फाइल तयार करता आली नाही.');
+  }
 }
 
 </script><!-- SGGVISION Workers AI production release trigger -->
