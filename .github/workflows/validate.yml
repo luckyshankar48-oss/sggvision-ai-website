@@ -104,7 +104,7 @@ jobs:
             throw new Error('Script quality validation must require complete language-specific section headings.');
           }
           if (!generate.includes('const leaksMarkup =') ||
-              !generate.includes('!leaksMarkup') ||
+              !generate.includes('!leaksMarkup') || !generate.includes('!hasOrphanDevanagariMark') || !generate.includes('const hasOrphanDevanagariMark =') ||
               !generate.includes('&(?:#\\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);')) {
             throw new Error('Generated scripts must reject leaked HTML tags and entities.');
           }
@@ -148,6 +148,12 @@ jobs:
           }
           if (marathiValidator(validMarathiScript + ' <div>अयोग्य मजकूर</div>').valid) {
             throw new Error('HTML tags must fail Marathi script quality validation.');
+          }
+          if (marathiValidator(validMarathiScript + ' ा').valid) {
+            throw new Error('Orphaned Devanagari vowel signs must fail Marathi script quality validation.');
+          }
+          if (!marathiValidator(validMarathiScript + ' महाराष्ट्र').valid) {
+            throw new Error('Normal Marathi words and vowel signs must remain valid.');
           }
           const repeatedLine = 'या विषयाचा महत्त्वाचा पैलू समाजाच्या अनुभवाशी आणि दैनंदिन जीवनाशी जवळून संबंधित आहे';
           if (marathiValidator(validMarathiScript + '. ' + Array(9).fill(repeatedLine).join('. ')).valid) {
