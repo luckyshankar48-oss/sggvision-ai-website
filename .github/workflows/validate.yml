@@ -76,8 +76,8 @@ jobs:
           if (!generate.includes('main content|conclusion') || !generate.includes('hasScriptBody')) {
             throw new Error('English script section headings are not accepted by script quality validation.');
           }
-          if (!generate.includes('isEnglishRequest') || !generate.includes('शीर्षक|प्रस्तावना|मुख्य माहिती|मुख्य भाग|निष्कर्ष|समारोप|आढावा') || generate.includes('आढावा)\\\\b|\\\\n/i.test(text)')) {
-            throw new Error('Script quality validation must require a recognizable language-specific section heading.');
+          if (!generate.includes('isEnglishRequest') || !generate.includes('main content') || !generate.includes('मुख्य माहिती') || !generate.includes('&& /(?:^|\\\\n)')) {
+            throw new Error('Script quality validation must require complete language-specific section headings.');
           }
           for (const section of ['title', 'introduction', 'main content', 'conclusion', 'प्रस्तावना', 'मुख्य माहिती', 'निष्कर्ष']) {
             if (!generate.includes(section)) throw new Error('Script validation is missing required section: ' + section);
