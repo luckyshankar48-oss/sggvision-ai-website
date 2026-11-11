@@ -351,7 +351,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         ? 1 - (unique.size / sentences.length)
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
-      const leaksMarkup = /&(?:#\d+|#x[0-9a-f]+|amp|lt|gt|quot|apos);|<\/?[a-z][^>]*>/i.test(text);
+      const leaksMarkup = /&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);|<\/?[a-z][^>]*>/i.test(text);
       const leaksInstructions = isEnglishRequest
         ? /Call to Error|Mandatory script requirements|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Disclaimer:/i.test(text)
         : /वापरकर्त्याने दिलेली माहिती संशयास्पद|अंतिम स्क्रिप्टमध्ये स्रोतांच्या लिंक|Call to Error|स्क्रिप्टसाठी बंधनकारक|Disclaimer:|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Title:|Introduction|Main Content|Conclusion|Disclaimer/i.test(text);
