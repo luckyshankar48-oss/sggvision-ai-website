@@ -351,6 +351,8 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
         ? 1 - (unique.size / sentences.length)
         : 0;
       const hasCorruption = text.includes("\uFFFD") || /\uFFFD/.test(text);
+      // स्वतंत्रपणे पडलेली मात्रा/चिन्हे ही अनेकदा तुटलेल्या Unicode मजकुराची खूण असतात.
+      const hasOrphanDevanagariMark = /(?:^|[\\s.,!?।:;()[\\]{}])(?:[\\u0900-\\u0903\\u093A-\\u094F\\u0951-\\u0957\\u0962-\\u0963])/u.test(text);
       const leaksMarkup = /&(?:#\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);|<\/?[a-z][^>]*>/i.test(text);
       const leaksInstructions = isEnglishRequest
         ? /Call to Error|Mandatory script requirements|Final Output Generation|Self-Correction|provided script|based on general historical knowledge|Disclaimer:/i.test(text)
@@ -371,7 +373,7 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
           && /(?:^|\n)\s*(?:प्रस्तावना)\s*[:：-]?/m.test(text)
           && /(?:^|\n)\s*(?:मुख्य माहिती|मुख्य भाग)\s*[:：-]?/m.test(text)
           && /(?:^|\n)\s*(?:निष्कर्ष|समारोप)\s*[:：-]?/m.test(text);
-      return { valid: !hasCorruption && !leaksMarkup && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
+      return { valid: !hasCorruption && !hasOrphanDevanagariMark && !leaksMarkup && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
     };
 
     if (isScriptRequest && !inspectScript(answer).valid) {
