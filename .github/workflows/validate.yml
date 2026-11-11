@@ -108,6 +108,9 @@ jobs:
             response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: '' }), env: {} });
             assert.equal(response.status, 400, name + ' must reject empty prompts');
 
+            response = await handler({ request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: { text: 'not a string' } }), env: {} });
+            assert.equal(response.status, 400, name + ' must reject non-string prompts');
+
             response = await handler({
               request: new Request('https://portal.test/api/' + name, {
                 method: 'POST', headers: { 'Content-Type': 'application/json', Host: 'portal.test' }, body: '{invalid json'
@@ -135,6 +138,12 @@ jobs:
               env: {}
             });
             assert.equal(response.status, 415, name + ' must reject non-JSON content types');
+
+            response = await handler({
+              request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { 'Content-Type': 'application/jsonp' }),
+              env: {}
+            });
+            assert.equal(response.status, 415, name + ' must reject misleading JSON-like content types');
 
             response = await handler({
               request: makeRequest('https://portal.test/api/' + name, 'POST', { prompt: 'test' }, { Origin: 'https://attacker.test' }),
