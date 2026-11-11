@@ -126,7 +126,7 @@ jobs:
           const validatorMatch = generate.match(/const inspectScript = \(value\) => \{[\s\S]*?\n    \};/);
           if (!validatorMatch) throw new Error('Could not extract the script quality validator for behavior tests.');
           const makeValidator = (isEnglishRequest, minutes) => vm.runInNewContext(
-            '(' + validatorMatch[0].replace('const inspectScript = ', '') + ')',
+            '(' + validatorMatch[0].replace('const inspectScript = ', '').replace(/;$/, '') + ')',
             { isEnglishRequest, minutes }
           );
           const marathiValidator = makeValidator(false, 5);
