@@ -260,6 +260,75 @@ jobs:
           }
 
           NODE
+      - name: Smoke test successful AI API flows with controlled model responses
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { onRequestPost as generate } from './functions/api/generate.js';
+          import { onRequestPost as thumbnail } from './functions/api/thumbnail.js';
+
+          const makeRequest = (url, body) => new Request(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Host: 'portal.test' },
+            body: JSON.stringify(body)
+          });
+
+          // Exercise the text endpoint's successful response path without depending on
+          // a live Cloudflare account or consuming a real Workers AI request.
+          const textResponse = await generate({
+            request: makeRequest('https://portal.test/api/generate', { prompt: 'रायगड किल्ल्याची थोडक्यात माहिती द्या.' }),
+            env: { AI: { run: async () => ({ choices: [{ message: { content: 'रायगड हा महाराष्ट्राच्या इतिहासातील महत्त्वाचा किल्ला आहे.' } }] }) } }
+          });
+          assert.equal(textResponse.status, 200, 'Text API must return success when the model responds');
+          assert.equal((await textResponse.json()).text, 'रायगड हा महाराष्ट्राच्या इतिहासातील महत्त्वाचा किल्ला आहे.');
+
+          // Exercise the complete thumbnail orchestration with deterministic model
+          // outputs. Empty reference queries intentionally avoid external image search.
+          let modelCalls = 0;
+          const fakeImage = Buffer.from('sggvision-thumbnail-smoke-test').toString('base64');
+          const thumbnailResponse = await thumbnail({
+            request: makeRequest('https://portal.test/api/thumbnail', {
+              prompt: 'मुख्य शीर्षक: चवदार तळे',
+              ratio: '9:16'
+            }),
+            env: {
+              AI: {
+                run: async (model, options) => {
+                  modelCalls += 1;
+                  if (modelCalls === 1) {
+                    return { choices: [{ message: { content: JSON.stringify({
+                      headline: 'चवदार तळे',
+                      subtitle: '',
+                      supporting_points: [],
+                      closing_line: '',
+                      place_search_query: '',
+                      person_search_query: '',
+                      search_query: '',
+                      image_prompt: 'A respectful documentary-style photograph of a historic public water tank, no text.',
+                      visual_subject: 'Chavdar Tale',
+                      category: 'history',
+                      design_direction: 'Documentary, respectful, cinematic.'
+                    }) } }] };
+                  }
+                  assert.equal(model, '@cf/black-forest-labs/flux-2-klein-4b');
+                  const multipart = await new Response(options.multipart.body, {
+                    headers: { 'Content-Type': options.multipart.contentType }
+                  }).formData();
+                  assert.equal(multipart.get('width'), '768', '9:16 output width must be preserved');
+                  assert.equal(multipart.get('height'), '1365', '9:16 output height must be preserved');
+                  return { image: fakeImage };
+                }
+              }
+            }
+          });
+          assert.equal(thumbnailResponse.status, 200, 'Thumbnail API must return success when both model stages respond');
+          const thumbnailData = await thumbnailResponse.json();
+          assert.equal(thumbnailData.headline, 'चवदार तळे', 'Explicit Marathi headline must be preserved');
+          assert.equal(thumbnailData.category, 'history');
+          assert.equal(thumbnailData.image, fakeImage);
+          assert.equal(modelCalls, 2, 'Thumbnail generation must call the planner and image model exactly once each');
+          console.log('Successful text generation and 9:16 thumbnail orchestration smoke tests passed with controlled AI responses.');
+          NODE
       - name: Check website inline JavaScript syntax
         run: |
           node <<'NODE'
