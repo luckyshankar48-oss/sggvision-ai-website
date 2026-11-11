@@ -61,6 +61,15 @@ jobs:
           if (!html.includes("fetch('/api/generate'") || !html.includes("fetch('/api/thumbnail'")) {
             throw new Error('A required AI API endpoint is not connected to the website.');
           }
+          if (!html.includes('function tmValidateImageDimensions(img)') ||
+              !html.includes('width*height>40000000') ||
+              !html.includes('tmValidateImageDimensions(img);')) {
+            throw new Error('Thumbnail image dimension safeguards are missing.');
+          }
+          if (!html.includes("dataUrl.startsWith('data:image/png')") ||
+              !html.includes('डाउनलोड त्रुटी:')) {
+            throw new Error('Thumbnail PNG download error handling is missing.');
+          }
           if (!thumbnail.includes('"birthday"') || !html.includes("category==='birthday'")) {
             throw new Error('Birthday thumbnail category is not supported end-to-end.');
           }
