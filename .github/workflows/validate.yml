@@ -170,6 +170,17 @@ jobs:
             assert.equal(response.status, 503, name + ' must report a missing AI binding clearly');
           }
           console.log('API validation smoke tests passed for both endpoints.');
+          const thumbnailSource = fs.readFileSync('functions/api/thumbnail.js', 'utf8');
+          const frontendSource = fs.readFileSync('index.html', 'utf8');
+          if (!thumbnailSource.includes('image.length > 10 * 1024 * 1024') ||
+              !thumbnailSource.includes('A-Za-z0-9+/')) {
+            throw new Error('Thumbnail API must bound and validate generated base64 image payloads');
+          }
+          if (!frontendSource.includes('data.image.length>10*1024*1024') ||
+              !frontendSource.includes('A-Za-z0-9+/')) {
+            throw new Error('Thumbnail frontend must validate generated image payloads before decoding');
+          }
+
           NODE
       - name: Check website inline JavaScript syntax
         run: |
