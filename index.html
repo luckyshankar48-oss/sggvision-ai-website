@@ -3153,9 +3153,14 @@ function saveAIResultPDF(target){
  </style></head><body><h1>${title}</h1><pre>${safe}</pre><div class="note">SGGVISION AI Digital Services</div><script>window.addEventListener('load',()=>{setTimeout(()=>window.print(),700)});<\/script></body></html>`);
  w.document.close();
 }
-async function callAI(prompt,target,button){
- const out=document.getElementById(target), old=button.textContent;
- button.disabled=true;button.textContent='तयार होत आहे...';out.textContent='कृपया थोडा वेळ थांबा...';
+async function callAI(prompt,target,button,lockIds=[]){
+ const out=document.getElementById(target);
+ if(!out||!button){if(out)out.textContent='AI सेवा सुरू करता आली नाही. कृपया पुन्हा प्रयत्न करा.';return}
+ const old=button.textContent;
+ const lockedControls=lockIds.map(id=>document.getElementById(id)).filter(Boolean);
+ button.disabled=true;button.textContent='तयार होत आहे...';
+ lockedControls.forEach(control=>{control.disabled=true;control.setAttribute('aria-disabled','true')});
+ out.textContent='कृपया थोडा वेळ थांबा...';
  try{
   const languageRule=window.sggLanguage==='en'?'\n\nIMPORTANT: Write the complete response in clear, natural English only. Do not use Marathi unless the user specifically requests a Marathi phrase.':'\n\nमहत्त्वाचे: संपूर्ण उत्तर शुद्ध, नैसर्गिक मराठीत द्या. वापरकर्त्याने इंग्रजी मजकूर मागितला नसेल तर इंग्रजी वाक्ये वापरू नका.';
   const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:prompt+languageRule}),signal:AbortSignal.timeout(120000)});
@@ -3164,17 +3169,18 @@ async function callAI(prompt,target,button){
   if(!r.ok) throw new Error(data.error||'AI सेवा सध्या उपलब्ध नाही.');
   out.innerHTML=formatAIText(data.text||'उत्तर मिळाले नाही.');
  }catch(e){out.textContent='AI सेवा त्रुटी: '+(e&&e.name==='TimeoutError'?'उत्तर मिळण्यास जास्त वेळ लागत आहे. कृपया पुन्हा प्रयत्न करा.':e.message);}
- finally{button.disabled=false;button.textContent=old;}
+ finally{button.disabled=false;button.textContent=old;lockedControls.forEach(control=>{control.disabled=false;control.removeAttribute('aria-disabled')});}
 }
 function seoDemo(btn){let t=document.getElementById('topic').value.trim(),k=document.getElementById('kw').value.trim();if(!t){alert(window.sggLanguage==='en'?'Please enter a video topic.':'कृपया व्हिडिओचा विषय लिहा.');return}callAI((window.sggLanguage==='en'?'You are a YouTube SEO expert. Reply entirely in English. Create 3 factual titles (each under 100 characters), a detailed description, search keywords and 10 hashtags. Do not invent facts; state when information is insufficient. Topic: ':'तुम्ही मराठी YouTube SEO तज्ज्ञ आहात. दिलेला व्हिडिओ विषय आणि महत्त्वाचे शब्द हे SEO तयार करण्यासाठी पुरेसे इनपुट आहेत; वापरकर्त्याला अधिक तपशील विचारू नका. विषयावर आधारित 3 आकर्षक, शोधसुलभ शीर्षके (प्रत्येक 100 अक्षरांच्या आत), व्हिडिओचे वर्णन, संबंधित शोधशब्द आणि 10 हॅशटॅग थेट तयार करा. वापरकर्त्याने दिलेले महत्त्वाचे शब्द नक्की समाविष्ट करा. प्रवासवर्णन किंवा वैयक्तिक अनुभवाच्या विषयात न दिलेले ऐतिहासिक/तांत्रिक दावे करू नका; खात्री नसलेले तपशील टाळा. माहिती मर्यादित असली तरी उपलब्ध विषयावर उपयुक्त SEO तयार करा; अतिरिक्त माहिती मागणारा प्रतिसाद देऊ नका. विषय: ')+t+'. अतिरिक्त शब्द: '+k+'.', 'seoResult',btn)}
-function scriptDemo(btn){
+function scriptDemo(){
+ const btn=document.querySelector('button[onclick="scriptDemo()"]');
  let t=document.getElementById('scriptTopic').value.trim(),d=document.getElementById('duration').value;
  if(!t){alert(window.sggLanguage==='en'?'Please enter a topic.':'कृपया विषय लिहा.');return}
  const en=window.sggLanguage==='en';
  const prompt=en
   ? 'Act as an experienced English documentary and YouTube voice-over scriptwriter and careful fact-checking editor. Write a complete, natural spoken script for the exact topic below. Duration: '+d+'. Use a strong opening hook, a clear introduction, logically ordered sections, smooth transitions, a conclusion and a brief YouTube call to action. Use simple, fluent language that sounds natural when read aloud. Do not add unsupported dates, names, quotations, statistics, claims or invented events. For history, clearly separate established facts from legends or uncertain claims; if a detail cannot be verified from the prompt, omit it or explicitly say it needs verification. Do not repeat the same point. Do not output HTML entities, HTML tags, code, or broken markup. Use clean headings and paragraphs only. Topic: '+t
   : 'तुम्ही अनुभवी मराठी माहितीपट व YouTube व्हॉइसओव्हर लेखक आणि काळजीपूर्वक तथ्यतपासणी करणारे संपादक आहात. खाली दिलेल्या नेमक्या विषयावर पूर्ण, सलग आणि निवेदनासाठी सहज वाचता येईल अशी शुद्ध मराठी स्क्रिप्ट लिहा. अपेक्षित कालावधी: '+d+'. सुरुवातीला प्रभावी पण तथ्याधारित प्रस्तावना द्या. त्यानंतर विषयाची पार्श्वभूमी, मुख्य माहिती योग्य क्रमाने, उपयुक्त तपशील, निष्कर्ष आणि छोटा YouTube call-to-action द्या. भाषा नैसर्गिक, व्याकरणदृष्ट्या शुद्ध आणि बोलण्यास सोपी ठेवा. मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे आणि व्यक्ती/स्थळांची नावे काळजीपूर्वक लिहा. एकच मुद्दा पुन्हा पुन्हा सांगू नका. इतिहास किंवा वारसा स्थळांविषयी लिहिताना पडताळणी नसलेल्या तारखा, व्यक्ती, उद्धरणे, आकडे किंवा कथा बनवू नका. लोककथा आणि ऐतिहासिक पुरावा वेगळे स्पष्ट करा; खात्री नसलेली माहिती वगळा किंवा पडताळणी आवश्यक असल्याचे नमूद करा. HTML entities (उदा. &#39; किंवा &quot;), HTML tags, code किंवा तुटक markup अजिबात देऊ नका. स्वच्छ शीर्षके आणि परिच्छेद वापरा. विषय: '+t;
- callAI(prompt,'scriptResult',btn);
+ callAI(prompt,'scriptResult',btn,['scriptTopic','duration']);
 }
 function extraAI(inputId,selectId,resultId,role){const t=document.getElementById(inputId).value.trim(),v=document.getElementById(selectId).value;if(!t){alert('कृपया विषय किंवा माहिती लिहा.');return}const btn=document.querySelector(`[onclick^="extraAI('${inputId}'"]`);callAI(role+' प्रकार: '+v+'. विषय: '+t, resultId, btn)}
 function letterAI(){const t=document.getElementById('letterTopic').value.trim(),v=document.getElementById('letterType').value;if(!t){alert('कृपया अर्जाचा विषय व तपशील लिहा.');return}callAI('तुम्ही शुद्ध मराठी कार्यालयीन लेखन तज्ज्ञ आहात. '+v+' तयार करा. वापरकर्त्याने दिलेलीच माहिती वापरा; नावे, पत्ते, तारखा किंवा तथ्य स्वतः बनवू नका. आवश्यक माहिती नसल्यास [येथे माहिती भरा] असे दाखवा. तपशील: '+t,'letterResult',document.querySelector('button[onclick="letterAI()"]'))}
