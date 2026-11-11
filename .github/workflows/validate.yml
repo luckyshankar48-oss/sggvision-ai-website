@@ -97,7 +97,7 @@ jobs:
           }
           if (!generate.includes('const leaksMarkup =') ||
               !generate.includes('!leaksMarkup') ||
-              !generate.includes('&(?:#\\d+|#x[0-9a-f]+|amp|lt|gt|quot|apos);')) {
+              !generate.includes('&(?:#\\d+|#x[0-9a-f]+|[a-z][a-z0-9]+);')) {
             throw new Error('Generated scripts must reject leaked HTML tags and entities.');
           }
           for (const section of ['title', 'introduction', 'main content', 'conclusion', 'प्रस्तावना', 'मुख्य माहिती', 'निष्कर्ष']) {
