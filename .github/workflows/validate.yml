@@ -139,7 +139,7 @@ jobs:
             'मुख्य माहिती',
             'निष्कर्ष'
           ];
-          const validMarathiScript = marathiLines.join('. ') + '.';
+          const validMarathiScript = marathiLines.join('.\n') + '.';
           if (!marathiValidator(validMarathiScript).valid) {
             throw new Error('A complete, sufficiently long Marathi script should pass quality validation.');
           }
@@ -160,7 +160,7 @@ jobs:
               'This important aspect number ' + (index + 1) + ' connects the subject with everyday experiences and practical understanding'
             ),
             'Main Content', 'Conclusion'
-          ].join('. ') + '.';
+          ].join('.\n') + '.';
           if (!englishValidator(englishScript).valid) {
             throw new Error('A complete English script should pass quality validation.');
           }
