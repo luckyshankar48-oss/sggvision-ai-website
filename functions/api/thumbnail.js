@@ -289,6 +289,11 @@ export async function onRequestPost({ request, env }) {
     if (!image || typeof image !== "string") {
       return jsonResponse({ error: "AI मॉडेलकडून इमेज मिळाली नाही. कृपया पुन्हा प्रयत्न करा." }, 502, headers);
     }
+    // Bound the generated payload before serializing it into a JSON response.
+    // Cloudflare's image output is base64; reject malformed or unexpectedly large data.
+    if (image.length > 10 * 1024 * 1024 || image.length % 4 !== 0 || !/^[A-Za-z0-9+/]+={0,2}$/.test(image)) {
+      return jsonResponse({ error: "AI कडून मिळालेली इमेज योग्य स्वरूपात नाही किंवा आकाराने खूप मोठी आहे. पुन्हा प्रयत्न करा." }, 502, headers);
+    }
     return jsonResponse({
       image,
       headline: String(plan.headline || "").slice(0, 180),
