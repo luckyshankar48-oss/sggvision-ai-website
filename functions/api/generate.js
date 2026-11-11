@@ -362,8 +362,14 @@ ${enExtract || "संबंधित माहिती उपलब्ध न�
       const excessiveEnglish = !isEnglishRequest && words.length > 0 && latinWords / words.length > 0.08;
       const repeatedCta = (text.match(/Call\s*to\s*Action|कॉल\s*टू\s*ॲक्शन/gi) || []).length > 1;
       const hasScriptBody = isEnglishRequest
-        ? /(?:^|\n)\s*(?:title|introduction|main content|conclusion)\s*[:：-]?/im.test(text)
-        : /(?:^|\n)\s*(?:शीर्षक|प्रस्तावना|मुख्य माहिती|मुख्य भाग|निष्कर्ष|समारोप|आढावा)\s*[:：-]?/m.test(text);
+        ? /(?:^|\n)\s*(?:title|शीर्षक)\s*[:：-]?/im.test(text)
+          && /(?:^|\n)\s*(?:introduction|प्रस्तावना)\s*[:：-]?/im.test(text)
+          && /(?:^|\n)\s*(?:main content|main section|मुख्य माहिती|मुख्य भाग)\s*[:：-]?/im.test(text)
+          && /(?:^|\n)\s*(?:conclusion|समारोप|निष्कर्ष)\s*[:：-]?/im.test(text)
+        : /(?:^|\n)\s*(?:शीर्षक)\s*[:：-]?/m.test(text)
+          && /(?:^|\n)\s*(?:प्रस्तावना)\s*[:：-]?/m.test(text)
+          && /(?:^|\n)\s*(?:मुख्य माहिती|मुख्य भाग)\s*[:：-]?/m.test(text)
+          && /(?:^|\n)\s*(?:निष्कर्ष|समारोप)\s*[:：-]?/m.test(text);
       return { valid: !hasCorruption && !leaksInstructions && !tooShort && !tooLong && !repeated && !brokenPunctuation && !excessiveEnglish && !repeatedCta && hasScriptBody, words: words.length };
     };
 
