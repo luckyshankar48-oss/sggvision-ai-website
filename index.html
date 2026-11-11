@@ -2978,6 +2978,19 @@ Object.assign(sggTranslations,{
 'माहितीपूर्ण':'Informative','जाहिरात':'Advertisement','कार्यक्रम सूचना':'Event Announcement','अभिनंदन / शुभेच्छा':'Congratulations / Greetings',
 'Thumbnail Maker वापरणे':'Using Thumbnail Maker','इतर':'Other'
 });
+Object.assign(sggTranslations,{
+'📩 थेट ग्राहक संपर्क':'📩 Direct Customer Support',
+'AI सेवा सुरू करता आली नाही. कृपया पुन्हा प्रयत्न करा.':'The AI service could not be started. Please try again.',
+'AI सेवा त्रुटी: ':'AI service error: ',
+'माफ करा, मदत मिळवताना अडचण आली: ':'Sorry, there was a problem getting help: ',
+'थंबनेल तयार होत आहे. कृपया ही माहिती बदलू नका...':'Creating your thumbnail. Please do not change these details...',
+'तुमच्या फोटोवर थंबनेल तयार झाले. Preview तपासा आणि डाउनलोड करा.':'Your photo thumbnail is ready. Check the preview and download it.',
+'तुमच्या Prompt नुसार थंबनेल तयार झाले. Preview तपासा.':'Your thumbnail is ready. Check the preview.',
+'थंबनेल त्रुटी: ':'Thumbnail error: ',
+'HD PNG थंबनेल डाउनलोड सुरू झाले.':'HD PNG thumbnail download has started.',
+'डाउनलोड त्रुटी: ':'Download error: '
+});
+
 const sggAttrTranslations={
 'उदा. रायगड किल्ला प्रवासवर्णन':'e.g. Raigad Fort travel vlog','उदा. इतिहास, महाराष्ट्र, पर्यटन':'e.g. history, Maharashtra, tourism','उदा. चवदार तळे सत्याग्रह':'e.g. Chavdar Tale Satyagraha','उदा. भीमाशंकर जंगल वाचवा आंदोलन':'e.g. Save Bhimashankar Forest campaign','उदा. रायगड किल्ल्याची सफर':'e.g. A visit to Raigad Fort','उदा. कार्यक्रमाची सूचना':'e.g. Event announcement','कोणाला अर्ज द्यायचा आणि अर्जाचे कारण लिहा...':'Who is the application addressed to, and why?','तुमचे नाव':'Your name','नाव':'Name','काय अडचण येते आहे ते स्पष्ट लिहा...':'Describe the issue clearly...','तुमच्या कामाबद्दल थोडक्यात लिहा...':'Briefly describe the work you need...',
 'sgg':'sgg',
@@ -3155,7 +3168,7 @@ function getAIResultText(target){
 async function copyAIResult(target){
  const text=getAIResultText(target);
  if(!text||/AI कडून तयार होणारा|तयार होणारा मजकूर येथे|तयार होणारी स्क्रिप्ट येथे|तयार होणारा अर्ज येथे/.test(text)){
-  alert('आधी AI मजकूर तयार करा.');return;
+  alert(window.sggLanguage==='en'?'Generate the AI content first.':'आधी AI मजकूर तयार करा.');return;
  }
  try{
   if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(text);
@@ -3163,18 +3176,18 @@ async function copyAIResult(target){
    const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';document.body.appendChild(area);area.select();
    const ok=document.execCommand('copy');area.remove();if(!ok)throw new Error('कॉपी करता आले नाही.');
   }
-  alert('संपूर्ण मजकूर कॉपी झाला.');
- }catch(e){alert('कॉपी करता आले नाही. कृपया पुन्हा प्रयत्न करा.');}
+  alert(window.sggLanguage==='en'?'The full text has been copied.':'संपूर्ण मजकूर कॉपी झाला.');
+ }catch(e){alert(window.sggLanguage==='en'?'Could not copy. Please try again.':'कॉपी करता आले नाही. कृपया पुन्हा प्रयत्न करा.');}
 }
 function saveAIResultPDF(target){
  const out=document.getElementById(target),text=getAIResultText(target);
  if(!out||!text||/AI कडून तयार होणारा|तयार होणारा मजकूर येथे|तयार होणारी स्क्रिप्ट येथे|तयार होणारा अर्ज येथे/.test(text)){
-  alert('आधी AI मजकूर तयार करा.');return;
+  alert(window.sggLanguage==='en'?'Generate the AI content first.':'आधी AI मजकूर तयार करा.');return;
  }
  const titleMap={seoResult:'YouTube SEO',scriptResult:'व्हिडिओ स्क्रिप्ट',thumbResult:'Thumbnail मजकूर',reelResult:'Reels / Shorts कॅप्शन',postResult:'सोशल मीडिया पोस्ट',letterResult:'अर्ज / पत्र'};
  const title=titleMap[target]||'SGGVISION AI मजकूर';
  const w=window.open('','_blank');
- if(!w){alert('PDF तयार करण्यासाठी नवीन विंडो उघडता आली नाही. कृपया Pop-ups परवानगी द्या.');return;}
+ if(!w){alert(window.sggLanguage==='en'?'Could not open a new window to create the PDF. Please allow pop-ups.':'PDF तयार करण्यासाठी नवीन विंडो उघडता आली नाही. कृपया Pop-ups परवानगी द्या.');return;}
  const safe=text.replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
  w.document.open();
  w.document.write(`<!doctype html><html lang="mr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} - SGGVISION</title><style>
@@ -3227,8 +3240,8 @@ function scriptDemo(){
   : 'तुम्ही अनुभवी मराठी माहितीपट व YouTube व्हॉइसओव्हर लेखक आणि काळजीपूर्वक तथ्यतपासणी करणारे संपादक आहात. खाली दिलेल्या नेमक्या विषयावर पूर्ण, सलग आणि निवेदनासाठी सहज वाचता येईल अशी शुद्ध मराठी स्क्रिप्ट लिहा. अपेक्षित कालावधी: '+d+'. सुरुवातीला प्रभावी पण तथ्याधारित प्रस्तावना द्या. त्यानंतर विषयाची पार्श्वभूमी, मुख्य माहिती योग्य क्रमाने, उपयुक्त तपशील, निष्कर्ष आणि छोटा YouTube call-to-action द्या. भाषा नैसर्गिक, व्याकरणदृष्ट्या शुद्ध आणि बोलण्यास सोपी ठेवा. मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे आणि व्यक्ती/स्थळांची नावे काळजीपूर्वक लिहा. एकच मुद्दा पुन्हा पुन्हा सांगू नका. इतिहास किंवा वारसा स्थळांविषयी लिहिताना पडताळणी नसलेल्या तारखा, व्यक्ती, उद्धरणे, आकडे किंवा कथा बनवू नका. लोककथा आणि ऐतिहासिक पुरावा वेगळे स्पष्ट करा; खात्री नसलेली माहिती वगळा किंवा पडताळणी आवश्यक असल्याचे नमूद करा. HTML entities (उदा. &#39; किंवा &quot;), HTML tags, code किंवा तुटक markup अजिबात देऊ नका. स्वच्छ शीर्षके आणि परिच्छेद वापरा. विषय: '+t;
  callAI(prompt,'scriptResult',btn,['scriptTopic','duration']);
 }
-function extraAI(inputId,selectId,resultId,role){const t=document.getElementById(inputId).value.trim(),v=document.getElementById(selectId).value;if(!t){alert('कृपया विषय किंवा माहिती लिहा.');return}const btn=document.querySelector(`[onclick^="extraAI('${inputId}'"]`);callAI(role+' प्रकार: '+v+'. विषय: '+t, resultId, btn)}
-function letterAI(){const t=document.getElementById('letterTopic').value.trim(),v=document.getElementById('letterType').value;if(!t){alert('कृपया अर्जाचा विषय व तपशील लिहा.');return}callAI('तुम्ही शुद्ध मराठी कार्यालयीन लेखन तज्ज्ञ आहात. '+v+' तयार करा. वापरकर्त्याने दिलेलीच माहिती वापरा; नावे, पत्ते, तारखा किंवा तथ्य स्वतः बनवू नका. आवश्यक माहिती नसल्यास [येथे माहिती भरा] असे दाखवा. तपशील: '+t,'letterResult',document.querySelector('button[onclick="letterAI()"]'))}
+function extraAI(inputId,selectId,resultId,role){const t=document.getElementById(inputId).value.trim(),v=document.getElementById(selectId).value;if(!t){alert(window.sggLanguage==='en'?'Please enter a topic or details.':'कृपया विषय किंवा माहिती लिहा.');return}const btn=document.querySelector(`[onclick^="extraAI('${inputId}'"]`);callAI(role+' प्रकार: '+v+'. विषय: '+t, resultId, btn)}
+function letterAI(){const t=document.getElementById('letterTopic').value.trim(),v=document.getElementById('letterType').value;if(!t){alert(window.sggLanguage==='en'?'Please enter the application subject and details.':'कृपया अर्जाचा विषय व तपशील लिहा.');return}callAI('तुम्ही शुद्ध मराठी कार्यालयीन लेखन तज्ज्ञ आहात. '+v+' तयार करा. वापरकर्त्याने दिलेलीच माहिती वापरा; नावे, पत्ते, तारखा किंवा तथ्य स्वतः बनवू नका. आवश्यक माहिती नसल्यास [येथे माहिती भरा] असे दाखवा. तपशील: '+t,'letterResult',document.querySelector('button[onclick="letterAI()"]'))}
 async function askPortalHelp(){
  const question=document.getElementById('helpQuestion').value.trim(),topic=document.getElementById('helpTopic').value,btn=document.getElementById('helpAskBtn'),out=document.getElementById('helpAnswer');
  if(!question){out.textContent='कृपया तुमचा प्रश्न लिहा.';return}
@@ -3246,14 +3259,14 @@ function sendPortalFeedback(){
  const type=document.getElementById('fbType').value;
  const page=document.getElementById('fbPage').value.trim()||'नमूद नाही';
  const details=document.getElementById('fbDetails').value.trim();
- if(!details){alert('कृपया तुमची सूचना किंवा त्रुटी लिहा.');return}
+ if(!details){alert(window.sggLanguage==='en'?'Please enter your feedback or describe the issue.':'कृपया तुमची सूचना किंवा त्रुटी लिहा.');return}
  const subject=encodeURIComponent('SGGVISION Portal Feedback - '+type);
  const body=encodeURIComponent('नाव: '+name+'\nप्रकार: '+type+'\nपान / सुविधा: '+page+'\n\nसूचना / त्रुटी:\n'+details+'\n\nवेबसाइट: https://sggvision-ai-website.pages.dev');
  window.location.href='mailto:sggvisiondigitalservices@gmail.com?subject='+subject+'&body='+body;
 }
-function makeInquiry(){let n=document.getElementById('customer').value.trim(),s=document.getElementById('service').value,d=document.getElementById('details').value.trim();if(!n||!d){alert('कृपया नाव आणि कामाची माहिती भरा.');return}window.inquiryText='नमस्कार SGGVISION AI, माझे नाव '+n+'. मला '+s+' ही सेवा हवी आहे. कामाची माहिती: '+d+'. कृपया दर आणि वेळ कळवा.';document.getElementById('inquiry').textContent=window.inquiryText}
+function makeInquiry(){let n=document.getElementById('customer').value.trim(),s=document.getElementById('service').value,d=document.getElementById('details').value.trim();if(!n||!d){alert(window.sggLanguage==='en'?'Please enter your name and work details.':'कृपया नाव आणि कामाची माहिती भरा.');return}window.inquiryText='नमस्कार SGGVISION AI, माझे नाव '+n+'. मला '+s+' ही सेवा हवी आहे. कामाची माहिती: '+d+'. कृपया दर आणि वेळ कळवा.';document.getElementById('inquiry').textContent=window.inquiryText}
 async function copyInquiry(){
- if(!window.inquiryText){alert('आधी चौकशीचा संदेश तयार करा.');return}
+ if(!window.inquiryText){alert(window.sggLanguage==='en'?'Create the enquiry message first.':'आधी चौकशीचा संदेश तयार करा.');return}
  try{
   if(navigator.clipboard&&window.isSecureContext) await navigator.clipboard.writeText(window.inquiryText);
   else{
@@ -3261,8 +3274,8 @@ async function copyInquiry(){
    document.body.appendChild(area);area.select();const ok=document.execCommand('copy');area.remove();
    if(!ok)throw new Error('कॉपी करता आले नाही.');
   }
-  alert('संपूर्ण चौकशी संदेश कॉपी झाला.');
- }catch(error){alert('संदेश कॉपी करता आला नाही. कृपया पुन्हा प्रयत्न करा.');}
+  alert(window.sggLanguage==='en'?'The complete enquiry message has been copied.':'संपूर्ण चौकशी संदेश कॉपी झाला.');
+ }catch(error){alert(window.sggLanguage==='en'?'Could not copy the message. Please try again.':'संदेश कॉपी करता आला नाही. कृपया पुन्हा प्रयत्न करा.');}
 }
 document.querySelectorAll('button[onclick^="seoDemo"],button[onclick^="scriptDemo"]').forEach(b=>{let f=b.getAttribute('onclick');b.setAttribute('onclick',f.replace('seoDemo()','seoDemo(this)').replace('scriptDemo()','scriptDemo(this)'))});
 
@@ -3596,7 +3609,7 @@ async function makeThumbnail(){
   const topic=brief.text,headline=brief.headline||brief.text.split(/[।.!?\n]/)[0].slice(0,70),sub=brief.sub;
   const mode=tmModeEl.value,ratio=ratioField.value,btn=document.getElementById('tmGenerate'),status=document.getElementById('tmStatus');
   tmLastImageReady=false;document.getElementById('tmDownload').disabled=true;
-  if(!topic){alert('कृपया थंबनेलसाठी तुमचा Prompt लिहा.');return}
+  if(!topic){alert(window.sggLanguage==='en'?'Please enter your thumbnail prompt.':'कृपया थंबनेलसाठी तुमचा Prompt लिहा.');return}
   tmLastRatio=ratio;
   btn.disabled=true;btn.textContent='तयार होत आहे...';status.textContent='थंबनेल तयार होत आहे. कृपया ही माहिती बदलू नका...';
   [tmModeEl,topicField,ratioField,photoField].forEach(field=>{if(field)field.disabled=true;});
