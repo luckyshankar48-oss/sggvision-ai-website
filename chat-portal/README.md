@@ -13,6 +13,14 @@ A clean, independent ChatGPT-style chat interface for SGGVISION. It is not a cop
 - Strict accuracy, uncertainty, proper-name preservation and Marathi proofreading instructions
 - Request validation, payload limits, same-host Origin check and safe public errors
 
+## Advertising foundation
+
+- Reserved desktop right-rail and mobile banner placements are present but remain hidden by default.
+- No third-party ad scripts, tracking pixels, or paid placements are loaded in v1.
+- Ad inventory must be enabled only after a verified campaign is approved; every paid placement must be labelled “जाहिरात” or “प्रायोजित”.
+- Ads must remain separate from AI answers and must never cover the chat composer, messages, or navigation.
+- An advertiser inquiry form and authenticated campaign-management workflow are not connected yet. Do not present a non-functional form as a live contact channel.
+
 ## Cloudflare Pages deployment
 Configure the Pages project to deploy this folder as its **Root directory**:
 
