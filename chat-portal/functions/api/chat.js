@@ -23,7 +23,7 @@ export async function onRequestPost({ request, env }) {
     return json({ error: "Content-Type must be application/json." }, 415);
   }
   const declaredLength = request.headers.get("Content-Length");
-  if (declaredLength && (!/^\\d+$/.test(declaredLength) || Number(declaredLength) > MAX_BODY)) {
+  if (declaredLength && (!/^\d+$/.test(declaredLength) || Number(declaredLength) > MAX_BODY)) {
     return json({ error: "Request too large." }, 413);
   }
   let raw;
