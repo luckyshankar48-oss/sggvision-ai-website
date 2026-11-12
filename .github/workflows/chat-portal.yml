@@ -41,5 +41,5 @@ jobs:
           test -s chat-portal/README.md
           test -s chat-portal/QUALITY-BENCHMARK.md
           grep -q "SGGVISION_MODEL" chat-portal/functions/api/chat.js
-          grep -q "Never claim that you searched the web" chat-portal/functions/api/chat.js
+          grep -q "Do not claim that you searched the web" chat-portal/functions/api/chat.js
           grep -q "Automatic fail conditions" chat-portal/QUALITY-BENCHMARK.md
