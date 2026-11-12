@@ -94,10 +94,10 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_expiry ON subscriptions(status,ends
 -- Proposed Indian pricing. Keep plans inactive until payment gateway and
 -- service limits are verified; update existing rows safely on each migration.
 INSERT OR IGNORE INTO plans(id,name,amount_paise,duration_days,active) VALUES
- ('monthly','Monthly',30000,30,0),
- ('half-year','Six months',150000,180,0),
- ('annual','Annual',200000,365,0);
-UPDATE plans SET name='Monthly',amount_paise=30000,duration_days=30,active=0 WHERE id='monthly';
-UPDATE plans SET name='Six months',amount_paise=150000,duration_days=180,active=0 WHERE id='half-year';
+ ('monthly','Monthly',19900,30,0),
+ ('half-year','Six months',79900,180,0),
+ ('annual','Annual',149900,365,0);
+UPDATE plans SET name='Monthly',amount_paise=19900,duration_days=30,active=0 WHERE id='monthly';
+UPDATE plans SET name='Six months',amount_paise=79900,duration_days=180,active=0 WHERE id='half-year';
 UPDATE plans SET name='Annual',amount_paise=300000,duration_days=365,active=0 WHERE id='annual';
 UPDATE plans SET active=0 WHERE id='lifetime';
