@@ -1,9 +1,9 @@
 # Admin email OTP setup
 
-Admin access is restricted in code to `luckyshankar48@gmail.com`. The dashboard uses a 6-digit, 5-minute OTP, 60-second resend cooldown, and five-attempt limit. OTP hashes (not plaintext codes) are stored in D1. The session cookie is HttpOnly, Secure, SameSite=Strict and expires after 8 hours.
+Admin access is restricted in code to `sggvisiondigitalservices@gmail.com`. The dashboard uses a 6-digit, 5-minute OTP, 60-second resend cooldown, and five-attempt limit. OTP hashes (not plaintext codes) are stored in D1. The session cookie is HttpOnly, Secure, SameSite=Strict and expires after 8 hours.
 
 ## Required Cloudflare setup
-1. Create a Resend account using `luckyshankar48@gmail.com`.
+1. Create a Resend account using `sggvisiondigitalservices@gmail.com`.
 2. Create a **Sending access** API key. Never put it in GitHub or chat.
 3. For initial testing only, Resend's `onboarding@resend.dev` sender can deliver only to the Resend account owner's email. Production sending to other recipients requires a verified sending domain. See Resend docs: https://resend.com/docs and https://resend.com/features/email-api
 4. In Cloudflare Pages > project > Settings > Environment variables and secrets (Production), add secrets:
