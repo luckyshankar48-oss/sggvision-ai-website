@@ -100,3 +100,34 @@ test("rejects a non-numeric Content-Length header", async () => {
   }));
   assert.equal(result.status, 413);
 });
+
+
+test("retries once when Workers AI returns an empty response", async () => {
+  let calls = 0;
+  const env = { AI: { run: async () => {
+    calls += 1;
+    return calls === 1 ? { response: "" } : { response: "नमस्कार!" };
+  } } };
+  const result = await read(await onRequestPost(context(payload(), env)));
+  assert.equal(result.status, 200);
+  assert.equal(result.body.response, "नमस्कार!");
+  assert.equal(calls, 2);
+});
+
+test("extracts OpenAI-compatible choices message content", async () => {
+  const env = { AI: { run: async () => ({
+    choices: [{ message: { content: "Hello from SGGVISION." } }]
+  }) } };
+  const result = await read(await onRequestPost(context(payload(), env)));
+  assert.equal(result.status, 200);
+  assert.equal(result.body.response, "Hello from SGGVISION.");
+});
+
+test("returns a controlled error after two empty AI responses", async () => {
+  let calls = 0;
+  const env = { AI: { run: async () => { calls += 1; return { response: "" }; } } };
+  const result = await read(await onRequestPost(context(payload(), env)));
+  assert.equal(result.status, 502);
+  assert.match(result.body.error, /after retry/i);
+  assert.equal(calls, 2);
+});
