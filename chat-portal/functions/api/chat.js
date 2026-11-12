@@ -1,6 +1,7 @@
 const MAX_BODY = 256 * 1024;
 const MAX_MESSAGES = 16;
 const MAX_CHARS = 12000;
+const MAX_TOTAL_CHARS = 24000;
 const DEFAULT_MODEL = "@cf/zai-org/glm-4.7-flash";
 const ALLOWED_MODELS = new Set([
   DEFAULT_MODEL,
@@ -21,9 +22,6 @@ export async function onRequestPost({ request, env }) {
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) {
     return json({ error: "Content-Type must be application/json." }, 415);
   }
-  if (!env.AI || typeof env.AI.run !== "function") {
-    return json({ error: "AI service is not configured. Add a Cloudflare Workers AI binding named AI." }, 503);
-  }
   let raw;
   try {
     raw = await request.arrayBuffer();
@@ -37,16 +35,27 @@ export async function onRequestPost({ request, env }) {
   } catch {
     return json({ error: "Invalid JSON." }, 400);
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return json({ error: "Request body must be a JSON object." }, 400);
+  }
   if (!Array.isArray(body.messages) || body.messages.length < 1 || body.messages.length > MAX_MESSAGES) {
     return json({ error: "Send between 1 and 16 messages." }, 400);
   }
   const allowed = new Set(["user", "assistant"]);
   const messages = [];
+  let totalChars = 0;
   for (const item of body.messages) {
-    if (!item || !allowed.has(item.role) || typeof item.content !== "string" || !item.content.trim() || item.content.length > MAX_CHARS) {
+    if (!item || typeof item !== "object" || !allowed.has(item.role) || typeof item.content !== "string" || !item.content.trim() || item.content.length > MAX_CHARS) {
       return json({ error: "Invalid message format or message too long." }, 400);
     }
+    totalChars += item.content.length;
+    if (totalChars > MAX_TOTAL_CHARS) {
+      return json({ error: "Conversation is too long. Start a new chat or shorten the messages." }, 413);
+    }
     messages.push({ role: item.role, content: item.content.trim() });
+  }
+  if (!env.AI || typeof env.AI.run !== "function") {
+    return json({ error: "AI service is not configured. Add a Cloudflare Workers AI binding named AI." }, 503);
   }
   const language = ["mr", "hi", "en"].includes(body.language) ? body.language : "auto";
   const languageRule = language === "mr" ? "Reply in natural, correct Marathi." :
