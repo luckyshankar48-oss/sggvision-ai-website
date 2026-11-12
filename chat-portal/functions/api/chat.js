@@ -95,7 +95,7 @@ export async function onRequestPost({ request, env }) {
     const model = ALLOWED_MODELS.has(requestedModel) ? requestedModel : DEFAULT_MODEL;
     const input = {
       messages: [{ role: "system", content: system }, ...messages],
-      max_tokens: 1800
+      max_tokens: 4096
     };
     let result;
     let response = "";
