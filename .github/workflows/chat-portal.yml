@@ -42,6 +42,8 @@ jobs:
         run: |
           test -s chat-portal/index.html
           test -s chat-portal/functions/api/chat.js
+          test -s chat-portal/_headers
+          test -s chat-portal/SECURITY-CHECKLIST.md
           test -s chat-portal/tests/chat-api.test.mjs
           test -s chat-portal/README.md
           test -s chat-portal/QUALITY-BENCHMARK.md
@@ -52,6 +54,8 @@ jobs:
           test -s chat-portal/privacy.html
           test -s chat-portal/terms.html
           grep -q "SGGVISION_MODEL" chat-portal/functions/api/chat.js
+          grep -q "Content-Security-Policy" chat-portal/_headers
+          grep -q "rate-limiting rule" chat-portal/SECURITY-CHECKLIST.md
           grep -q "Do not claim that you searched the web" chat-portal/functions/api/chat.js
           grep -q "Automatic fail conditions" chat-portal/QUALITY-BENCHMARK.md
           grep -q "SGGVISION AI customer-support assistant" chat-portal/functions/api/chat.js
