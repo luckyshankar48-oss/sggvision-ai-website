@@ -90,26 +90,33 @@ export async function onRequestPost({ request, env }) {
   try {
     const requestedModel = typeof env.SGGVISION_MODEL === "string" ? env.SGGVISION_MODEL.trim() : DEFAULT_MODEL;
     const model = ALLOWED_MODELS.has(requestedModel) ? requestedModel : DEFAULT_MODEL;
-    const result = await env.AI.run(model, {
+    const input = {
       messages: [{ role: "system", content: system }, ...messages],
       max_tokens: 1800
-    });
-    // Workers AI chat models can return either the legacy { response } shape
-    // or an OpenAI-compatible { choices: [{ message: { content } }] } shape.
-    const choiceContent = result?.choices?.[0]?.message?.content;
-    const response = typeof result?.response === "string"
-      ? result.response
-      : typeof choiceContent === "string"
-        ? choiceContent
-        : Array.isArray(choiceContent)
+    };
+    let result;
+    let response = "";
+    // Workers AI can occasionally return an empty payload during a transient
+    // inference issue. Retry once before returning an error to the visitor.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      result = await env.AI.run(model, input);
+      // Support the legacy { response } shape and OpenAI-compatible choices.
+      const choiceContent = result?.choices?.[0]?.message?.content;
+      response = typeof result?.response === "string"
+        ? result.response
+        : typeof choiceContent === "string"
           ? choiceContent
-              .filter((part) => part && typeof part.text === "string")
-              .map((part) => part.text)
-              .join("")
-          : "";
+          : Array.isArray(choiceContent)
+            ? choiceContent
+                .filter((part) => part && typeof part.text === "string")
+                .map((part) => part.text)
+                .join("")
+            : "";
+      if (response.trim()) break;
+    }
     if (!response.trim()) {
-      console.error("SGGVISION AI returned no text. Result keys:", Object.keys(result || {}).join(", "));
-      return json({ error: "AI returned an empty response. Please try again." }, 502);
+      console.error("SGGVISION AI returned no text after one retry. Result keys:", Object.keys(result || {}).join(", "));
+      return json({ error: "AI returned an empty response after retry. Please try again." }, 502);
     }
     return json({ response: response.trim() }, 200);
   } catch (error) {
