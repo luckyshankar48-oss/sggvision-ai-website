@@ -1,5 +1,8 @@
+import { consumeUsage } from "./_lib/usage.js";
 const MAX_PROMPT=1800;
 export async function onRequestPost({request,env}){
+  const usage=await consumeUsage(request,env).catch(()=>({ok:false,status:503,error:"वापर मर्यादा तपासता आली नाही."}));
+  if(!usage.ok)return json({error:usage.error,remaining:0},usage.status,usage.setCookie);
   const origin=request.headers.get("Origin");
   const host=new URL(request.url).host;
   if(origin){try{if(new URL(origin).host!==host)return json({error:"Origin not allowed."},403)}catch{return json({error:"Invalid origin."},403)}}
@@ -12,10 +15,10 @@ export async function onRequestPost({request,env}){
   try{
     const result=await env.AI.run("@cf/black-forest-labs/flux-1-schnell",{prompt:body.prompt.trim(),steps:4});
     if(!result||typeof result.image!=="string"||!result.image)return json({error:"Image model ने चित्र परत दिले नाही. पुन्हा प्रयत्न करा."},502);
-    return json({dataURI:"data:image/jpeg;charset=utf-8;base64,"+result.image},200);
+    return json({dataURI:"data:image/jpeg;charset=utf-8;base64,"+result.image,remaining:usage.remaining??null},200,usage.setCookie);
   }catch(error){
     console.error("SGGVISION image generation failed:",error?.message||"unknown error");
     return json({error:"चित्र तयार करताना AI सेवा अयशस्वी झाली. थोड्या वेळाने पुन्हा प्रयत्न करा."},502);
   }
 }
-function json(data,status){return new Response(JSON.stringify(data),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}})}
+function json(data,status,cookie){return new Response(JSON.stringify(data),{status,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store","X-Content-Type-Options":"nosniff",...(cookie?{"Set-Cookie":cookie}:{})}})}
