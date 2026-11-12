@@ -94,8 +94,21 @@ export async function onRequestPost({ request, env }) {
       messages: [{ role: "system", content: system }, ...messages],
       max_tokens: 1800
     });
-    const response = result?.response;
-    if (typeof response !== "string" || !response.trim()) {
+    // Workers AI chat models can return either the legacy { response } shape
+    // or an OpenAI-compatible { choices: [{ message: { content } }] } shape.
+    const choiceContent = result?.choices?.[0]?.message?.content;
+    const response = typeof result?.response === "string"
+      ? result.response
+      : typeof choiceContent === "string"
+        ? choiceContent
+        : Array.isArray(choiceContent)
+          ? choiceContent
+              .filter((part) => part && typeof part.text === "string")
+              .map((part) => part.text)
+              .join("")
+          : "";
+    if (!response.trim()) {
+      console.error("SGGVISION AI returned no text. Result keys:", Object.keys(result || {}).join(", "));
       return json({ error: "AI returned an empty response. Please try again." }, 502);
     }
     return json({ response: response.trim() }, 200);
