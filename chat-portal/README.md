@@ -15,6 +15,11 @@ A clean, independent ChatGPT-style chat interface for SGGVISION. It is not a cop
 - Separate customer-support chat using a dedicated support prompt mode
 - Support conversation stored locally in the current browser
 - Email escalation link to sggvisiondigitalservices@gmail.com
+- Public About, Help, Contact, Advertise, Privacy and Terms pages
+
+## Public information pages
+
+The portal includes `about.html`, `help.html`, `contact.html`, `advertise.html`, `privacy.html` and `terms.html`. The privacy and terms pages are initial general-information drafts, not legal approval. Before public launch, review them against the actual hosting/AI-provider configuration, applicable law, legal publisher identity, contact address, data-retention practices and any future analytics or advertising services.
 
 ## Customer support
 
