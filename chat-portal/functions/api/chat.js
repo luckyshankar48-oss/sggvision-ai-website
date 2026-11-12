@@ -65,10 +65,10 @@ export async function onRequestPost({ request, env }) {
   const usage = await consumeUsage(request, env).catch(() => ({ ok:false, status:503, error:"वापर मर्यादा तपासता आली नाही." }));
   if (!usage.ok) return json({ error: usage.error, remaining: 0 }, usage.status, usage.setCookie);
   const language = ["mr", "hi", "en"].includes(body.language) ? body.language : "auto";
-  const languageRule = language === "mr" ? "Reply in natural, correct Marathi." :
-    language === "hi" ? "Reply in natural Hindi." :
+  const languageRule = language === "mr" ? "Reply in natural, correct Marathi written in Devanagari." :
+    language === "hi" ? "Reply in natural Hindi written in Devanagari." :
     language === "en" ? "Reply in clear English." :
-    "Reply in the same language as the user's latest message. Support Marathi, Hindi and English.";
+    "Automatically identify the language and writing style of the user's latest request. Customers may write in any language, including Marathi, Hindi, English, Romanized Marathi (Marathi written with English letters), Romanized Hindi, Hinglish, mixed-language sentences, or other languages. Understand transliteration and spelling variations; do not mistake Romanized Marathi or Hindi for English. Reply in the same language the customer used. For Romanized Marathi, reply in natural Devanagari Marathi by default; for Romanized Hindi, reply in Devanagari Hindi by default. If the customer clearly asks for Roman letters/transliteration, mirror that. For mixed-language requests, use the dominant language and retain necessary technical terms. Never force Marathi on customers who use another language.";
   const mode = ["general", "script", "seo", "thumbnail", "translate", "writing", "support"].includes(body.mode) ? body.mode : "general";
   const modeRules = {
     general: "Handle the user's request directly. Ask one concise clarification only when essential information is missing.",
@@ -86,7 +86,7 @@ export async function onRequestPost({ request, env }) {
     "Accuracy is more important than sounding confident. If a detail is unknown or not supported by the conversation, say so or ask one necessary question. Never guess names, dates, locations, figures, legal rules, quotations, sources, citations, links, prices or completed actions.",
     "Do not claim that you searched the web, checked an official source, verified a fact, or performed an action unless a tool actually did it in this request. No web-search tool is connected to this endpoint yet; for current news, government rules, prices, schedules or changing facts, clearly say that live source verification is unavailable and identify what needs checking.",
     "Preserve every user-provided proper name, date, number, place and exact wording unless the user asks to correct it. Never silently replace a specific fact with an invented one.",
-    "For Marathi, write natural, fluent Devanagari Marathi, not literal word-for-word translation. Check spelling, मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे and grammar. Do not alter proper nouns merely to make them look familiar. Avoid unnecessary English words.",
+    "Language handling is essential for a multilingual customer portal: detect the customer's actual language from the latest message, including Romanized Indian languages and code-switching. Do not assume every customer speaks Marathi. Do not interpret Romanized Marathi such as 'mala script dya' as English; understand its Marathi meaning and answer in fluent Devanagari Marathi by default. Apply equivalent native-script handling to Romanized Hindi. If the customer requests a particular language or script, follow that request. For Marathi, check spelling, मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे and grammar; preserve proper nouns.",
     "Before responding, silently review the answer for factual consistency, instruction compliance, missing requested parts, spelling and grammar. This review is not independent fact verification; disclose uncertainty where appropriate.",
     "Use readable headings and lists when useful. Keep the answer focused on the requested task."
   ].join(" ");
