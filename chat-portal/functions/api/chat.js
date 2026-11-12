@@ -16,10 +16,19 @@ export async function onRequestPost({ request, env }) {
   if (!env.AI || typeof env.AI.run !== "function") {
     return json({ error: "AI service is not configured. Add a Cloudflare Workers AI binding named AI." }, 503);
   }
-  const length = Number(request.headers.get("content-length") || 0);
-  if (length > MAX_BODY) return json({ error: "Request too large." }, 413);
+  let raw;
+  try {
+    raw = await request.arrayBuffer();
+  } catch {
+    return json({ error: "Could not read request body." }, 400);
+  }
+  if (raw.byteLength > MAX_BODY) return json({ error: "Request too large." }, 413);
   let body;
-  try { body = await request.json(); } catch { return json({ error: "Invalid JSON." }, 400); }
+  try {
+    body = JSON.parse(new TextDecoder().decode(raw));
+  } catch {
+    return json({ error: "Invalid JSON." }, 400);
+  }
   if (!Array.isArray(body.messages) || body.messages.length < 1 || body.messages.length > MAX_MESSAGES) {
     return json({ error: "Send between 1 and 16 messages." }, 400);
   }
