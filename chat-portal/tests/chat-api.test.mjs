@@ -72,3 +72,31 @@ test("does not expose provider exception details", async () => {
   assert.equal(result.status, 502);
   assert.doesNotMatch(result.body.error, /private provider detail/);
 });
+
+test("accepts a valid numeric Content-Length header", async () => {
+  const body = payload();
+  const request = {
+    url: endpoint,
+    headers: new Headers({ ...headers, "Content-Length": String(new TextEncoder().encode(body).byteLength) }),
+    arrayBuffer: async () => new TextEncoder().encode(body).buffer
+  };
+  const result = await read(await onRequestPost({
+    request,
+    env: { AI: { run: async () => ({ response: "नमस्कार!" }) } }
+  }));
+  assert.equal(result.status, 200);
+});
+
+test("rejects a non-numeric Content-Length header", async () => {
+  const body = payload();
+  const request = {
+    url: endpoint,
+    headers: new Headers({ ...headers, "Content-Length": "unknown" }),
+    arrayBuffer: async () => new TextEncoder().encode(body).buffer
+  };
+  const result = await read(await onRequestPost({
+    request,
+    env: { AI: { run: async () => ({ response: "नमस्कार!" }) } }
+  }));
+  assert.equal(result.status, 413);
+});
