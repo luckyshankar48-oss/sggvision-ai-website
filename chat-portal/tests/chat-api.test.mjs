@@ -100,3 +100,17 @@ test("rejects a non-numeric Content-Length header", async () => {
   }));
   assert.equal(result.status, 413);
 });
+
+test("returns OpenAI-compatible Workers AI chat completion content", async () => {
+  const env = { AI: { run: async () => ({ choices: [{ message: { content: "नमस्कार, मी SGGVISION AI आहे." } }] }) } };
+  const result = await read(await onRequestPost(context(payload(), env)));
+  assert.equal(result.status, 200);
+  assert.equal(result.body.response, "नमस्कार, मी SGGVISION AI आहे.");
+});
+
+test("returns text parts from a multimodal chat completion content array", async () => {
+  const env = { AI: { run: async () => ({ choices: [{ message: { content: [{ type: "text", text: "पहिले वाक्य. " }, { type: "text", text: "दुसरे वाक्य." }] } }] }) } };
+  const result = await read(await onRequestPost(context(payload(), env)));
+  assert.equal(result.status, 200);
+  assert.equal(result.body.response, "पहिले वाक्य. दुसरे वाक्य.");
+});
