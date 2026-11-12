@@ -19,7 +19,7 @@ export async function onRequestPost({ request, env }) {
       if (new URL(origin).host !== host) return json({ error: "Origin not allowed." }, 403);
     } catch { return json({ error: "Invalid origin." }, 403); }
   }
-  if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) {
+  if (!/^application\\/json(?:\\s*;|$)/i.test(request.headers.get("content-type")?.trim() || "")) {
     return json({ error: "Content-Type must be application/json." }, 415);
   }
   const declaredLength = request.headers.get("Content-Length");
