@@ -1,4 +1,4 @@
-const ADMIN_EMAIL="luckyshankar48@gmail.com";const enc=new TextEncoder();
+const ADMIN_EMAIL="sggvisiondigitalservices@gmail.com";const enc=new TextEncoder();
 function b64url(bytes){return btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
 async function sign(v,s){const k=await crypto.subtle.importKey("raw",enc.encode(s),{name:"HMAC",hash:"SHA-256"},false,["sign"]);return b64url(await crypto.subtle.sign("HMAC",k,enc.encode(v)))}
 async function sha(v){return [...new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(v)))].map(x=>x.toString(16).padStart(2,"0")).join("")}
