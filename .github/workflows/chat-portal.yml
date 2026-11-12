@@ -42,7 +42,15 @@ jobs:
           test -s chat-portal/functions/api/chat.js
           test -s chat-portal/README.md
           test -s chat-portal/QUALITY-BENCHMARK.md
+          test -s chat-portal/about.html
+          test -s chat-portal/help.html
+          test -s chat-portal/contact.html
+          test -s chat-portal/advertise.html
+          test -s chat-portal/privacy.html
+          test -s chat-portal/terms.html
           grep -q "SGGVISION_MODEL" chat-portal/functions/api/chat.js
           grep -q "Do not claim that you searched the web" chat-portal/functions/api/chat.js
           grep -q "Automatic fail conditions" chat-portal/QUALITY-BENCHMARK.md
           grep -q "SGGVISION AI customer-support assistant" chat-portal/functions/api/chat.js
+          grep -q 'href="./privacy.html"' chat-portal/index.html
+          grep -q 'href="./advertise.html"' chat-portal/index.html
