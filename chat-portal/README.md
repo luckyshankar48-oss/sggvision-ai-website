@@ -8,7 +8,9 @@ A clean, independent ChatGPT-style chat interface for SGGVISION. It is not a cop
 - New conversations and recent conversation list
 - Browser-local conversation history (localStorage)
 - Cloudflare Pages Function at `/api/chat`
-- Workers AI model: `@cf/zai-org/glm-4.7-flash`
+- Default Workers AI model: `@cf/zai-org/glm-4.7-flash`
+- Allowlisted model override through the `SGGVISION_MODEL` Pages environment variable
+- Strict accuracy, uncertainty, proper-name preservation and Marathi proofreading instructions
 - Request validation, payload limits, same-host Origin check and safe public errors
 
 ## Cloudflare Pages deployment
@@ -23,7 +25,15 @@ In Cloudflare Pages → Settings → Functions → Workers AI, add a binding:
 - Variable name: `AI`
 - Cloudflare Workers AI binding: enabled
 
+Optional model selection: set the Pages environment variable `SGGVISION_MODEL` to one of the allowlisted IDs in `functions/api/chat.js`. If it is unset or not allowlisted, the endpoint uses the default model. Candidate availability can change; confirm availability in the Cloudflare model catalogue before switching. Do not select a model based on its name alone.
+
 Deploy the `chat-portal-v1` branch to a separate Pages preview/project first. Do not change the existing production project's branch or root directory until the preview is tested and approved.
+
+## Quality testing and model selection
+
+Use [QUALITY-BENCHMARK.md](./QUALITY-BENCHMARK.md) to compare the baseline with alternative models on the same 30 Marathi, Hindi, English and SGGVISION creator prompts. Score answers with a human reviewer, including a Marathi-fluent reviewer. Do not treat automated syntax checks or model self-review as proof of factual accuracy.
+
+The endpoint currently has no web-search or official-source retrieval integration. Its instructions explicitly tell the model not to claim live verification and to disclose when current facts cannot be checked. This reduces unsupported certainty but does not guarantee truth.
 
 ## Important limitations in v1
 - Chat history is stored only in the current browser; there is no account sync or server-side database.
