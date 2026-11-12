@@ -2,7 +2,7 @@ name: Chat Portal Validation
 
 on:
   push:
-    branches: [chat-portal-v1]
+    branches: [chat-portal-v1, main]
     paths:
       - "chat-portal/**"
       - ".github/workflows/chat-portal.yml"
