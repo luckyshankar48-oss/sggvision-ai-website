@@ -45,9 +45,7 @@ Configure the Pages project to deploy this folder as its **Root directory**:
 Build command: leave empty (static HTML and Pages Functions).
 Build output directory: `.`
 
-In Cloudflare Pages → Settings → Functions → Workers AI, add a binding:
-- Variable name: `AI`
-- Cloudflare Workers AI binding: enabled
+In the Cloudflare dashboard, open **Workers & Pages → your Pages project → Settings → select the Preview or Production environment → Bindings → Add → Workers AI**. Set the variable name to `AI`, save, and redeploy that environment for the binding to take effect. Configure Preview and Production separately if both will be used.
 
 Optional model selection: set the Pages environment variable `SGGVISION_MODEL` to one of the allowlisted IDs in `functions/api/chat.js`. If it is unset or not allowlisted, the endpoint uses the default model. Candidate availability can change; confirm availability in the Cloudflare model catalogue before switching. Do not select a model based on its name alone.
 
