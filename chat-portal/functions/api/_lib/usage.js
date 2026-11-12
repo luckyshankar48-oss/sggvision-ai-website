@@ -16,3 +16,11 @@ export async function consumeUsage(request,env){
  if(!row){const used=await env.DB.prepare("SELECT free_messages_used FROM usage_counters WHERE guest_id=?").bind(guestId).first();return {ok:false,status:402,error:"तुमचे ५ मोफत संदेश पूर्ण झाले आहेत. पुढे सुरू ठेवण्यासाठी खाते तयार करा किंवा लॉगिन करून प्लॅन निवडा.",setCookie}}
  return {ok:true,guestId,remaining:5-row.free_messages_used,setCookie};
 }
+
+
+// Refund a reserved guest request when AI processing fails.
+// Authenticated subscribers are not charged per request by this pilot quota.
+export async function releaseUsage(usage,env){
+ if(!usage?.guestId||!env.DB)return;
+ await env.DB.prepare("UPDATE usage_counters SET free_messages_used=CASE WHEN free_messages_used>0 THEN free_messages_used-1 ELSE 0 END,updated_at=datetime('now') WHERE guest_id=?").bind(usage.guestId).run();
+}
