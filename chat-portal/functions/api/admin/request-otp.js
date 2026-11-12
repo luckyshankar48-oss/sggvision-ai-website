@@ -1,4 +1,4 @@
-const ADMIN_EMAIL="luckyshankar48@gmail.com";
+const ADMIN_EMAIL="sggvisiondigitalservices@gmail.com";
 const enc=new TextEncoder();
 const json=(d,s=200)=>new Response(JSON.stringify(d),{status:s,headers:{"Content-Type":"application/json; charset=utf-8","Cache-Control":"no-store"}});
 async function sha(v){return [...new Uint8Array(await crypto.subtle.digest("SHA-256",enc.encode(v)))].map(x=>x.toString(16).padStart(2,"0")).join("")}
