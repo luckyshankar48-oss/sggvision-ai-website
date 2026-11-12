@@ -13,7 +13,25 @@ export async function onRequestPost({request,env}){
   const usage=await consumeUsage(request,env).catch(()=>({ok:false,status:503,error:"वापर मर्यादा तपासता आली नाही."}));
   if(!usage.ok)return json({error:usage.error,remaining:0},usage.status,usage.setCookie);
   try{
-    const result=await env.AI.run("@cf/black-forest-labs/flux-1-schnell",{prompt:body.prompt.trim(),steps:4});
+    // Convert Marathi, Hindi, Romanized Marathi and English requests into a clear
+    // English visual brief before sending it to the image model. Keep the subject exact.
+    let visualPrompt = body.prompt.trim();
+    try {
+      const brief = await env.AI.run("@cf/zai-org/glm-4.7-flash", {
+        messages: [
+          { role: "system", content: "Rewrite the user's image request as a concise, detailed English prompt for a photorealistic image model. Understand Marathi, Hindi, Romanized Marathi and English. Preserve the exact named person, historical event, place and action. For Chhatrapati Shivaji Maharaj, depict the historical Maratha king as a human ruler in historically inspired Maratha attire, NOT Lord Shiva or any deity. Do not add unrelated religious figures, symbols or subjects. Do not include any text, letters, captions, watermarks or logos in the image. Return only the image prompt." },
+          { role: "user", content: body.prompt.trim() }
+        ],
+        max_tokens: 350
+      });
+      const briefText = typeof brief?.response === "string" ? brief.response :
+        typeof brief?.choices?.[0]?.message?.content === "string" ? brief.choices[0].message.content : "";
+      if (briefText.trim()) visualPrompt = briefText.trim();
+    } catch (error) {
+      console.error("Image prompt enhancement unavailable:", error?.message || "unknown error");
+    }
+    visualPrompt += " Create only the requested scene. No text, typography, captions, letters, logos or watermarks.";
+    const result=await env.AI.run("@cf/black-forest-labs/flux-1-schnell",{prompt:visualPrompt,steps:4});
     if(!result||typeof result.image!=="string"||!result.image){await releaseUsage(usage,env).catch(()=>{});return json({error:"Image model ने चित्र परत दिले नाही. पुन्हा प्रयत्न करा."},502,usage.setCookie)}
     return json({dataURI:"data:image/jpeg;charset=utf-8;base64,"+result.image,remaining:usage.remaining??null},200,usage.setCookie);
   }catch(error){
