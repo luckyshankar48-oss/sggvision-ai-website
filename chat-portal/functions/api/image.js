@@ -3,7 +3,7 @@ export async function onRequestPost({request,env}){
   const origin=request.headers.get("Origin");
   const host=new URL(request.url).host;
   if(origin){try{if(new URL(origin).host!==host)return json({error:"Origin not allowed."},403)}catch{return json({error:"Invalid origin."},403)}}
-  if(!/^application\\/json(?:\\s*;|$)/i.test(request.headers.get("content-type")||""))return json({error:"Content-Type must be application/json."},415);
+  if(!(request.headers.get("content-type")||"").toLowerCase().startsWith("application/json"))return json({error:"Content-Type must be application/json."},415);
   const length=Number(request.headers.get("Content-Length")||0);
   if(length>8192)return json({error:"Prompt request is too large."},413);
   let body;try{body=await request.json()}catch{return json({error:"Invalid JSON."},400)}
