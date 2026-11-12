@@ -1,4 +1,4 @@
-import { consumeUsage } from "./_lib/usage.js";
+import { consumeUsage, releaseUsage } from "./_lib/usage.js";
 const MAX_BODY = 256 * 1024;
 const MAX_MESSAGES = 16;
 const MAX_CHARS = 12000;
@@ -13,8 +13,6 @@ const ALLOWED_MODELS = new Set([
 ]);
 
 export async function onRequestPost({ request, env }) {
-  const usage = await consumeUsage(request, env).catch(() => ({ ok:false, status:503, error:"वापर मर्यादा तपासता आली नाही." }));
-  if (!usage.ok) return json({ error: usage.error, remaining: 0 }, usage.status, usage.setCookie);
   const origin = request.headers.get("Origin");
   const host = new URL(request.url).host;
   if (origin && host) {
@@ -64,6 +62,8 @@ export async function onRequestPost({ request, env }) {
   if (!env.AI || typeof env.AI.run !== "function") {
     return json({ error: "AI service is not configured. Add a Cloudflare Workers AI binding named AI." }, 503);
   }
+  const usage = await consumeUsage(request, env).catch(() => ({ ok:false, status:503, error:"वापर मर्यादा तपासता आली नाही." }));
+  if (!usage.ok) return json({ error: usage.error, remaining: 0 }, usage.status, usage.setCookie);
   const language = ["mr", "hi", "en"].includes(body.language) ? body.language : "auto";
   const languageRule = language === "mr" ? "Reply in natural, correct Marathi." :
     language === "hi" ? "Reply in natural Hindi." :
@@ -119,13 +119,15 @@ export async function onRequestPost({ request, env }) {
     }
     if (!response.trim()) {
       console.error("SGGVISION AI returned no text after one retry. Result keys:", Object.keys(result || {}).join(", "));
-      return json({ error: "AI returned an empty response after retry. Please try again." }, 502);
+      await releaseUsage(usage, env).catch(() => {});
+      return json({ error: "AI returned an empty response after retry. Please try again." }, 502, usage.setCookie);
     }
     return json({ response: response.trim(), remaining: usage.remaining ?? null }, 200, usage.setCookie);
   } catch (error) {
     // Keep provider details and secrets out of the public response.
     console.error("SGGVISION AI request failed:", error?.message || "unknown error");
-    return json({ error: "AI सेवा सध्या उपलब्ध नाही. थोड्या वेळाने पुन्हा प्रयत्न करा." }, 502);
+    await releaseUsage(usage, env).catch(() => {});
+    return json({ error: "AI सेवा सध्या उपलब्ध नाही. थोड्या वेळाने पुन्हा प्रयत्न करा." }, 502, usage.setCookie);
   }
 }
 function json(data, status, cookie) {
