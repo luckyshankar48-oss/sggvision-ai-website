@@ -13,7 +13,7 @@ const ALLOWED_MODELS = new Set([
 
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
-  const host = request.headers.get("Host");
+  const host = new URL(request.url).host;
   if (origin && host) {
     try {
       if (new URL(origin).host !== host) return json({ error: "Origin not allowed." }, 403);
