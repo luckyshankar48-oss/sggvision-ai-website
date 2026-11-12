@@ -12,6 +12,17 @@ A clean, independent ChatGPT-style chat interface for SGGVISION. It is not a cop
 - Allowlisted model override through the `SGGVISION_MODEL` Pages environment variable
 - Strict accuracy, uncertainty, proper-name preservation and Marathi proofreading instructions
 - Request validation, payload limits, same-host Origin check and safe public errors
+- Separate customer-support chat using a dedicated support prompt mode
+- Support conversation stored locally in the current browser
+- Email escalation link to sggvisiondigitalservices@gmail.com
+
+## Customer support
+
+- The “मदत केंद्र” button opens a separate AI support chat; it does not mix support conversations into the main assistant history.
+- Support chat uses the same `/api/chat` endpoint with a dedicated `support` mode and the currently selected language.
+- Support history is stored only in the current browser (`localStorage`); it is not synced to a human support inbox.
+- If automated help is insufficient, users can email `sggvisiondigitalservices@gmail.com` using the mail link. This opens their email app; it does not submit a ticket automatically.
+- The support assistant must never request passwords, OTPs, API keys or payment-card details, and must not claim to access accounts or fix server issues.
 
 ## Advertising foundation
 
@@ -45,7 +56,7 @@ The endpoint currently has no web-search or official-source retrieval integratio
 
 ## Important limitations in v1
 - Chat history is stored only in the current browser; there is no account sync or server-side database.
-- No login, billing, subscriptions, file uploads, image generation, voice mode, web search, or conversation sharing is included yet.
+- No login, billing, subscriptions, file uploads, image generation, voice mode, web search, conversation sharing, or human support ticket system is included yet.
 - AI availability and usage depend on the Cloudflare account, binding, model availability and account limits.
 - No production deployment is claimed by this repository change alone.
 
