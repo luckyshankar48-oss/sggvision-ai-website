@@ -94,7 +94,13 @@ export async function onRequestPost({ request, env }) {
       messages: [{ role: "system", content: system }, ...messages],
       max_tokens: 1800
     });
-    const response = result?.response;
+    // Workers AI chat-completion models may return OpenAI-compatible choices,
+    // while older text-generation models return a top-level response string.
+    const choiceContent = result?.choices?.[0]?.message?.content;
+    const response = typeof result?.response === "string" ? result.response :
+      typeof choiceContent === "string" ? choiceContent :
+      Array.isArray(choiceContent) ? choiceContent.map(part => typeof part?.text === "string" ? part.text : "").join("") :
+      typeof result?.output_text === "string" ? result.output_text : "";
     if (typeof response !== "string" || !response.trim()) {
       return json({ error: "AI returned an empty response. Please try again." }, 502);
     }
