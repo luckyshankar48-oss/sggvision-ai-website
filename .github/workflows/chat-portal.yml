@@ -21,6 +21,8 @@ jobs:
           node-version: "22"
       - name: Check Pages Function syntax
         run: node --check --input-type=module < chat-portal/functions/api/chat.js
+      - name: Run chat API tests
+        run: node --test chat-portal/tests/chat-api.test.mjs
       - name: Check frontend JavaScript syntax
         run: |
           python3 - <<'PY'
@@ -40,6 +42,7 @@ jobs:
         run: |
           test -s chat-portal/index.html
           test -s chat-portal/functions/api/chat.js
+          test -s chat-portal/tests/chat-api.test.mjs
           test -s chat-portal/README.md
           test -s chat-portal/QUALITY-BENCHMARK.md
           test -s chat-portal/about.html
