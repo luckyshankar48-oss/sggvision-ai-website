@@ -1,0 +1,63 @@
+name: Chat Portal Validation
+
+on:
+  push:
+    branches: [chat-portal-v1]
+    paths:
+      - "chat-portal/**"
+      - ".github/workflows/chat-portal.yml"
+  pull_request:
+    paths:
+      - "chat-portal/**"
+      - ".github/workflows/chat-portal.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check Pages Function syntax
+        run: node --check --input-type=module < chat-portal/functions/api/chat.js
+      - name: Run chat API tests
+        run: node --test chat-portal/tests/chat-api.test.mjs
+      - name: Check frontend JavaScript syntax
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+          html = Path("chat-portal/index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script>(.*?)</script>", html, re.S)
+          assert scripts, "No inline JavaScript found"
+          Path("/tmp/portal-inline.js").write_text("\n".join(scripts), encoding="utf-8")
+          assert "/api/chat" in html, "Chat API route missing"
+          assert "SGGVISION AI" in html, "Portal branding missing"
+          assert 'id="supportPanel"' in html, "Customer support panel missing"
+          assert "mode:'support'" in html, "Support chat API mode missing"
+          PY
+          node --check /tmp/portal-inline.js
+      - name: Check required project files
+        run: |
+          test -s chat-portal/index.html
+          test -s chat-portal/functions/api/chat.js
+          test -s chat-portal/_headers
+          test -s chat-portal/SECURITY-CHECKLIST.md
+          test -s chat-portal/tests/chat-api.test.mjs
+          test -s chat-portal/README.md
+          test -s chat-portal/QUALITY-BENCHMARK.md
+          test -s chat-portal/about.html
+          test -s chat-portal/help.html
+          test -s chat-portal/contact.html
+          test -s chat-portal/advertise.html
+          test -s chat-portal/privacy.html
+          test -s chat-portal/terms.html
+          grep -q "SGGVISION_MODEL" chat-portal/functions/api/chat.js
+          grep -q "Content-Security-Policy" chat-portal/_headers
+          grep -q "rate-limiting rule" chat-portal/SECURITY-CHECKLIST.md
+          grep -q "Do not claim that you searched the web" chat-portal/functions/api/chat.js
+          grep -q "Automatic fail conditions" chat-portal/QUALITY-BENCHMARK.md
+          grep -q "SGGVISION AI customer-support assistant" chat-portal/functions/api/chat.js
+          grep -q 'href="./privacy.html"' chat-portal/index.html
+          grep -q 'href="./advertise.html"' chat-portal/index.html
