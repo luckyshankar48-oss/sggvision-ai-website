@@ -37,6 +37,13 @@ test("rejects unsupported content types", async () => {
   assert.equal(result.status, 415);
 });
 
+test("rejects misleading JSON-like content types", async () => {
+  const result = await read(await onRequestPost(context("{}", undefined, {
+    "Content-Type": "application/jsonp", Origin: "https://portal.example"
+  })));
+  assert.equal(result.status, 415);
+});
+
 test("rejects conversations that exceed the aggregate input limit", async () => {
   const messages = [9000, 9000, 7000].map((length, index) => ({
     role: index % 2 ? "assistant" : "user", content: "x".repeat(length)
