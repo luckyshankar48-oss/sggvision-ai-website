@@ -89,7 +89,7 @@ function composePoster(dataURI,ratio,title,subtitle){
   };img.onerror=()=>reject(new Error('तयार झालेले चित्र उघडता आले नाही.'));img.src=dataURI;
  });
 }
-function wrapCanvasText(ctx,text,maxWidth){const words=String(text).split(/\\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);return lines}
+function wrapCanvasText(ctx,text,maxWidth){const words=String(text).split(/\s+/),lines=[];let line='';for(const word of words){const test=line?line+' '+word:word;if(ctx.measureText(test).width>maxWidth&&line){lines.push(line);line=word}else line=test}if(line)lines.push(line);return lines}
 
 
 function fresh(){current={id:Date.now().toString(),title:'नवीन चॅट',messages:[]};chats.unshift(current);save();render()}
