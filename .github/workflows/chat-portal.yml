@@ -32,6 +32,8 @@ jobs:
           Path("/tmp/portal-inline.js").write_text("\n".join(scripts), encoding="utf-8")
           assert "/api/chat" in html, "Chat API route missing"
           assert "SGGVISION AI" in html, "Portal branding missing"
+          assert 'id="supportPanel"' in html, "Customer support panel missing"
+          assert "mode:'support'" in html, "Support chat API mode missing"
           PY
           node --check /tmp/portal-inline.js
       - name: Check required project files
@@ -43,3 +45,4 @@ jobs:
           grep -q "SGGVISION_MODEL" chat-portal/functions/api/chat.js
           grep -q "Do not claim that you searched the web" chat-portal/functions/api/chat.js
           grep -q "Automatic fail conditions" chat-portal/QUALITY-BENCHMARK.md
+          grep -q "SGGVISION AI customer-support assistant" chat-portal/functions/api/chat.js
