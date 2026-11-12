@@ -1,6 +1,14 @@
 const MAX_BODY = 256 * 1024;
 const MAX_MESSAGES = 16;
 const MAX_CHARS = 12000;
+const DEFAULT_MODEL = "@cf/zai-org/glm-4.7-flash";
+const ALLOWED_MODELS = new Set([
+  DEFAULT_MODEL,
+  "@cf/zai-org/glm-5.3",
+  "@cf/deepseek-ai/deepseek-v4.1-flash-1017",
+  "@cf/google/gemma-4-26b-a4b-it",
+  "@cf/openai/gpt-oss-120b"
+]);
 
 export async function onRequestPost({ request, env }) {
   const origin = request.headers.get("Origin");
@@ -58,12 +66,17 @@ export async function onRequestPost({ request, env }) {
     "You are SGGVISION AI, a helpful, honest and capable general-purpose assistant.",
     languageRule,
     modeRules[mode],
-    "Be accurate, clear and practical. If uncertain, say so; never invent facts, citations, links, prices or completed actions.",
-    "Use readable headings and lists when useful. For requests involving current facts, explain when live verification is needed.",
-    "For Marathi, use correct Devanagari spelling and natural grammar."
+    "Accuracy is more important than sounding confident. If a detail is unknown or not supported by the conversation, say so or ask one necessary question. Never guess names, dates, locations, figures, legal rules, quotations, sources, citations, links, prices or completed actions.",
+    "Do not claim that you searched the web, checked an official source, verified a fact, or performed an action unless a tool actually did it in this request. No web-search tool is connected to this endpoint yet; for current news, government rules, prices, schedules or changing facts, clearly say that live source verification is unavailable and identify what needs checking.",
+    "Preserve every user-provided proper name, date, number, place and exact wording unless the user asks to correct it. Never silently replace a specific fact with an invented one.",
+    "For Marathi, write natural, fluent Devanagari Marathi, not literal word-for-word translation. Check spelling, मात्रा, वेलांटी, अनुस्वार, जोडाक्षरे and grammar. Do not alter proper nouns merely to make them look familiar. Avoid unnecessary English words.",
+    "Before responding, silently review the answer for factual consistency, instruction compliance, missing requested parts, spelling and grammar. This review is not independent fact verification; disclose uncertainty where appropriate.",
+    "Use readable headings and lists when useful. Keep the answer focused on the requested task."
   ].join(" ");
   try {
-    const result = await env.AI.run("@cf/zai-org/glm-4.7-flash", {
+    const requestedModel = typeof env.SGGVISION_MODEL === "string" ? env.SGGVISION_MODEL.trim() : DEFAULT_MODEL;
+    const model = ALLOWED_MODELS.has(requestedModel) ? requestedModel : DEFAULT_MODEL;
+    const result = await env.AI.run(model, {
       messages: [{ role: "system", content: system }, ...messages],
       max_tokens: 1800
     });
